@@ -1,0 +1,9 @@
+*.cube
+*.sln
+*.vcxproj
+*.png
+*.jpg
+*.vcxproj.filters
+*.vcxproj.user
+x64/
+.vs/
