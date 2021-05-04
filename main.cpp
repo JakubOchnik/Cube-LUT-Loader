@@ -1,6 +1,6 @@
-#include "CubeLUT.hpp"
-#include "applyNearestValue.hpp"
-#include "applyTrilinear.hpp"
+#include "Loader/CubeLUT.hpp"
+#include "3Dprocess/applyNearestValue.hpp"
+#include "3Dprocess/applyTrilinear.hpp"
 
 #include <iostream>
 #include <fstream>

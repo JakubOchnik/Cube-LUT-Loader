@@ -1,5 +1,5 @@
 #include "applyNearestValue.hpp"
-#include "CubeLUT.hpp"
+#include "../Loader/CubeLUT.hpp"
 
 #include <opencv2/opencv.hpp>
 
