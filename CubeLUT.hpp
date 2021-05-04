@@ -8,8 +8,10 @@
 
 using namespace std;
 
-// Credit of this parser code: Adobe Inc.
-// Cube LUT Specification 1.0
+// Licensed under Creative Commons Attribution Non-Commercial 3.0 License
+// Author: Adobe Inc.
+// Source:
+// "Cube LUT Specification 1.0"
 // https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf
 
 class CubeLUT {
@@ -33,7 +35,6 @@ public:
 	}
 
 	LUTState LoadCubeFile(ifstream& infile);
-	//LUTState SaveCubeFile(ifstream& infile);
 
 private:
 	string ReadLine(ifstream& infile, char lineSeparator);

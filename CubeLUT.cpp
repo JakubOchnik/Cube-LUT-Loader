@@ -1,8 +1,11 @@
-#include "CubeLUT.h"
 #include <iostream>
 #include <sstream>
 
+#include "CubeLUT.hpp"
+
 // Credit of this parser code: Adobe Inc.
+// Author: Adobe Inc.
+// Source:
 // Cube LUT Specification 1.0
 // https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf
 
