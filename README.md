@@ -1,5 +1,5 @@
 # Cube LUT Loader
-A C++ app which lets you apply a 1D or 3D Cube LUT on an image.
+A C++ app which lets you apply a 1D or 3D Cube LUT to an image.
 
 ## Working
 - 3D LUT support
