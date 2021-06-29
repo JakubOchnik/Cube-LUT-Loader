@@ -9,12 +9,12 @@
 // Cube LUT Specification 1.0
 // https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf
 
-string CubeLUT::ReadLine(ifstream& infile, char lineSeparator)
+string CubeLUT::ReadLine(ifstream& infile, const char lineSeparator)
 {
 	// Skip empty lines and comments
 	const char CommentMarker = '#';
-	string textLine("");
-	while (textLine.size() == 0 || textLine[0] == CommentMarker)
+	string textLine;
+	while (textLine.empty() || textLine[0] == CommentMarker)
 	{
 		if (infile.eof())
 		{
@@ -174,18 +174,6 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(ifstream& infile)
 	else
 	{
 		N = LUT3D.size();
-		//infile.seekg(linePos);
-		//getline(infile, NULL);
-		//cout << infile.get();
-		char current = infile.get();
-		/*while (current == '\n' || current == '\t')
-		{
-			current = infile.get();
-		}*/
-		if (current < 48 || current > 57)
-			ReadLine(infile, lineSeparator);
-		else
-			infile.seekg(infile.tellg());
 
 		for (int b{ 0 }; b < N && status == OK; ++b)
 		{
@@ -193,6 +181,10 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(ifstream& infile)
 			{
 				for (int r{ 0 }; r < N && status == OK; ++r)
 				{
+					if (b == 63 && g == 63 && r == 62)
+					{
+						printf("");
+					}
 					LUT3D[r][g][b] = ParseTableRow
 					(ReadLine(infile, lineSeparator));
 				}
