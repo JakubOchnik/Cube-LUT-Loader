@@ -3,10 +3,10 @@
 
 #include <opencv2/opencv.hpp>
 
-cv::Mat_<cv::Vec3b> applyTrilinear(cv::Mat img, CubeLUT lut, float opacity)
+cv::Mat_<cv::Vec3b> applyTrilinear(cv::Mat img, CubeLUT lut, const float opacity)
 {
 
-	auto mul = [](const vector<float>& vec, float val)
+	auto mul = [](const vector<float>& vec, const float val)
 	{
 		vector<float> newVec(3, 0.0f);
 		for (int i{ 0 }; i < 3; ++i)
@@ -22,7 +22,7 @@ cv::Mat_<cv::Vec3b> applyTrilinear(cv::Mat img, CubeLUT lut, float opacity)
 	};
 
 	cv::Mat_<cv::Vec3b> tmp = img.clone();
-	// TODO: opacity
+
 	for (auto& pixel : tmp) {
 		int b = pixel[0];
 		int g = pixel[1];
@@ -44,9 +44,9 @@ cv::Mat_<cv::Vec3b> applyTrilinear(cv::Mat img, CubeLUT lut, float opacity)
 		float g_o = g * (lut.LUT3D.size() - 1) / 255.0f;
 		float b_o = b * (lut.LUT3D.size() - 1) / 255.0f;
 
-		float delta_r = (r_o - R0) / (float)(R1 - R0);
-		float delta_g = (g_o - G0) / (float)(G1 - G0);
-		float delta_b = (b_o - B0) / (float)(B1 - B0);
+		float delta_r{ r_o - R0 == 0 || R1 - R0 == 0 ? 0 : (r_o - R0) / (float)(R1 - R0) };
+		float delta_g{ g_o - G0 == 0 || G1 - G0 == 0 ? 0 : (g_o - G0) / (float)(G1 - G0) };
+		float delta_b{ b_o - B0 == 0 || B1 - B0 == 0 ? 0 : (b_o - B0) / (float)(B1 - B0) };
 
 		vector<float> vr_gz_bz = sum(mul(lut.LUT3D[R0][G0][B0], 1 - delta_r), mul(lut.LUT3D[R0][G0][B0], delta_r));
 		vector<float> vr_gz_bo = sum(mul(lut.LUT3D[R0][G0][B1], 1 - delta_r), mul(lut.LUT3D[R0][G0][B1], delta_r));
@@ -58,10 +58,17 @@ cv::Mat_<cv::Vec3b> applyTrilinear(cv::Mat img, CubeLUT lut, float opacity)
 
 		vector<float> vrgb = sum(mul(vrg_b0, 1 - delta_b), mul(vrg_b1, delta_b));
 
-		pixel[0] = round(vrgb[2] * 255); //b
-		pixel[1] = round(vrgb[1] * 255); //g
-		pixel[2] = round(vrgb[0] * 255); //r
 
+		unsigned char newB = round(vrgb[2] * 255);
+		unsigned char newG = round(vrgb[1] * 255);
+		unsigned char newR = round(vrgb[0] * 255);
+
+		unsigned char finalB = b + (newB - b) * opacity;
+		unsigned char finalG = g + (newG - g) * opacity;
+		unsigned char finalR = r + (newR - r) * opacity;
+		pixel[0] = finalB;
+		pixel[1] = finalG;
+		pixel[2] = finalR;
 	}
 
 	return tmp;

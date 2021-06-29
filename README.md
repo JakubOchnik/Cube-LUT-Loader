@@ -1,5 +1,8 @@
 # Cube LUT Loader
-A C++ app which lets you apply a 1D or 3D Cube LUT to an image.
+A C++ app which lets you apply a Cube LUT to an image.
+
+## Dependencies
+- OpenCV 4.5.1
 
 ## Working
 - 3D LUT support
@@ -9,9 +12,6 @@ A C++ app which lets you apply a 1D or 3D Cube LUT to an image.
 ## In progress
 - 1D LUT support
 - Simple command-line interface
-
-## Bugs
-- In some cases (e.g. blown-out areas) colors take weird values
 
 ### Legal disclaimer
 The .cube LUT parser is used under Creative Commons Attribuition Non-Commercial 3.0 License.

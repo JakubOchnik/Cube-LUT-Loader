@@ -29,7 +29,7 @@ public:
 	table1D LUT1D;
 	table3D LUT3D;
 
-	CubeLUT(void)
+	CubeLUT()
 	{
 		status = NotInitialized;
 	}

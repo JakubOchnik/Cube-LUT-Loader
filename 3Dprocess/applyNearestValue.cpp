@@ -3,7 +3,7 @@
 
 #include <opencv2/opencv.hpp>
 
-cv::Mat_<cv::Vec3b> applyNearest(cv::Mat img, CubeLUT lut, float opacity)
+cv::Mat_<cv::Vec3b> applyNearest(cv::Mat img, CubeLUT lut, const float opacity)
 {
 	cv::Mat_<cv::Vec3b> tmp = img.clone();
 	for (auto& pixel : tmp) {

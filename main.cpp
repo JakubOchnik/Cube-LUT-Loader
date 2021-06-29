@@ -8,13 +8,13 @@
 #include <string>
 #include <opencv2/opencv.hpp>
 
-using namespace cv;
 
 const std::string LUTpath = "M31 - Rec.709.cube";
 const std::string imgPath = "Test_Image.png";
 
 int main(int argc, char* const argv[])
 {
+	using namespace cv;
 
 	CubeLUT theCube;
 	enum { OK = 0, ErrorOpenInFile = 100, ErrorOpenOutFile };
@@ -37,7 +37,7 @@ int main(int argc, char* const argv[])
 
 	Mat_<Vec3b> imgNearest = applyNearest(img, theCube, 1.0f);
 
-	Mat_<Vec3b> imgTrilinear = applyTrilinear(img, theCube, 1.0f);
+	Mat_<Vec3b> imgTrilinear = applyTrilinear(img, theCube, 0.5f);
 
 	imshow("Original image", img);
 	imshow("Nearest value (no interpolation)", imgNearest);
