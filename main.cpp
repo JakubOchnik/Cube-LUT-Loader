@@ -4,14 +4,14 @@
 
 #include <iostream>
 #include <fstream>
-#include <math.h>
+#include <cmath>
 #include <string>
 #include <opencv2/opencv.hpp>
 
 using namespace cv;
 
 const std::string LUTpath = "M31 - Rec.709.cube";
-const std::string imgPath = "tonal_test.png.jpg";
+const std::string imgPath = "Test_Image.png";
 
 int main(int argc, char* const argv[])
 {
@@ -27,11 +27,11 @@ int main(int argc, char* const argv[])
 	}
 	int ret = theCube.LoadCubeFile(infile);
 	infile.close();
-	/*if (ret != OK)
+	if (ret != OK)
 	{
 		cout << "Could not parse the cube info in the input file. Return code = " << ret << endl;
 		return theCube.status;
-	}*/
+	}
 
 	Mat_<Vec3b> img = imread(imgPath);
 

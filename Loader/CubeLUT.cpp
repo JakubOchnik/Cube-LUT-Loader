@@ -162,6 +162,11 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(ifstream& infile)
 		status = DomainBoundsReversed;
 
 	// parsowanie wczytanych danych
+	infile.seekg(linePos - 1);
+	if (infile.get() != '\n')
+	{
+		infile.seekg(linePos - 1);
+	}
 
 	if (LUT1D.size() > 0)
 	{
