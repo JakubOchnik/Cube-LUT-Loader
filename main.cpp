@@ -10,8 +10,9 @@
 #include <opencv2/opencv.hpp>
 
 
-const std::string LUTpath = "Clean & Tidy_1.AF2I2724.cube";
-const std::string imgPath = "Test_Image.png";
+const std::string LUTpath = "YourLut.cube";
+const std::string imgPath = "YourImage.png";
+const std::string outputName = "outputImg.png";
 const float opacity = 1.0f;
 
 int main(int argc, char* const argv[])
@@ -56,5 +57,6 @@ int main(int argc, char* const argv[])
 	waitKey(0);
 	destroyWindow("Original image");
 	destroyWindow("Image with LUT applied");
+	imwrite(outputName, newImg);
 	return 0;
 }
