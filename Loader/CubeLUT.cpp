@@ -163,10 +163,11 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(ifstream& infile)
 
 	// parsowanie wczytanych danych
 	infile.seekg(linePos - 1);
-	if (infile.get() != '\n')
+	while (infile.get() != '\n')
 	{
-		infile.seekg(linePos - 1);
+		infile.seekg(--linePos);
 	}
+	// sprawdzenie czy jest poczatek linijki
 
 	if (LUT1D.size() > 0)
 	{
