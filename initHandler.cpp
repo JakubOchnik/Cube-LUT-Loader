@@ -1,6 +1,6 @@
 #include "initHandler.hpp"
 
-InitHandler::InitHandler(const int aCnt, char** aVal) :arg_count(aCnt), args(aVal)
+InitHandler::InitHandler(const int aCnt, char** aVal) :arg_count(aCnt), args(aVal), loader(Loader())
 {
 }
 
@@ -14,10 +14,21 @@ int InitHandler::start()
 	}
 	catch (const std::invalid_argument& ex)
 	{
+		std::cerr << ex.what() << '\n';
 		return -1;
 	}
 
+	loader.setArgs(vm);
 
+	try
+	{
+		loader.load();
+	}
+	catch (const std::exception& ex)
+	{
+		std::cerr << ex.what() << '\n';
+		return -1;
+	}
 
 	return 0;
 }
