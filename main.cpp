@@ -9,7 +9,6 @@
 #include <string>
 #include <opencv2/opencv.hpp>
 
-
 const std::string LUTpath = "YourLut.cube";
 const std::string imgPath = "YourImage.png";
 const std::string outputName = "outputImg.png";
