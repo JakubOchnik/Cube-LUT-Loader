@@ -14,6 +14,7 @@ A simple C++ tool which lets you apply a Cube LUT to an image.
 
 ## Dependencies
 - OpenCV 4.5.1
+- Boost 1.75.0
 
 ## Working
 - 1D LUT support
