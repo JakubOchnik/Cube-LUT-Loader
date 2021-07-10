@@ -2,7 +2,8 @@
 #include <boost/program_options.hpp>
 #include <iostream>
 
-#include "Loader/loader.hpp"
+#include "../ImageProcess/Processor.hpp"
+#include "../Loader/loader.hpp"
 
 class InitHandler
 {
@@ -13,5 +14,5 @@ class InitHandler
 public:
 	InitHandler(int aCnt, char** aVal);
 	int start();
-	boost::program_options::variables_map parseInputArgs(int argc, char** argv) const;
+	boost::program_options::variables_map parseInputArgs(int argc, char* aVal[]) const;
 };

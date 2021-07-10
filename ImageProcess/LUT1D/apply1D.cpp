@@ -3,7 +3,7 @@
 double getAvgVal(const CubeLUT& lut, const unsigned int nValues, const unsigned char value, const unsigned char channel)
 {
 	double val{ 0.0 };
-	for (int i{ 0 }; i < nValues; ++i)
+	for (unsigned int i{ 0 }; i < nValues; ++i)
 	{
 		val += lut.LUT1D[value * nValues + i][channel];
 	}

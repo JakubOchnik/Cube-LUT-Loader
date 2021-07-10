@@ -3,9 +3,9 @@
 Loader::Loader(const boost::program_options::variables_map vm) : vm(vm)
 {
 }
+
 Loader::Loader()
 {
-
 }
 
 void Loader::setArgs(const boost::program_options::variables_map vm)
@@ -15,16 +15,20 @@ void Loader::setArgs(const boost::program_options::variables_map vm)
 
 void Loader::loadImg()
 {
+	std::cout << "Importing image...\n";
 	img = cv::imread(vm["input"].as<std::string>());
 }
+
 void Loader::loadLUT()
 {
+	std::cout << "Importing LUT...\n";
 	ifstream infile(vm["lut"].as<std::string>());
 	if (!infile.good())
 	{
 		std::string msg = "Could not open input LUT file: " + vm["lut"].as<std::string>();
 		throw std::exception(msg.c_str());
 	}
+	std::cout << "Parsing LUT...\n";
 	const int ret = cube.LoadCubeFile(infile);
 	infile.close();
 	if (ret != 0)
@@ -33,6 +37,7 @@ void Loader::loadLUT()
 		throw std::exception(msg.c_str());
 	}
 }
+
 void Loader::load()
 {
 	try
@@ -44,7 +49,6 @@ void Loader::load()
 	{
 		throw;
 	}
-
 }
 
 const cv::Mat_<cv::Vec3b>& Loader::getImg() const
@@ -55,4 +59,9 @@ const cv::Mat_<cv::Vec3b>& Loader::getImg() const
 const CubeLUT& Loader::getCube() const
 {
 	return this->cube;
+}
+
+const boost::program_options::variables_map& Loader::getVm() const
+{
+	return this->vm;
 }

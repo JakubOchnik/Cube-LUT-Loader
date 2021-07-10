@@ -1,7 +1,4 @@
 #include "applyNearestValue.hpp"
-#include "../Loader/CubeLUT.hpp"
-
-#include <opencv2/opencv.hpp>
 
 cv::Mat_<cv::Vec3b> applyNearest(cv::Mat img, CubeLUT lut, const float opacity)
 {

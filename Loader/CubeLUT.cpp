@@ -103,7 +103,7 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(ifstream& infile)
 			infile.seekg(linePos);
 			break;
 		}
-		else if (keyword == "TITLE" && CntTitle++ == 0)
+		if (keyword == "TITLE" && CntTitle++ == 0)
 		{
 			const char QUOTE = '"';
 			char startOfTitle;
@@ -126,7 +126,7 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(ifstream& infile)
 		else if (keyword == "LUT_1D_SIZE" && CntSize++ == 0)
 		{
 			line >> N;
-			if (N < 2 || N>65536)
+			if (N < 2 || N > 65536)
 			{
 				status = LUTSizeOutOfRange;
 				break;
@@ -136,7 +136,7 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(ifstream& infile)
 		else if (keyword == "LUT_3D_SIZE" && CntSize++ == 0)
 		{
 			line >> N;
-			if (N < 2 || N>256)
+			if (N < 2 || N > 256)
 			{
 				status = LUTSizeOutOfRange;
 				break;
