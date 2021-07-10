@@ -8,3 +8,5 @@
 *.dll
 x64/
 .vs/
+*.filters
+*.user
