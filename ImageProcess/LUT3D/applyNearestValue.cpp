@@ -19,11 +19,6 @@ cv::Mat_<cv::Vec3b> applyNearest(cv::Mat img, CubeLUT lut, const float opacity)
 		unsigned char finalG = g + (newG - g) * opacity;
 		unsigned char finalR = r + (newR - r) * opacity;
 
-		if (finalR == 11)
-		{
-			printf("");
-		}
-
 		pixel[0] = finalB;
 		pixel[1] = finalG;
 		pixel[2] = finalR;

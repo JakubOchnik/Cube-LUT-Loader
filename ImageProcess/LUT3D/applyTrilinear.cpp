@@ -1,22 +1,23 @@
 #include "applyTrilinear.hpp"
 
+vector<float> mul(const vector<float>& vec, const float val)
+{
+	vector<float> newVec(3, 0.0f);
+	for (int i{ 0 }; i < 3; ++i)
+		newVec[i] = vec[i] * val;
+	return newVec;
+}
+
+vector<float> sum(const vector<float>& a, const vector<float>& b)
+{
+	vector<float> newVec(3, 0.0f);
+	for (int i{ 0 }; i < 3; ++i)
+		newVec[i] = a[i] + b[i];
+	return newVec;
+}
+
 cv::Mat_<cv::Vec3b> applyTrilinear(cv::Mat img, CubeLUT lut, const float opacity)
 {
-
-	auto mul = [](const vector<float>& vec, const float val)
-	{
-		vector<float> newVec(3, 0.0f);
-		for (int i{ 0 }; i < 3; ++i)
-			newVec[i] = vec[i] * val;
-		return newVec;
-	};
-	auto sum = [](const vector<float>& a, const vector<float>& b)
-	{
-		vector<float> newVec(3, 0.0f);
-		for (int i{ 0 }; i < 3; ++i)
-			newVec[i] = a[i] + b[i];
-		return newVec;
-	};
 
 	cv::Mat_<cv::Vec3b> tmp = img.clone();
 
@@ -37,6 +38,7 @@ cv::Mat_<cv::Vec3b> applyTrilinear(cv::Mat img, CubeLUT lut, const float opacity
 		int G0 = floor(g / 255.0f * (float)(lut.LUT3D.size() - 1));
 		int B1 = ceil(b / 255.0f * (float)(lut.LUT3D.size() - 1));
 		int B0 = floor(b / 255.0f * (float)(lut.LUT3D.size() - 1));
+
 		float r_o = r * (lut.LUT3D.size() - 1) / 255.0f;
 		float g_o = g * (lut.LUT3D.size() - 1) / 255.0f;
 		float b_o = b * (lut.LUT3D.size() - 1) / 255.0f;
