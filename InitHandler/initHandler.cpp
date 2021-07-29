@@ -6,13 +6,12 @@ InitHandler::InitHandler(const int aCnt, char* aVal[]) : arg_count(aCnt), args(a
 
 int InitHandler::start()
 {
-	using namespace boost::program_options;
-	variables_map vm;
+	boost::program_options::variables_map vm;
 	try
 	{
 		vm = parseInputArgs(arg_count, args);
 	}
-	catch (const error& ex)
+	catch (const boost::program_options::error& ex)
 	{
 		std::cerr << ex.what() << '\n';
 		return -1;
@@ -31,40 +30,51 @@ int InitHandler::start()
 	}
 
 
-	Processor processor(loader);
-	processor.perform();
+	if (loader.getVm().count("gpu"))
+	{
+		cout << "GPU acceleration enabled!" << endl;
+		GpuProcessor processor(loader);
+		processor.perform();
+	}
+	else
+	{
+		cout << "GPU acceleration disabled!" << endl;
+		Processor processor(loader);
+		processor.perform();
+	}
 
 	return 0;
 }
 
 boost::program_options::variables_map InitHandler::parseInputArgs(const int argc, char** argv) const
 {
-	using namespace boost::program_options;
 	try
 	{
-		options_description desc{ "Options" };
+		boost::program_options::options_description desc{ "Options" };
 		desc.add_options()
 			("help,h", "Help screen")
-			("input,i", value<std::string>(), "Input file path")
-			("lut,l", value<std::string>(), "LUT file path")
-			("output,o", value<std::string>()->default_value("out.png"), "Output file path")
-			("strength,s", value<float>()->default_value(1.0f), "Strength of the effect")
+			("input,i", boost::program_options::value<std::string>(), "Input file path")
+			("lut,l", boost::program_options::value<std::string>(), "LUT file path")
+			("output,o", boost::program_options::value<std::string>()->default_value("out.png"), "Output file path")
+			("strength,s", boost::program_options::value<float>()->default_value(1.0f), "Strength of the effect")
 			("trilinear,t", "Trilinear interpolation of 3D LUT")
-			("nearest_value,n", "No interpolation of 3D LUT");
-		variables_map vm;
+			("nearest_value,n", "No interpolation of 3D LUT")
+			("gpu", "Use GPU acceleration")
+			("test", "Performance test mode");
+		boost::program_options::variables_map vm;
 		store(parse_command_line(argc, argv, desc), vm);
 		if (vm.count("help"))
 		{
 			std::cout << "-- HELP --\n" << desc;
-			throw error("");
+			throw boost::program_options::error("");
 		}
 		if (!vm.count("input") || !vm.count("lut") || !vm.count("output"))
 		{
-			throw error("No input/output/LUT specified");
+			throw boost::program_options::error("No input/output/LUT specified");
 		}
 		return vm;
 	}
-	catch (const error& ex)
+	catch (const boost::program_options::error& ex)
 	{
 		throw;
 	}

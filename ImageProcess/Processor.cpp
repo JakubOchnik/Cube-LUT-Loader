@@ -14,14 +14,17 @@ cv::Mat_<cv::Vec3b> Processor::process()
 	std::cout << "Processing the image...\n";
 	if (const float opacity = loader.getVm()["strength"].as<float>(); !is3D())
 	{
+		cout << "Applying basic 1D LUT..." << endl;
 		newImg = applyBasic1D(loader.getImg(), loader.getCube(), opacity);
 	}
 	else if (loader.getVm().count("trilinear"))
 	{
+		cout << "Applying trilinear interpolation..." << endl;
 		newImg = applyTrilinear(loader.getImg(), loader.getCube(), opacity);
 	}
 	else
 	{
+		cout << "Applying nearest-value interpolation..." << endl;
 		newImg = applyNearest(loader.getImg(), loader.getCube(), opacity);
 	}
 	return newImg;

@@ -3,7 +3,9 @@
 #include <iostream>
 
 #include "../ImageProcess/Processor.hpp"
+#include "../GPUImageProcess/GPUprocessor.hpp"
 #include "../Loader/loader.hpp"
+
 
 class InitHandler
 {

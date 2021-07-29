@@ -27,7 +27,6 @@ cv::Mat_<cv::Vec3b> applyBasic1D(const cv::Mat& img, const CubeLUT& lut, const f
 
 	for (auto& pixel : tmp)
 	{
-
 		const unsigned char newB = getColor(getAvgVal(lut, nValues, pixel[0], 2)); // b
 		const unsigned char newG = getColor(getAvgVal(lut, nValues, pixel[1], 1)); // g
 		const unsigned char newR = getColor(getAvgVal(lut, nValues, pixel[2], 0)); // r

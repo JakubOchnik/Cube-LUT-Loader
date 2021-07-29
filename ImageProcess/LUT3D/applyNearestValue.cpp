@@ -1,28 +1,37 @@
 #include "applyNearestValue.hpp"
 
-cv::Mat_<cv::Vec3b> applyNearest(cv::Mat img, CubeLUT lut, const float opacity)
+cv::Mat applyNearest(cv::Mat img, CubeLUT lut, const float opacity)
 {
-	cv::Mat_<cv::Vec3b> tmp = img.clone();
-	for (auto& pixel : tmp) {
-		int b = pixel[0]; //b
-		unsigned int b_ind = round(b * (lut.LUT3D.size() - 1) / 255.0f);
-		int g = pixel[1]; //g
-		unsigned int g_ind = round(g * (lut.LUT3D.size() - 1) / 255.0f);
-		int r = pixel[2]; //r
-		unsigned int r_ind = round(r * (lut.LUT3D.size() - 1) / 255.0f);
+	// INIT
+	cv::Mat tmp = img.clone();
 
-		int newB = (int)(lut.LUT3D[r_ind][g_ind][b_ind][2] * 255);
-		int newG = (int)(lut.LUT3D[r_ind][g_ind][b_ind][1] * 255);
-		int newR = (int)(lut.LUT3D[r_ind][g_ind][b_ind][0] * 255);
+	unsigned char* image = img.data;
+	unsigned char* new_image = tmp.data;
+	// PROCESS
+	// x + y * cols
+	for (int x{ 0 }; x < tmp.cols; ++x)
+	{
+		for (int y{ 0 }; y < tmp.rows; ++y)
+		{
+			int b = image[x + y * tmp.cols + 0]; //b
+			unsigned int b_ind = round(b * (lut.LUT3D.size() - 1) / 255.0f);
+			int g = image[x + y * tmp.cols + 1]; //g
+			unsigned int g_ind = round(g * (lut.LUT3D.size() - 1) / 255.0f);
+			int r = image[x + y * tmp.cols + 2]; //r
+			unsigned int r_ind = round(r * (lut.LUT3D.size() - 1) / 255.0f);
 
-		unsigned char finalB = b + (newB - b) * opacity;
-		unsigned char finalG = g + (newG - g) * opacity;
-		unsigned char finalR = r + (newR - r) * opacity;
+			int newB = (int)(lut.LUT3D[r_ind][g_ind][b_ind][2] * 255);
+			int newG = (int)(lut.LUT3D[r_ind][g_ind][b_ind][1] * 255);
+			int newR = (int)(lut.LUT3D[r_ind][g_ind][b_ind][0] * 255);
 
-		pixel[0] = finalB;
-		pixel[1] = finalG;
-		pixel[2] = finalR;
+			unsigned char finalB = b + (newB - b) * opacity;
+			unsigned char finalG = g + (newG - g) * opacity;
+			unsigned char finalR = r + (newR - r) * opacity;
+
+			new_image[x + y * tmp.cols + 0] = finalB;
+			new_image[x + y * tmp.cols + 1] = finalG;
+			new_image[x + y * tmp.cols + 2] = finalR;
+		}
 	}
-
 	return tmp;
 }
