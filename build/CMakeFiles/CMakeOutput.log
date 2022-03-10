@@ -1,0 +1,380 @@
+The system is: Windows - 10.0.19044 - AMD64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler:  
+Build flags: 
+Id flags:  
+
+The output was:
+0
+Microsoft (R) Build Engine version 17.0.0+c9eb9dd64 for .NET Framework
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 3/10/2022 2:08:10 PM.
+Project "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.22.0-rc1\CompilerIdC\CompilerIdC.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "Debug\".
+  Creating directory "Debug\CompilerIdC.tlog\".
+InitializeBuildStatus:
+  Creating "Debug\CompilerIdC.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x64\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc143.pdb" /external:W0 /Gd /TC /FC /errorReport:queue CMakeCCompilerId.c
+  CMakeCCompilerId.c
+Link:
+  C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x64\link.exe /ERRORREPORT:QUEUE /OUT:".\CompilerIdC.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\CompilerIdC.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\CompilerIdC.lib" /MACHINE:X64 Debug\CMakeCCompilerId.obj
+  CompilerIdC.vcxproj -> C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.22.0-rc1\CompilerIdC\CompilerIdC.exe
+PostBuildEvent:
+  for %%i in (cl.exe) do @echo CMAKE_C_COMPILER=%%~$PATH:i
+  :VCEnd
+  CMAKE_C_COMPILER=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\Hostx86\x64\cl.exe
+FinalizeBuildStatus:
+  Deleting file "Debug\CompilerIdC.tlog\unsuccessfulbuild".
+  Touching "Debug\CompilerIdC.tlog\CompilerIdC.lastbuildstate".
+Done Building Project "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.22.0-rc1\CompilerIdC\CompilerIdC.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.47
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.vcxproj"
+
+The C compiler identification is MSVC, found in "C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/3.22.0-rc1/CompilerIdC/CompilerIdC.exe"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler:  
+Build flags: 
+Id flags:  
+
+The output was:
+0
+Microsoft (R) Build Engine version 17.0.0+c9eb9dd64 for .NET Framework
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 3/10/2022 2:08:13 PM.
+Project "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.22.0-rc1\CompilerIdCXX\CompilerIdCXX.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "Debug\".
+  Creating directory "Debug\CompilerIdCXX.tlog\".
+InitializeBuildStatus:
+  Creating "Debug\CompilerIdCXX.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x64\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc143.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
+  CMakeCXXCompilerId.cpp
+Link:
+  C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x64\link.exe /ERRORREPORT:QUEUE /OUT:".\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\CompilerIdCXX.lib" /MACHINE:X64 Debug\CMakeCXXCompilerId.obj
+  CompilerIdCXX.vcxproj -> C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.22.0-rc1\CompilerIdCXX\CompilerIdCXX.exe
+PostBuildEvent:
+  for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
+  :VCEnd
+  CMAKE_CXX_COMPILER=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\Hostx86\x64\cl.exe
+FinalizeBuildStatus:
+  Deleting file "Debug\CompilerIdCXX.tlog\unsuccessfulbuild".
+  Touching "Debug\CompilerIdCXX.tlog\CompilerIdCXX.lastbuildstate".
+Done Building Project "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.22.0-rc1\CompilerIdCXX\CompilerIdCXX.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.21
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
+
+The CXX compiler identification is MSVC, found in "C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/3.22.0-rc1/CompilerIdCXX/CompilerIdCXX.exe"
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_7f3c0.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine version 17.0.0+c9eb9dd64 for .NET Framework
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.30.30709 for x64
+  CMakeCCompilerABI.c
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_7f3c0.dir\Debug\\" /Fd"cmTC_7f3c0.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Program Files\CMake\share\cmake-3.22\Modules\CMakeCCompilerABI.c"
+  cmTC_7f3c0.vcxproj -> C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\CMakeTmp\Debug\cmTC_7f3c0.exe
+
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_b38d3.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine version 17.0.0+c9eb9dd64 for .NET Framework
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.30.30709 for x64
+  CMakeCXXCompilerABI.cpp
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_b38d3.dir\Debug\\" /Fd"cmTC_b38d3.dir\Debug\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\Program Files\CMake\share\cmake-3.22\Modules\CMakeCXXCompilerABI.cpp"
+  cmTC_b38d3.vcxproj -> C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\CMakeTmp\Debug\cmTC_b38d3.exe
+
+
+
+The system is: Windows - 10.0.19044 - AMD64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler:  
+Build flags: /DWIN32;/D_WINDOWS;/W3
+Id flags:  
+
+The output was:
+0
+Microsoft (R) Build Engine version 17.0.0+c9eb9dd64 for .NET Framework
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 3/10/2022 2:35:40 PM.
+Project "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdC\CompilerIdC.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "Debug\".
+  Creating directory "Debug\CompilerIdC.tlog\".
+InitializeBuildStatus:
+  Creating "Debug\CompilerIdC.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x64\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc143.pdb" /external:W0 /Gd /TC /FC /errorReport:queue CMakeCCompilerId.c
+  CMakeCCompilerId.c
+Link:
+  C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x64\link.exe /ERRORREPORT:QUEUE /OUT:".\CompilerIdC.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\CompilerIdC.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\CompilerIdC.lib" /MACHINE:X64 Debug\CMakeCCompilerId.obj
+  CompilerIdC.vcxproj -> C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdC\CompilerIdC.exe
+PostBuildEvent:
+  for %%i in (cl.exe) do @echo CMAKE_C_COMPILER=%%~$PATH:i
+  :VCEnd
+  CMAKE_C_COMPILER=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\Hostx86\x64\cl.exe
+FinalizeBuildStatus:
+  Deleting file "Debug\CompilerIdC.tlog\unsuccessfulbuild".
+  Touching "Debug\CompilerIdC.tlog\CompilerIdC.lastbuildstate".
+Done Building Project "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdC\CompilerIdC.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.04
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.vcxproj"
+
+The C compiler identification is MSVC, found in "C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/3.23.0-rc2/CompilerIdC/CompilerIdC.exe"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler:  
+Build flags: /DWIN32;/D_WINDOWS;/W3;/GR;/EHsc
+Id flags:  
+
+The output was:
+0
+Microsoft (R) Build Engine version 17.0.0+c9eb9dd64 for .NET Framework
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 3/10/2022 2:35:43 PM.
+Project "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdCXX\CompilerIdCXX.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "Debug\".
+  Creating directory "Debug\CompilerIdCXX.tlog\".
+InitializeBuildStatus:
+  Creating "Debug\CompilerIdCXX.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x64\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc143.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
+  CMakeCXXCompilerId.cpp
+Link:
+  C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x64\link.exe /ERRORREPORT:QUEUE /OUT:".\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\CompilerIdCXX.lib" /MACHINE:X64 Debug\CMakeCXXCompilerId.obj
+  CompilerIdCXX.vcxproj -> C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdCXX\CompilerIdCXX.exe
+PostBuildEvent:
+  for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
+  :VCEnd
+  CMAKE_CXX_COMPILER=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\Hostx86\x64\cl.exe
+FinalizeBuildStatus:
+  Deleting file "Debug\CompilerIdCXX.tlog\unsuccessfulbuild".
+  Touching "Debug\CompilerIdCXX.tlog\CompilerIdCXX.lastbuildstate".
+Done Building Project "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdCXX\CompilerIdCXX.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.05
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
+
+The CXX compiler identification is MSVC, found in "C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/3.23.0-rc2/CompilerIdCXX/CompilerIdCXX.exe"
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_85741.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine version 17.0.0+c9eb9dd64 for .NET Framework
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.30.30709 for x64
+  CMakeCCompilerABI.c
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_85741.dir\Debug\\" /Fd"cmTC_85741.dir\Debug\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\Program Files\CMake\share\cmake-3.23\Modules\CMakeCCompilerABI.c"
+  cmTC_85741.vcxproj -> C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\CMakeTmp\Debug\cmTC_85741.exe
+
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_a565b.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine version 17.0.0+c9eb9dd64 for .NET Framework
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.30.30709 for x64
+  CMakeCXXCompilerABI.cpp
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\"Debug\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_a565b.dir\Debug\\" /Fd"cmTC_a565b.dir\Debug\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\Program Files\CMake\share\cmake-3.23\Modules\CMakeCXXCompilerABI.cpp"
+  cmTC_a565b.vcxproj -> C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\CMakeTmp\Debug\cmTC_a565b.exe
+
+
+
+Compiling the CUDA compiler identification source file "CMakeCUDACompilerId.cu" succeeded.
+Compiler:  
+Build flags: 
+Id flags: --keep;--keep-dir;tmp -v
+
+The output was:
+0
+Microsoft (R) Build Engine version 17.0.0+c9eb9dd64 for .NET Framework
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 3/10/2022 2:59:55 PM.
+Project "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdCUDA\CompilerIdCUDA.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "Debug\".
+  Creating directory "Debug\CompilerIdCUDA.tlog\".
+InitializeBuildStatus:
+  Creating "Debug\CompilerIdCUDA.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+AddCudaCompileDeps:
+  C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x64\cl.exe /E /nologo /showIncludes /TP /D__CUDACC__ /D__CUDACC_VER_MAJOR__=11 /D__CUDACC_VER_MINOR__=6 /D_MBCS /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\include" /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin" /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\include" /I. /FIcuda_runtime.h /c "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdCUDA\CMakeCUDACompilerId.cu" 
+Project "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdCUDA\CompilerIdCUDA.vcxproj" (1) is building "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdCUDA\CompilerIdCUDA.vcxproj" (1:2) on node 1 (CudaBuildCore target(s)).
+CudaBuildCore:
+  Compiling CUDA source file CMakeCUDACompilerId.cu...
+  cmd.exe /C "C:\Users\jakub\AppData\Local\Temp\tmp9e3a2bb3185f43ab98cc241ddcf3e54c.cmd"
+  "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin\nvcc.exe"  --use-local-env -ccbin "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x64" -x cu   -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\include"  -G   --keep-dir x64\Debug  -maxrregcount=0  --machine 64 --compile -cudart static -v -g  -D_MBCS -Xcompiler "/EHsc /W0 /nologo /Od /FdDebug\vc143.pdb /FS /Zi /RTC1 /MDd " -o Debug\CMakeCUDACompilerId.cu.obj "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdCUDA\CMakeCUDACompilerId.cu"
+  
+  C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdCUDA>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin\nvcc.exe"  --use-local-env -ccbin "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x64" -x cu   -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\include"  -G   --keep-dir x64\Debug  -maxrregcount=0  --machine 64 --compile -cudart static -v -g  -D_MBCS -Xcompiler "/EHsc /W0 /nologo /Od /FdDebug\vc143.pdb /FS /Zi /RTC1 /MDd " -o Debug\CMakeCUDACompilerId.cu.obj "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdCUDA\CMakeCUDACompilerId.cu" 
+  #$ _NVVM_BRANCH_=nvvm
+  #$ _SPACE_= 
+  #$ _CUDART_=cudart
+  #$ _HERE_=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin
+  #$ _THERE_=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin
+  #$ _TARGET_SIZE_=
+  #$ _TARGET_DIR_=
+  #$ _TARGET_SIZE_=64
+  #$ _WIN_PLATFORM_=x64
+  #$ TOP=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin/..
+  #$ NVVMIR_LIBRARY_DIR=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin/../nvvm/libdevice
+  #$ PATH=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin/../nvvm/bin;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin/../lib;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x64;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x86;C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x86;;C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\bin\NETFX 4.8 Tools;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\tools;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\ide;C:\Program Files (x86)\HTML Help Workshop;;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\;;C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x86;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\\Extensions\Microsoft\IntelliCode\CLI;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x64;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x86;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\VC\VCPackages;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TestWindow;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TeamFoundation\Team Explorer;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\bin\Roslyn;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Performance Tools\x64;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\Performance Tools;C:\Program Files (x86)\Microsoft Visual Studio\Shared\Common\VSPerfCollectionTools\vs2019\\x64;C:\Program Files (x86)\Microsoft Visual Studio\Shared\Common\VSPerfCollectionTools\vs2019\;C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\;C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\\x86;C:\Program Files (x86)\Windows Kits\10\bin\\x86;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\\MSBuild\Current\Bin\amd64;C:\Windows\Microsoft.NET\Framework\v4.0.30319;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\libnvvp;C:\Program Files (x86)\VMware\VMware Player\bin\;C:\ProgramData\Oracle\Java\javapath;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Git\cmd;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files\MATLAB\R2020b\bin;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\MiKTeX\miktex\bin\x64\;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Program Files\CMake\bin;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\NVIDIA Corporation\Nsight Compute 2022.1.0\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Users\jakub\.cargo\bin;C:\Users\jakub\AppData\Local\Programs\Python\Python37\Scripts\;C:\Users\jakub\AppData\Local\Programs\Python\Python37\;C:\Program Files\Java\jdk1.8.0_271\bin;C:\Users\jakub\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Azure Data Studio\bin;C:\OpenCV\opencv\build\x64\vc15\bin;C:\Users\jakub\AppData\Local\Programs\Python\Python38;C:\Users\jakub\AppData\Local\Programs\Python\Python38\Scripts;C:\Users\jakub\Desktop\ghc-8.10.3\bin;C:\FFmpeg\bin;C:\Program Files\JetBrains\IntelliJ IDEA Educational Edition 2020.3.2\bin;;C:\Program Files (x86)\Windows Kits\10\bin\10.0.18362.0\x64;C:\Users\jakub\Desktop\Programowanie\vcpkg\vcpkg;C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.28.29910\bin\Hostx64\x64;C:\OpenCV\opencv\build\x64\vc15\lib;C:\Program Files\LLVM\bin;C:\Program Files\OpenSSL-Win64\bin;C:\Program Files\curl-7.80.0-win64-mingw\bin;C:\Ninja;C:\Users\jakub\AppData\Local\Programs\Microsoft VS Code\bin;C:\Boost\boost;;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\VC\Linux\bin\ConnectionManagerExe;
+  #$ INCLUDES="-IC:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin/../include"  
+  #$ LIBRARIES=  "/LIBPATH:C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin/../lib/x64"
+  #$ CUDAFE_FLAGS=--sdk_dir "C:\Program Files (x86)\Windows Kits\10"
+  #$ PTXAS_FLAGS=
+  CMakeCUDACompilerId.cu
+  #$ cl.exe @"C:\Users\jakub\AppData\Local\Temp/tmpxft_00002348_00000000-9.res" > "C:/Users/jakub/AppData/Local/Temp/tmpxft_00002348_00000000-8_CMakeCUDACompilerId.cpp1.ii" 
+  CMakeCUDACompilerId.cu
+  #$ erase C:\Users\jakub\AppData\Local\Temp/tmpxft_00002348_00000000-9.res
+  #$ cicc --microsoft_version=1930 --msvc_target_version=1930 --compiler_bindir "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.30.30705/bin/HostX86/x64/../../../../../../.." --sdk_dir "C:/Program Files (x86)/Windows Kits/10/" --display_error_number --orig_src_file_name "C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/3.23.0-rc2/CompilerIdCUDA/CMakeCUDACompilerId.cu" --orig_src_path_name "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdCUDA\CMakeCUDACompilerId.cu" --allow_managed --debug_mode --sdk_dir "C:\Program Files (x86)\Windows Kits\10"  -arch compute_52 -m64 --no-version-ident -ftz=0 -prec_div=1 -prec_sqrt=1 -fmad=1 --include_file_name "tmpxft_00002348_00000000-4_CMakeCUDACompilerId.fatbin.c" -g -O0 -tused --gen_module_id_file --module_id_file_name "C:/Users/jakub/AppData/Local/Temp/tmpxft_00002348_00000000-5_CMakeCUDACompilerId.module_id" --gen_c_file_name "C:/Users/jakub/AppData/Local/Temp/tmpxft_00002348_00000000-7_CMakeCUDACompilerId.cudafe1.c" --stub_file_name "C:/Users/jakub/AppData/Local/Temp/tmpxft_00002348_00000000-7_CMakeCUDACompilerId.cudafe1.stub.c" --gen_device_file_name "C:/Users/jakub/AppData/Local/Temp/tmpxft_00002348_00000000-7_CMakeCUDACompilerId.cudafe1.gpu"  "C:/Users/jakub/AppData/Local/Temp/tmpxft_00002348_00000000-8_CMakeCUDACompilerId.cpp1.ii" -o "C:/Users/jakub/AppData/Local/Temp/tmpxft_00002348_00000000-7_CMakeCUDACompilerId.ptx"
+  #$ ptxas -arch=sm_52 -m64 -g --dont-merge-basicblocks --return-at-end "C:/Users/jakub/AppData/Local/Temp/tmpxft_00002348_00000000-7_CMakeCUDACompilerId.ptx"  -o "C:/Users/jakub/AppData/Local/Temp/tmpxft_00002348_00000000-10_CMakeCUDACompilerId.sm_52.cubin" 
+  #$ fatbinary -64 --ident="C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/3.23.0-rc2/CompilerIdCUDA/CMakeCUDACompilerId.cu" --cmdline="-g --dont-merge-basicblocks --return-at-end " --cicc-cmdline="-ftz=0 -prec_div=1 -prec_sqrt=1 -fmad=1 " -g "--image3=kind=elf,sm=52,file=C:/Users/jakub/AppData/Local/Temp/tmpxft_00002348_00000000-10_CMakeCUDACompilerId.sm_52.cubin" "--image3=kind=ptx,sm=52,file=C:/Users/jakub/AppData/Local/Temp/tmpxft_00002348_00000000-7_CMakeCUDACompilerId.ptx" --embedded-fatbin="C:/Users/jakub/AppData/Local/Temp/tmpxft_00002348_00000000-4_CMakeCUDACompilerId.fatbin.c" 
+  #$ erase C:/Users/jakub/AppData/Local/Temp/tmpxft_00002348_00000000-4_CMakeCUDACompilerId.fatbin
+  #$ cl.exe @"C:\Users\jakub\AppData\Local\Temp/tmpxft_00002348_00000000-11.res" > "C:/Users/jakub/AppData/Local/Temp/tmpxft_00002348_00000000-6_CMakeCUDACompilerId.cpp4.ii" 
+  CMakeCUDACompilerId.cu
+  #$ erase C:\Users\jakub\AppData\Local\Temp/tmpxft_00002348_00000000-11.res
+  #$ cudafe++ --microsoft_version=1930 --msvc_target_version=1930 --compiler_bindir "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.30.30705/bin/HostX86/x64/../../../../../../.." --sdk_dir "C:/Program Files (x86)/Windows Kits/10/" --display_error_number --orig_src_file_name "C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/3.23.0-rc2/CompilerIdCUDA/CMakeCUDACompilerId.cu" --orig_src_path_name "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdCUDA\CMakeCUDACompilerId.cu" --allow_managed --debug_mode --sdk_dir "C:\Program Files (x86)\Windows Kits\10" --m64 --parse_templates --gen_c_file_name "C:/Users/jakub/AppData/Local/Temp/tmpxft_00002348_00000000-7_CMakeCUDACompilerId.cudafe1.cpp" --stub_file_name "tmpxft_00002348_00000000-7_CMakeCUDACompilerId.cudafe1.stub.c" --module_id_file_name "C:/Users/jakub/AppData/Local/Temp/tmpxft_00002348_00000000-5_CMakeCUDACompilerId.module_id" "C:/Users/jakub/AppData/Local/Temp/tmpxft_00002348_00000000-6_CMakeCUDACompilerId.cpp4.ii" 
+  #$ cl.exe @"C:\Users\jakub\AppData\Local\Temp/tmpxft_00002348_00000000-12.res" -Fo"Debug/CMakeCUDACompilerId.cu.obj" 
+  tmpxft_00002348_00000000-7_CMakeCUDACompilerId.cudafe1.cpp
+  #$ erase C:\Users\jakub\AppData\Local\Temp/tmpxft_00002348_00000000-12.res
+Done Building Project "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdCUDA\CompilerIdCUDA.vcxproj" (CudaBuildCore target(s)).
+Link:
+  C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x64\link.exe /ERRORREPORT:QUEUE /OUT:".\CompilerIdCUDA.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\lib\x64" cudart_static.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\CompilerIdCUDA.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\CompilerIdCUDA.lib" /MACHINE:X64 Debug\CMakeCUDACompilerId.cu.obj
+     Creating library .\CompilerIdCUDA.lib and object .\CompilerIdCUDA.exp
+  CompilerIdCUDA.vcxproj -> C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdCUDA\CompilerIdCUDA.exe
+PostBuildEvent:
+  echo CMAKE_CUDA_COMPILER=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin\nvcc.exe
+  :VCEnd
+  CMAKE_CUDA_COMPILER=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin\nvcc.exe
+FinalizeBuildStatus:
+  Deleting file "Debug\CompilerIdCUDA.tlog\unsuccessfulbuild".
+  Touching "Debug\CompilerIdCUDA.tlog\CompilerIdCUDA.lastbuildstate".
+Done Building Project "C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\3.23.0-rc2\CompilerIdCUDA\CompilerIdCUDA.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.17
+
+
+Compilation of the CUDA compiler identification source "CMakeCUDACompilerId.cu" produced "CompilerIdCUDA.exe"
+
+Compilation of the CUDA compiler identification source "CMakeCUDACompilerId.cu" produced "CompilerIdCUDA.exp"
+
+Compilation of the CUDA compiler identification source "CMakeCUDACompilerId.cu" produced "CompilerIdCUDA.lib"
+
+Compilation of the CUDA compiler identification source "CMakeCUDACompilerId.cu" produced "CompilerIdCUDA.vcxproj"
+
+The CUDA compiler identification is NVIDIA, found in "C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/3.23.0-rc2/CompilerIdCUDA/CompilerIdCUDA.exe"
+
+Parsed CUDA nvcc include information from above output:
+  found 'INCLUDES=' string: ["-IC:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin/../include"  ]
+
+
+
+Detecting CUDA compiler ABI info compiled with the following output:
+Change Dir: C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_bd921.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine version 17.0.0+c9eb9dd64 for .NET Framework
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+  Compiling CUDA source file ..\..\..\..\..\..\..\..\..\..\..\Program Files\CMake\share\cmake-3.23\Modules\CMakeCUDACompilerABI.cu...
+  
+  C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\CMakeTmp>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin\nvcc.exe" -gencode=arch=compute_52,code=\"sm_52,compute_52\" --use-local-env -ccbin "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x64" -x cu    -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\include"     --keep-dir x64\Debug  -maxrregcount=0  --machine 64 --compile -cudart static -Xcompiler="/EHsc -Zi -Ob0 -v" -g  -D_WINDOWS -D"CMAKE_INTDIR=\"Debug\"" -D_MBCS -D"CMAKE_INTDIR=\"Debug\"" -Xcompiler "/EHsc /W3 /nologo /Od /FdcmTC_bd921.dir\Debug\vc143.pdb /FS /Zi /RTC1 /MDd /GR" -o cmTC_bd921.dir\Debug\CMakeCUDACompilerABI.obj "C:\Program Files\CMake\share\cmake-3.23\Modules\CMakeCUDACompilerABI.cu" 
+cl : Command line warning D9002: ignoring unknown option '-v' [C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\CMakeTmp\cmTC_bd921.vcxproj]
+cl : Command line warning D9002: ignoring unknown option '-v' [C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\CMakeTmp\cmTC_bd921.vcxproj]
+  CMakeCUDACompilerABI.cu
+cl : Command line warning D9002: ignoring unknown option '-v' [C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\CMakeTmp\cmTC_bd921.vcxproj]
+LINK : warning LNK4044: unrecognized option '/v'; ignored [C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\CMakeTmp\cmTC_bd921.vcxproj]
+     Creating library C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/CMakeTmp/Debug/cmTC_bd921.lib and object C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/CMakeTmp/Debug/cmTC_bd921.exp
+  cmTC_bd921.vcxproj -> C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\CMakeTmp\Debug\cmTC_bd921.exe
+
+
+
+Parsed CUDA implicit include dir info from above output: rv=start
+  warn: unable to parse implicit include dirs!
+
+
+Parsed CUDA implicit link information from above output:
+  link line regex: [^( *|.*[/\])(link\.exe|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Enterprise/MSBuild/Current/Bin/amd64/MSBuild.exe cmTC_bd921.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:m && Microsoft (R) Build Engine version 17.0.0+c9eb9dd64 for .NET Framework]
+  ignore line: [Copyright (C) Microsoft Corporation. All rights reserved.]
+  ignore line: []
+  ignore line: [  Compiling CUDA source file ..\..\..\..\..\..\..\..\..\..\..\Program Files\CMake\share\cmake-3.23\Modules\CMakeCUDACompilerABI.cu...]
+  ignore line: [  ]
+  ignore line: [  C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\CMakeTmp>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin\nvcc.exe" -gencode=arch=compute_52 code=\"sm_52 compute_52\" --use-local-env -ccbin "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.30.30705\bin\HostX86\x64" -x cu    -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\include"     --keep-dir x64\Debug  -maxrregcount=0  --machine 64 --compile -cudart static -Xcompiler="/EHsc -Zi -Ob0 -v" -g  -D_WINDOWS -D"CMAKE_INTDIR=\"Debug\"" -D_MBCS -D"CMAKE_INTDIR=\"Debug\"" -Xcompiler "/EHsc /W3 /nologo /Od /FdcmTC_bd921.dir\Debug\vc143.pdb /FS /Zi /RTC1 /MDd /GR" -o cmTC_bd921.dir\Debug\CMakeCUDACompilerABI.obj "C:\Program Files\CMake\share\cmake-3.23\Modules\CMakeCUDACompilerABI.cu" ]
+  ignore line: [cl : Command line warning D9002: ignoring unknown option '-v' [C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\CMakeTmp\cmTC_bd921.vcxproj]]
+  ignore line: [cl : Command line warning D9002: ignoring unknown option '-v' [C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\CMakeTmp\cmTC_bd921.vcxproj]]
+  ignore line: [  CMakeCUDACompilerABI.cu]
+  ignore line: [cl : Command line warning D9002: ignoring unknown option '-v' [C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\CMakeTmp\cmTC_bd921.vcxproj]]
+  ignore line: [LINK : warning LNK4044: unrecognized option '/v']
+  ignore line: [ ignored [C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\CMakeTmp\cmTC_bd921.vcxproj]]
+  ignore line: [     Creating library C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/CMakeTmp/Debug/cmTC_bd921.lib and object C:/Users/jakub/Desktop/Programowanie/CUDA - image processing/LUTchecker/cmake_lutchecker/Cube-LUT-Loader/build/CMakeFiles/CMakeTmp/Debug/cmTC_bd921.exp]
+  ignore line: [  cmTC_bd921.vcxproj -> C:\Users\jakub\Desktop\Programowanie\CUDA - image processing\LUTchecker\cmake_lutchecker\Cube-LUT-Loader\build\CMakeFiles\CMakeTmp\Debug\cmTC_bd921.exe]
+  ignore line: []
+  ignore line: []
+  implicit libs: []
+  implicit objs: []
+  implicit dirs: []
+  implicit fwks: []
+
+
