@@ -4,20 +4,20 @@ cv::Mat applyNearest(cv::Mat img, CubeLUT lut, const float opacity)
 {
 	// INIT
 	cv::Mat tmp = img.clone();
-
-	unsigned char* image = img.data;
-	unsigned char* new_image = tmp.data;
+	unsigned char *image = img.data;
+	unsigned char *new_image = tmp.data;
+	auto ch{img.channels()};
 	// PROCESS
-	// x + y * cols
-	for (int x{ 0 }; x < tmp.cols; ++x)
+	// pixel = (x + y * COLS) * CHANNELS + channel_num
+	for (int x{0}; x < tmp.cols; ++x)
 	{
-		for (int y{ 0 }; y < tmp.rows; ++y)
+		for (int y{0}; y < tmp.rows; ++y)
 		{
-			int b = image[x + y * tmp.cols + 0]; //b
+			int b = image[(x + y * tmp.cols) * ch + 0]; // b
 			unsigned int b_ind = round(b * (lut.LUT3D.size() - 1) / 255.0f);
-			int g = image[x + y * tmp.cols + 1]; //g
+			int g = image[(x + y * tmp.cols) * ch + 1]; // g
 			unsigned int g_ind = round(g * (lut.LUT3D.size() - 1) / 255.0f);
-			int r = image[x + y * tmp.cols + 2]; //r
+			int r = image[(x + y * tmp.cols) * ch + 2]; // r
 			unsigned int r_ind = round(r * (lut.LUT3D.size() - 1) / 255.0f);
 
 			int newB = (int)(lut.LUT3D[r_ind][g_ind][b_ind][2] * 255);
@@ -28,9 +28,9 @@ cv::Mat applyNearest(cv::Mat img, CubeLUT lut, const float opacity)
 			unsigned char finalG = g + (newG - g) * opacity;
 			unsigned char finalR = r + (newR - r) * opacity;
 
-			new_image[x + y * tmp.cols + 0] = finalB;
-			new_image[x + y * tmp.cols + 1] = finalG;
-			new_image[x + y * tmp.cols + 2] = finalR;
+			new_image[(x + y * tmp.cols) * ch + 0] = finalB;
+			new_image[(x + y * tmp.cols) * ch + 1] = finalG;
+			new_image[(x + y * tmp.cols) * ch + 2] = finalR;
 		}
 	}
 	return tmp;
