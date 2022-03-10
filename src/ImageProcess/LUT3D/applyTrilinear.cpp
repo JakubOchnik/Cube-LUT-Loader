@@ -22,15 +22,17 @@ cv::Mat applyTrilinear(cv::Mat img, CubeLUT lut, const float opacity)
 	cv::Mat tmp = img.clone();
 	unsigned char* image = img.data;
 	unsigned char* new_image = tmp.data;
-	// PROCESS
 
+	auto ch{img.channels()};
+	// PROCESS
+	// pixel = (x + y * COLS) * CHANNELS + channel_num
 	for (int x{ 0 }; x < tmp.cols; ++x)
 	{
 		for (int y{ 0 }; y < tmp.rows; ++y)
 		{
-			int b = image[x + y * tmp.cols + 0]; //b
-			int g = image[x + y * tmp.cols + 1]; //g
-			int r = image[x + y * tmp.cols + 2]; //r
+			int b = image[(x + y * tmp.cols) * ch + 0]; //b
+			int g = image[(x + y * tmp.cols) * ch + 1]; //g
+			int r = image[(x + y * tmp.cols) * ch + 2]; //r
 
 
 			int R1 = ceil(r / 255.0f * (float)(lut.LUT3D.size() - 1));
@@ -66,9 +68,9 @@ cv::Mat applyTrilinear(cv::Mat img, CubeLUT lut, const float opacity)
 			unsigned char finalB = b + (newB - b) * opacity;
 			unsigned char finalG = g + (newG - g) * opacity;
 			unsigned char finalR = r + (newR - r) * opacity;
-			new_image[x + y * tmp.cols + 0] = finalB;
-			new_image[x + y * tmp.cols + 1] = finalG;
-			new_image[x + y * tmp.cols + 2] = finalR;
+			new_image[(x + y * tmp.cols) * ch + 0] = finalB;
+			new_image[(x + y * tmp.cols) * ch + 1] = finalG;
+			new_image[(x + y * tmp.cols) * ch + 2] = finalR;
 		}
 	}
 
