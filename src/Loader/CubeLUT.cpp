@@ -31,19 +31,21 @@ string CubeLUT::ReadLine(ifstream& infile, const char lineSeparator)
 	return textLine;
 }
 
-vector<float> CubeLUT::ParseTableRow(const string& lineOfText)
+Eigen::Vector3f CubeLUT::ParseTableRow(const string& lineOfText)
 {
 	int N = 3;
 	tableRow f(N);
 	istringstream line(lineOfText);
+	float tmp;
 	for (int i{ 0 }; i < N; ++i)
 	{
-		line >> f[i];
+		line >> tmp;
 		if (line.fail())
 		{
 			status = CouldNotParseTableData;
 			break;
 		}
+		f(i) = tmp;
 	}
 	return f;
 }
@@ -53,8 +55,8 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(ifstream& infile)
 	// defaults
 	status = OK;
 	title.clear();
-	domainMin = tableRow(3, 0.0);
-	domainMax = tableRow(3, 1.0);
+	domainMin = Eigen::Vector3f{0,0,0};
+	domainMax = Eigen::Vector3f{1,1,1};
 
 	LUT1D.clear();
 	LUT3D.clear();

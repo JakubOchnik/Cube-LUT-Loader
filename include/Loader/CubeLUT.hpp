@@ -4,12 +4,13 @@
 
 #include <string>
 #include <vector>
+#include <Eigen/Dense>
 #include <fstream>
 
 using namespace std;
 
 // Licensed under Creative Commons Attribution Non-Commercial 3.0 License
-// Author: Adobe Inc.
+// Author: Adobe Inc. (with some slight modifications made by Jakub Ochnik)
 // Source:
 // "Cube LUT Specification 1.0"
 // https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf
@@ -17,7 +18,7 @@ using namespace std;
 class CubeLUT
 {
 public:
-	using tableRow = vector<float>;
+	using tableRow = Eigen::Vector3f; // boost::numeric::ublas::vector<float>;
 	using table1D = vector<tableRow>;
 	using table2D = vector<table1D>;
 	using table3D = vector<table2D>;
@@ -39,8 +40,8 @@ public:
 
 	LUTState status;
 	string title;
-	tableRow domainMin;
-	tableRow domainMax;
+	tableRow domainMin{0, 0, 0};
+	tableRow domainMax{1, 1, 1};
 	table1D LUT1D;
 	table3D LUT3D;
 
@@ -53,7 +54,7 @@ public:
 
 private:
 	string ReadLine(ifstream& infile, char lineSeparator);
-	tableRow ParseTableRow(const string& lineOfText);
+	Eigen::Vector3f ParseTableRow(const string& lineOfText);
 };
 
 #endif

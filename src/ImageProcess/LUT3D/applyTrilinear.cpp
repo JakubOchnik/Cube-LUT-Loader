@@ -49,17 +49,16 @@ cv::Mat applyTrilinear(cv::Mat img, CubeLUT lut, const float opacity)
 			float delta_r{ r_o - R0 == 0 || R1 - R0 == 0 ? 0 : (r_o - R0) / (float)(R1 - R0) };
 			float delta_g{ g_o - G0 == 0 || G1 - G0 == 0 ? 0 : (g_o - G0) / (float)(G1 - G0) };
 			float delta_b{ b_o - B0 == 0 || B1 - B0 == 0 ? 0 : (b_o - B0) / (float)(B1 - B0) };
+			using namespace Eigen;
+			Vector3f vr_gz_bz = lut.LUT3D[R0][G0][B0] * (1 - delta_r) + lut.LUT3D[R1][G0][B0] * delta_r;
+			Vector3f vr_gz_bo = lut.LUT3D[R0][G0][B1] * (1 - delta_r) + lut.LUT3D[R1][G0][B1] * delta_r;
+			Vector3f vr_go_bz = lut.LUT3D[R0][G1][B0] * (1 - delta_r) + lut.LUT3D[R1][G1][B0] * delta_r;
+			Vector3f vr_go_bo = lut.LUT3D[R0][G1][B1] * (1 - delta_r) + lut.LUT3D[R1][G1][B1] * delta_r;
 
-			vector<float> vr_gz_bz = sum(mul(lut.LUT3D[R0][G0][B0], 1 - delta_r), mul(lut.LUT3D[R1][G0][B0], delta_r));
-			vector<float> vr_gz_bo = sum(mul(lut.LUT3D[R0][G0][B1], 1 - delta_r), mul(lut.LUT3D[R1][G0][B1], delta_r));
-			vector<float> vr_go_bz = sum(mul(lut.LUT3D[R0][G1][B0], 1 - delta_r), mul(lut.LUT3D[R1][G1][B0], delta_r));
-			vector<float> vr_go_bo = sum(mul(lut.LUT3D[R0][G1][B1], 1 - delta_r), mul(lut.LUT3D[R1][G1][B1], delta_r));
+			Vector3f vrg_b0 = vr_gz_bz * (1 - delta_g) + vr_go_bz * delta_g;
+			Vector3f vrg_b1 = vr_gz_bo * (1 - delta_g) + vr_go_bo * delta_g;
 
-			vector<float> vrg_b0 = sum(mul(vr_gz_bz, 1 - delta_g), mul(vr_go_bz, delta_g));
-			vector<float> vrg_b1 = sum(mul(vr_gz_bo, 1 - delta_g), mul(vr_go_bo, delta_g));
-
-			vector<float> vrgb = sum(mul(vrg_b0, 1 - delta_b), mul(vrg_b1, delta_b));
-
+			Vector3f vrgb = vrg_b0 * (1 - delta_b) + vrg_b1 * delta_b;
 
 			unsigned char newB = round(vrgb[2] * 255);
 			unsigned char newG = round(vrgb[1] * 255);
