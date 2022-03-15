@@ -1,3 +1,13 @@
+The LUT Parser code (src/Loader/CubeLUT.cpp) is licensed under the:
+
+Creative Commons Attribuition Non-Commercial 3.0 License
+
+Author: Adobe Inc.
+Source: Cube LUT Specification 1.0
+Link: https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf
+
+Everything else is licensed under the:
+
 MIT License
 
 Copyright (c) 2022 Jakub Ochnik
