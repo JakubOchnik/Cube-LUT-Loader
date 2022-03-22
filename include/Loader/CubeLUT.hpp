@@ -2,9 +2,12 @@
 #ifndef CubeLUT_H
 #define CubeLUT_H
 
+#include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 #include <Eigen/Dense>
+#include <unsupported/Eigen/CXX11/Tensor>
 #include <fstream>
 
 using namespace std;
@@ -19,9 +22,9 @@ class CubeLUT
 {
 public:
 	using tableRow = Eigen::Vector3f; // boost::numeric::ublas::vector<float>;
-	using table1D = vector<tableRow>;
-	using table2D = vector<table1D>;
-	using table3D = vector<table2D>;
+	using table1D = Eigen::Tensor<float, 2>;//vector<tableRow>;
+	// using table2D = vector<table1D>;
+	using table3D = Eigen::Tensor<float, 4>;//vector<table2D>;
 
 	enum LUTState
 	{
@@ -40,8 +43,8 @@ public:
 
 	LUTState status;
 	string title;
-	tableRow domainMin{0, 0, 0};
-	tableRow domainMax{1, 1, 1};
+	std::vector<float> domainMin{0, 0, 0};
+	std::vector<float> domainMax{1, 1, 1};
 	table1D LUT1D;
 	table3D LUT3D;
 
@@ -52,9 +55,11 @@ public:
 
 	LUTState LoadCubeFile(ifstream& infile);
 
+	bool is3D() const;
 private:
 	string ReadLine(ifstream& infile, char lineSeparator);
-	Eigen::Vector3f ParseTableRow(const string& lineOfText);
+	void ParseTableRow(const string& lineOfText, const int r, const int g, const int b);
+	void ParseTableRow(const string& lineOfText, const int i);
 };
 
 #endif

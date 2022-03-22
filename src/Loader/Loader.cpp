@@ -65,3 +65,8 @@ const boost::program_options::variables_map& Loader::getVm() const
 {
 	return this->vm;
 }
+
+const uint Loader::getThreads() const
+{
+	return vm["threads"].as<uint>();
+}

@@ -1,77 +1,102 @@
 #include <ImageProcess/LUT3D/applyTrilinear.hpp>
 
-vector<float> mul(const vector<float>& vec, const float val)
+void Trilinear::calculatePixel(const int x, const int y, const CubeLUT& lut, const float opacity, WorkerData& data)
 {
-	vector<float> newVec(3, 0.0f);
-	for (int i{ 0 }; i < 3; ++i)
-		newVec[i] = vec[i] * val;
-	return newVec;
+	const int b = data.image[(x + y * data.width) * data.channels + 0]; //b
+	const int g = data.image[(x + y * data.width) * data.channels + 1]; //g
+	const int r = data.image[(x + y * data.width) * data.channels + 2]; //r
+
+	// Implementation of a formula in the "Method" section: https://en.wikipedia.org/wiki/Trilinear_interpolation
+
+	const int R1 = static_cast<int>(ceil(r / 255.0f * (float)(data.lutSize - 1)));
+	const int R0 = static_cast<int>(floor(r / 255.0f * (float)(data.lutSize - 1)));
+	const int G1 = static_cast<int>(ceil(g / 255.0f * (float)(data.lutSize - 1)));
+	const int G0 = static_cast<int>(floor(g / 255.0f * (float)(data.lutSize - 1)));
+	const int B1 = static_cast<int>(ceil(b / 255.0f * (float)(data.lutSize - 1)));
+	const int B0 = static_cast<int>(floor(b / 255.0f * (float)(data.lutSize - 1)));
+
+	const float r_o = r * (data.lutSize - 1) / 255.0f;
+	const float g_o = g * (data.lutSize - 1) / 255.0f;
+	const float b_o = b * (data.lutSize - 1) / 255.0f;
+
+	const float delta_r{ r_o - R0 == 0 || R1 - R0 == 0 ? 0 : (r_o - R0) / (float)(R1 - R0) };
+	const float delta_g{ g_o - G0 == 0 || G1 - G0 == 0 ? 0 : (g_o - G0) / (float)(G1 - G0) };
+	const float delta_b{ b_o - B0 == 0 || B1 - B0 == 0 ? 0 : (b_o - B0) / (float)(B1 - B0) };
+
+	using namespace Eigen;
+	using Arr4 = Eigen::array<Eigen::Index, 4>;
+	using Vec3fWrap = Tensor<float, 1>;
+
+	Vec3fWrap v1 = (lut.LUT3D.slice(Arr4{R0, G0, B0, 0}, data.extents) * (1 - delta_r) + \
+					lut.LUT3D.slice(Arr4{R1, G0, B0, 0}, data.extents) * delta_r).reshape(Eigen::array<Eigen::Index,1>{3});
+	Vec3fWrap v2 = (lut.LUT3D.slice(Arr4{R0, G0, B1, 0}, data.extents) * (1 - delta_r) + \
+					lut.LUT3D.slice(Arr4{R1, G0, B1, 0}, data.extents) * delta_r).reshape(Eigen::array<Eigen::Index,1>{3});
+	Vec3fWrap v3 = (lut.LUT3D.slice(Arr4{R0, G1, B0, 0}, data.extents) * (1 - delta_r) + \
+					lut.LUT3D.slice(Arr4{R1, G1, B0, 0}, data.extents) * delta_r).reshape(Eigen::array<Eigen::Index,1>{3});
+	Vec3fWrap v4 = (lut.LUT3D.slice(Arr4{R0, G1, B1, 0}, data.extents) * (1 - delta_r) + \
+					lut.LUT3D.slice(Arr4{R1, G1, B1, 0}, data.extents) * delta_r).reshape(Eigen::array<Eigen::Index,1>{3});
+
+	v1 = v1 * (1 - delta_g) + v3 * delta_g;
+	v2 = v2 * (1 - delta_g) + v4 * delta_g;
+
+	v1 = v1 * (1 - delta_b) + v2 * delta_b;
+
+	unsigned char newB = static_cast<uchar>(round(v1(2) * 255));
+	unsigned char newG = static_cast<uchar>(round(v1(1) * 255));
+	unsigned char newR = static_cast<uchar>(round(v1(0) * 255));
+
+	unsigned char finalB = static_cast<uchar>(b + (newB - b) * opacity);
+	unsigned char finalG = static_cast<uchar>(g + (newG - g) * opacity);
+	unsigned char finalR = static_cast<uchar>(r + (newR - r) * opacity);
+
+	// Assign final pixel values to the output image
+	data.new_image[(x + y * data.width) * data.channels + 0] = finalB;
+	data.new_image[(x + y * data.width) * data.channels + 1] = finalG;
+	data.new_image[(x + y * data.width) * data.channels + 2] = finalR;
 }
 
-vector<float> sum(const vector<float>& a, const vector<float>& b)
+void Trilinear::calculateArea(const int x, const CubeLUT& lut, const float opacity, WorkerData& data, const int segWidth)
 {
-	vector<float> newVec(3, 0.0f);
-	for (int i{ 0 }; i < 3; ++i)
-		newVec[i] = a[i] + b[i];
-	return newVec;
+	for(int localX{x}; localX < x + segWidth; ++localX)
+	{
+		for(int y{0}; y < data.height; ++y)
+		{
+			calculatePixel(localX, y, lut, opacity, data);
+		}
+	}
 }
 
-cv::Mat applyTrilinear(cv::Mat img, CubeLUT lut, const float opacity)
+cv::Mat Trilinear::applyTrilinear(cv::Mat img, const CubeLUT& lut, const float opacity, const uint threadPool)
 {
-	// INIT
+	// Initialize data
 	cv::Mat tmp = img.clone();
 	unsigned char* image = img.data;
 	unsigned char* new_image = tmp.data;
+	WorkerData commonData{image, new_image, tmp.cols, tmp.rows, img.channels(), \
+							static_cast<int>(lut.LUT3D.dimension(0)), {1,1,1,3}};
 
-	auto ch{img.channels()};
-	// PROCESS
-	// pixel = (x + y * COLS) * CHANNELS + channel_num
-	for (int x{ 0 }; x < tmp.cols; ++x)
+	// Processing
+	// Divide the picture into threadPool vertical windows and process them simultaneously.
+	// threadPool - 1 threads will process (WIDTH / threadPool) slices 
+	// and the last one will process (WIDTH/threadPool + (WIDTH%threadPool))
+
+	int threadWidth = tmp.cols / threadPool;
+	int remainder = tmp.cols % threadPool;
+	std::vector<std::thread> threads;
+	threads.reserve(threadPool);
+
+	// Launch threads
+	int x{0}, tNum{0};
+	for (; tNum < threadPool - 1; x += threadWidth, ++tNum)
 	{
-		for (int y{ 0 }; y < tmp.rows; ++y)
-		{
-			int b = image[(x + y * tmp.cols) * ch + 0]; //b
-			int g = image[(x + y * tmp.cols) * ch + 1]; //g
-			int r = image[(x + y * tmp.cols) * ch + 2]; //r
-
-
-			int R1 = ceil(r / 255.0f * (float)(lut.LUT3D.size() - 1));
-			int R0 = floor(r / 255.0f * (float)(lut.LUT3D.size() - 1));
-			int G1 = ceil(g / 255.0f * (float)(lut.LUT3D.size() - 1));
-			int G0 = floor(g / 255.0f * (float)(lut.LUT3D.size() - 1));
-			int B1 = ceil(b / 255.0f * (float)(lut.LUT3D.size() - 1));
-			int B0 = floor(b / 255.0f * (float)(lut.LUT3D.size() - 1));
-
-			float r_o = r * (lut.LUT3D.size() - 1) / 255.0f;
-			float g_o = g * (lut.LUT3D.size() - 1) / 255.0f;
-			float b_o = b * (lut.LUT3D.size() - 1) / 255.0f;
-
-			float delta_r{ r_o - R0 == 0 || R1 - R0 == 0 ? 0 : (r_o - R0) / (float)(R1 - R0) };
-			float delta_g{ g_o - G0 == 0 || G1 - G0 == 0 ? 0 : (g_o - G0) / (float)(G1 - G0) };
-			float delta_b{ b_o - B0 == 0 || B1 - B0 == 0 ? 0 : (b_o - B0) / (float)(B1 - B0) };
-			using namespace Eigen;
-			Vector3f vr_gz_bz = lut.LUT3D[R0][G0][B0] * (1 - delta_r) + lut.LUT3D[R1][G0][B0] * delta_r;
-			Vector3f vr_gz_bo = lut.LUT3D[R0][G0][B1] * (1 - delta_r) + lut.LUT3D[R1][G0][B1] * delta_r;
-			Vector3f vr_go_bz = lut.LUT3D[R0][G1][B0] * (1 - delta_r) + lut.LUT3D[R1][G1][B0] * delta_r;
-			Vector3f vr_go_bo = lut.LUT3D[R0][G1][B1] * (1 - delta_r) + lut.LUT3D[R1][G1][B1] * delta_r;
-
-			Vector3f vrg_b0 = vr_gz_bz * (1 - delta_g) + vr_go_bz * delta_g;
-			Vector3f vrg_b1 = vr_gz_bo * (1 - delta_g) + vr_go_bo * delta_g;
-
-			Vector3f vrgb = vrg_b0 * (1 - delta_b) + vrg_b1 * delta_b;
-
-			unsigned char newB = round(vrgb[2] * 255);
-			unsigned char newG = round(vrgb[1] * 255);
-			unsigned char newR = round(vrgb[0] * 255);
-
-			unsigned char finalB = b + (newB - b) * opacity;
-			unsigned char finalG = g + (newG - g) * opacity;
-			unsigned char finalR = r + (newR - r) * opacity;
-			new_image[(x + y * tmp.cols) * ch + 0] = finalB;
-			new_image[(x + y * tmp.cols) * ch + 1] = finalG;
-			new_image[(x + y * tmp.cols) * ch + 2] = finalR;
-		}
+		threads.emplace_back(calculateArea, x, std::cref(lut), opacity, std::ref(commonData), threadWidth);
 	}
-
+	// Launch the last thread with a slightly larger width
+	threads.emplace_back(calculateArea, x, std::cref(lut), opacity, std::ref(commonData), threadWidth + remainder);
+	for(auto& thread: threads)
+	{
+		thread.join();
+	}
+	// Return the modified result
 	return tmp;
 }

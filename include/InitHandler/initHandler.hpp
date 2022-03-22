@@ -1,9 +1,10 @@
 #pragma once
 #include <boost/program_options.hpp>
 #include <iostream>
+#include <thread>
 
 #include <ImageProcess/Processor.hpp>
-#include <GPUImageProcess/GPUprocessor.hpp>
+//#include <GPUImageProcess/GPUprocessor.hpp>
 #include <Loader/Loader.hpp>
 
 

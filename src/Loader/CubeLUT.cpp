@@ -1,6 +1,3 @@
-#include <iostream>
-#include <sstream>
-
 #include <Loader/CubeLUT.hpp>
 
 // Credit of this parser code: Adobe Inc.
@@ -31,10 +28,10 @@ string CubeLUT::ReadLine(ifstream& infile, const char lineSeparator)
 	return textLine;
 }
 
-Eigen::Vector3f CubeLUT::ParseTableRow(const string& lineOfText)
+void CubeLUT::ParseTableRow(const string& lineOfText, const int r, const int g, const int b)
 {
-	int N = 3;
-	tableRow f(N);
+	// Parse values from the file and assign them to the LUT tensor (4D matrix)
+	const int N = 3;
 	istringstream line(lineOfText);
 	float tmp;
 	for (int i{ 0 }; i < N; ++i)
@@ -45,9 +42,25 @@ Eigen::Vector3f CubeLUT::ParseTableRow(const string& lineOfText)
 			status = CouldNotParseTableData;
 			break;
 		}
-		f(i) = tmp;
+		LUT3D(r, g, b, i) = tmp;
 	}
-	return f;
+}
+void CubeLUT::ParseTableRow(const string& lineOfText, const int i)
+{
+	// Parse values from the file and assign them to the LUT tensor (2D matrix)
+	const int N = 3;
+	istringstream line(lineOfText);
+	float tmp;
+	for (int j{ 0 }; j < N; ++j)
+	{
+		line >> tmp;
+		if (line.fail())
+		{
+			status = CouldNotParseTableData;
+			break;
+		}
+		LUT1D(i, j) = tmp;
+	}
 }
 
 CubeLUT::LUTState CubeLUT::LoadCubeFile(ifstream& infile)
@@ -55,11 +68,8 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(ifstream& infile)
 	// defaults
 	status = OK;
 	title.clear();
-	domainMin = Eigen::Vector3f{0,0,0};
-	domainMax = Eigen::Vector3f{1,1,1};
-
-	LUT1D.clear();
-	LUT3D.clear();
+	domainMin = {0,0,0};
+	domainMax = {1,1,1};
 
 	const char NewlineCharacter = '\n';
 	char lineSeparator = NewlineCharacter;
@@ -133,7 +143,7 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(ifstream& infile)
 				status = LUTSizeOutOfRange;
 				break;
 			}
-			LUT1D = table1D(N, tableRow(3));
+			LUT1D = table1D(N, 3);
 		}
 		else if (keyword == "LUT_3D_SIZE" && CntSize++ == 0)
 		{
@@ -143,7 +153,7 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(ifstream& infile)
 				status = LUTSizeOutOfRange;
 				break;
 			}
-			LUT3D = table3D(N, table2D(N, table1D(N, tableRow(3))));
+			LUT3D = table3D(N, N, N, 3);
 		}
 		else
 		{
@@ -173,31 +183,30 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(ifstream& infile)
 
 	if (LUT1D.size() > 0)
 	{
-		N = LUT1D.size();
+		N = LUT1D.dimension(0);
 		for (int i{ 0 }; i < N && status == OK; ++i)
 		{
-			LUT1D[i] = ParseTableRow(ReadLine(infile, lineSeparator));
+			ParseTableRow(ReadLine(infile, lineSeparator), i);
 		}
 	}
 	else
 	{
-		N = LUT3D.size();
-
+		N = LUT3D.dimension(0);
 		for (int b{ 0 }; b < N && status == OK; ++b)
 		{
 			for (int g{ 0 }; g < N && status == OK; ++g)
 			{
 				for (int r{ 0 }; r < N && status == OK; ++r)
 				{
-					if (b == 63 && g == 63 && r == 62)
-					{
-						printf("");
-					}
-					LUT3D[r][g][b] = ParseTableRow
-					(ReadLine(infile, lineSeparator));
+					ParseTableRow(ReadLine(infile, lineSeparator), r, g, b);
 				}
 			}
 		}
 	}
 	return status;
+}
+
+bool CubeLUT::is3D() const
+{
+	return LUT1D.size() == 0;
 }
