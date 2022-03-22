@@ -4,28 +4,23 @@ Processor::Processor(const Loader& ld) : loader(ld)
 {
 }
 
-bool Processor::is3D() const
-{
-	return loader.getCube().LUT1D.empty();
-}
-
 cv::Mat_<cv::Vec3b> Processor::process()
 {
 	std::cout << "Processing the image...\n";
-	if (const float opacity = loader.getVm()["strength"].as<float>(); !is3D())
+	if (const float opacity = loader.getVm()["strength"].as<float>(); !loader.getCube().is3D())
 	{
 		cout << "Applying basic 1D LUT..." << endl;
-		newImg = applyBasic1D(loader.getImg(), loader.getCube(), opacity);
+		newImg = Basic1D::applyBasic1D(loader.getImg(), loader.getCube(), opacity, loader.getThreads());
 	}
 	else if (loader.getVm().count("trilinear"))
 	{
 		cout << "Applying trilinear interpolation..." << endl;
-		newImg = applyTrilinear(loader.getImg(), loader.getCube(), opacity);
+		newImg = Trilinear::applyTrilinear(loader.getImg(), loader.getCube(), opacity, loader.getThreads());
 	}
 	else
 	{
 		cout << "Applying nearest-value interpolation..." << endl;
-		newImg = applyNearest(loader.getImg(), loader.getCube(), opacity);
+		newImg = NearestValue::applyNearest(loader.getImg(), loader.getCube(), opacity, loader.getThreads());
 	}
 	return newImg;
 }

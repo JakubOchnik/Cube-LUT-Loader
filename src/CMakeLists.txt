@@ -14,7 +14,7 @@ find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 target_include_directories(${PROJECT_NAME} PUBLIC ${OpenCV_INCLUDE_DIRS} ${INCLUDE_DIR} ${CUDA_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS} CUDA::cudart Boost::program_options Eigen3::Eigen)
 
-add_subdirectory(${SOURCE_DIR}/GPUImageProcess)
+# add_subdirectory(${SOURCE_DIR}/GPUImageProcess)
 add_subdirectory(${SOURCE_DIR}/ImageProcess)
 add_subdirectory(${SOURCE_DIR}/InitHandler)
 add_subdirectory(${SOURCE_DIR}/Loader)

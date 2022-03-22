@@ -22,4 +22,5 @@ public:
 	const cv::Mat_<cv::Vec3b>& getImg() const;
 	const CubeLUT& getCube() const;
 	const boost::program_options::variables_map& getVm() const;
+	const uint getThreads() const;
 };
