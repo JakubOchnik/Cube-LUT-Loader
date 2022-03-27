@@ -15,9 +15,10 @@ A simple C++ tool that lets you apply a Cube format LUT to your image.
 ```
 
 ## Dependencies
-- OpenCV 4.5.1
-- Boost 1.75.0
-- CUDA 11.2
+- OpenCV 4.5.5
+- Boost 1.78.0
+- Eigen 3.4.0 (Tensor module)
+- CUDA 11.6
 
 ## Features
 - 1D LUT support
