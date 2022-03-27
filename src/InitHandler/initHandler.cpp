@@ -33,8 +33,8 @@ int InitHandler::start()
 	if (loader.getVm().count("gpu"))
 	{
 		cout << "GPU acceleration enabled!" << endl;
-		// GpuProcessor processor(loader);
-		// processor.perform();
+		GpuProcessor processor(loader);
+		processor.perform();
 	}
 	else
 	{

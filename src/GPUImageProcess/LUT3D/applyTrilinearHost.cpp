@@ -1,27 +1,27 @@
 #include <GPUImageProcess/LUT3D/applyTrilinearHost.hpp>
 
-cv::Mat applyTrilinearGpu(const Loader& loader, float opacity)
+cv::Mat GpuTrilinear::applyTrilinearGpu(const Loader& loader, float opacity)
 {
-	int width = loader.getImg().cols, height = loader.getImg().rows;
+	int width{loader.getImg().cols}, height{loader.getImg().rows};
 	size_t imgSize = width * height * 3 * sizeof(unsigned char);
-	size_t lutSize = pow(loader.getCube().LUT3D.size(), 3) * 3 * sizeof(float);
-
-	std::vector<float> flattenedLUT;
+	size_t lutSize = pow(loader.getCube().LUT3D.dimension(0), 3) * 3 * sizeof(float);
 	float* lutPtr;
-	unsigned char* imgPtr;
-	// INIT
-	cudaMallocManaged(&lutPtr, lutSize);
-	cudaMallocManaged(&imgPtr, imgSize);
+	uchar* imgPtr;
 
-	flattenedLUT = flatten4D<float>(loader.getCube().LUT3D);
-	std::vector<float>& flatLut = flattenedLUT;
-	memcpy(lutPtr, flattenedLUT.data(), lutSize);
+	// Copy data to GPU
+	cudaMalloc((void**)&lutPtr, lutSize);
+	cudaMemcpy(lutPtr, loader.getCube().LUT3D.data(), lutSize, cudaMemcpyHostToDevice);
+	cudaMallocManaged(&imgPtr, imgSize);
 	memcpy(imgPtr, loader.getImg().data, imgSize);
 
-	dim3 grid(width, height);
-	// PROCESS
-	TrilinearGpu::run(grid, imgPtr, 3, lutPtr, loader.getCube().LUT3D.size(), opacity);
-	//CLEANUP1
+	const int threads = 16;
+	const int blocksX = (width + threads - 1) / threads;
+	const int blocksY = (height + threads - 1) / threads;
+	dim3 threadsGrid(threads, threads);
+	dim3 blocksGrid(blocksX, blocksY);
+	// Process data
+	GpuTrilinearDevice::run(threadsGrid, blocksGrid, imgPtr, 3, lutPtr, loader.getCube().LUT3D.dimension(0), opacity, std::tuple<int, int>(width, height));
+	// Free memory and copy data back to host
 	cudaFree(lutPtr);
 	cv::Mat finalImg = cv::Mat(height, width, CV_8UC3, imgPtr);
 	return finalImg;
