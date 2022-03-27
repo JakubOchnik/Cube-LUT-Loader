@@ -4,9 +4,8 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 
-#include <Loader/CubeLUT.hpp>
-#include <Loader/loader.hpp>
-
+#include <DataLoader/CubeLUT.hpp>
+#include <DataLoader/dataLoader.hpp>
 #include <GPUImageProcess/LUT3D/applyNearestValueHost.hpp>
 #include <GPUImageProcess/LUT3D/applyTrilinearHost.hpp>
 #include <GPUImageProcess/Utils/CudaUtils.hpp>
@@ -14,13 +13,13 @@
 
 class GpuProcessor
 {
+	const int threadsPerBlock{16};
 	cv::Mat newImg;
-	const Loader& loader;
+	const DataLoader& loader;
 public:
-	GpuProcessor(const Loader& ld);
+	GpuProcessor(const DataLoader& ld);
 	GpuProcessor() = delete;
 	cv::Mat process();
 	void save() const;
-	void setLoader(const Loader& ld) const;
-	void perform();
+	void execute();
 };

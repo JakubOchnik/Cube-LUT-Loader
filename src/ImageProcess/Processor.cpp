@@ -1,11 +1,14 @@
 #include <ImageProcess/Processor.hpp>
 
-Processor::Processor(const Loader& ld) : loader(ld)
+Processor::Processor(const DataLoader& ld) : loader(ld)
 {
 }
 
 cv::Mat_<cv::Vec3b> Processor::process()
 {
+	// TODO: Implement as standalone commands retrieved from a map
+	// with keys equal to command line args. Use inheritance to respect
+	// DRY (there are tons of similar code in the different interpolation classes).
 	std::cout << "Processing the image...\n";
 	if (const float opacity = loader.getVm()["strength"].as<float>(); !loader.getCube().is3D())
 	{
@@ -31,7 +34,7 @@ void Processor::save() const
 	imwrite(loader.getVm()["output"].as<std::string>(), newImg);
 }
 
-void Processor::perform()
+void Processor::execute()
 {
 	process();
 	save();

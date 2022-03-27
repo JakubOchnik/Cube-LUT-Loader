@@ -5,17 +5,16 @@
 
 #include <ImageProcess/Processor.hpp>
 #include <GPUImageProcess/GPUprocessor.hpp>
-#include <Loader/Loader.hpp>
+#include <DataLoader/dataLoader.hpp>
 
-
-class InitHandler
+class TaskDispatcher
 {
-	int arg_count;
+	int argCount;
 	char** args;
-	Loader loader;
+	DataLoader loader;
 
 public:
-	InitHandler(int aCnt, char** aVal);
+	TaskDispatcher(int aCnt, char** aVal);
 	int start();
 	boost::program_options::variables_map parseInputArgs(int argc, char* aVal[]) const;
 };

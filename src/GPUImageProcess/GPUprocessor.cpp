@@ -1,11 +1,15 @@
 #include <GPUImageProcess/GPUprocessor.hpp>
 
-GpuProcessor::GpuProcessor(const Loader& ld) : loader(ld)
+GpuProcessor::GpuProcessor(const DataLoader& ld) : loader(ld)
 {
 }
 
 cv::Mat GpuProcessor::process()
 {
+	// TODO: Implement as standalone commands retrieved from a map
+	// with keys equal to command line args. Use inheritance to respect
+	// DRY (there are tons of similar code in the different interpolation classes).
+	// TODO: Catch exceptions (after implementing CUDA error handling)
 	std::cout << "Processing the image...\n";
 	if (const float opacity = loader.getVm()["strength"].as<float>(); !loader.getCube().is3D())
 	{
@@ -16,12 +20,12 @@ cv::Mat GpuProcessor::process()
 	else if (loader.getVm().count("trilinear"))
 	{
 		cout << "Applying trilinear interpolation..." << endl;
-		newImg = GpuTrilinear::applyTrilinearGpu(loader, opacity);
+		newImg = GpuTrilinear::applyTrilinearGpu(loader, opacity, threadsPerBlock);
 	}
 	else
 	{
 		cout << "Applying nearest-value interpolation..." << endl;
-		newImg = GpuNearestVal::applyNearestGpu(loader, opacity);
+		newImg = GpuNearestVal::applyNearestGpu(loader, opacity, threadsPerBlock);
 	}
 	return newImg;
 }
@@ -29,8 +33,9 @@ cv::Mat GpuProcessor::process()
 void GpuProcessor::save() const
 {
 	std::cout << "Saving...\n";
-	std::string name = loader.getVm()["output"].as<std::string>();
-	try {
+	const std::string name{loader.getVm()["output"].as<std::string>()};
+	try
+	{
 		imwrite(name, newImg);
 	}
 	catch (cv::Exception& e)
@@ -40,7 +45,7 @@ void GpuProcessor::save() const
 	CudaUtils::freeUnifiedPtr<unsigned char>(newImg.data);
 }
 
-void GpuProcessor::perform()
+void GpuProcessor::execute()
 {
 	process();
 	save();
