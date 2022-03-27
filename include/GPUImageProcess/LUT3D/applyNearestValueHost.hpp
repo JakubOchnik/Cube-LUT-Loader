@@ -4,13 +4,11 @@
 #include "device_launch_parameters.h"
 #include <tuple>
 
-#include <Loader/CubeLUT.hpp>
-#include <Loader/Loader.hpp>
-
-#include <GPUImageProcess/MultidimData/MultidimDataUtils.hpp>
+#include <DataLoader/CubeLUT.hpp>
+#include <DataLoader/dataLoader.hpp>
 #include <GPUImageProcess/LUT3D/applyNearestValueGpu.cuh>
 
 namespace GpuNearestVal
 {
-    cv::Mat applyNearestGpu(const Loader& loader, float opacity);
+	cv::Mat applyNearestGpu(const DataLoader& loader, float opacity, int threads);
 }
