@@ -21,7 +21,7 @@ cv::Mat GpuProcessor::process()
 	else
 	{
 		cout << "Applying nearest-value interpolation..." << endl;
-		//newImg = applyNearestGpu(loader, opacity);
+		newImg = GpuNearestVal::applyNearestGpu(loader, opacity);
 	}
 	return newImg;
 }

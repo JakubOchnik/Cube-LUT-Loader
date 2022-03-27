@@ -7,7 +7,7 @@
 #include <Loader/CubeLUT.hpp>
 #include <Loader/loader.hpp>
 
-//#include <GPUImageProcess/LUT3D/applyNearestValueHost.hpp>
+#include <GPUImageProcess/LUT3D/applyNearestValueHost.hpp>
 #include <GPUImageProcess/LUT3D/applyTrilinearHost.hpp>
 #include <GPUImageProcess/Utils/CudaUtils.hpp>
 

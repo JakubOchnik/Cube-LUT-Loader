@@ -3,16 +3,12 @@
 #include "device_launch_parameters.h"
 #include <cstdio>
 #include <cmath>
+#include <tuple>
 
-namespace NearestValGpu {
-	void run(dim3 grid, unsigned char* image, char channels, float* LUT, char LUTsize, float opacity);
+namespace GpuNearestValDevice 
+{
+	void run(dim3 threads, dim3 blocks, unsigned char* image, const char channels, float* LUT, const char LUTsize, const float opacity, const std::tuple<int, int>& imgSize);
 }
 
-__device__ float* mul(float* a, int offset, const float val);
-
-__device__ float* sum(float* a, float* b);
-
-__device__ int l_index(int r, int g, int b, char LUTsize, char channels);
-
-__global__ void applyNearestKernel(unsigned char* image, char channels, float* LUT, char LUTsize, float opacity);
+__global__ void applyNearestKernel(unsigned char* image, char channels, float* LUT, char LUTsize, float opacity, int xMax, int yMax);
 
