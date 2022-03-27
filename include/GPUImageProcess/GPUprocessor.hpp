@@ -7,7 +7,7 @@
 #include <Loader/CubeLUT.hpp>
 #include <Loader/loader.hpp>
 
-#include <GPUImageProcess/LUT3D/applyNearestValueHost.hpp>
+//#include <GPUImageProcess/LUT3D/applyNearestValueHost.hpp>
 #include <GPUImageProcess/LUT3D/applyTrilinearHost.hpp>
 #include <GPUImageProcess/Utils/CudaUtils.hpp>
 
@@ -19,7 +19,6 @@ class GpuProcessor
 public:
 	GpuProcessor(const Loader& ld);
 	GpuProcessor() = delete;
-	bool is3D() const;
 	cv::Mat process();
 	void save() const;
 	void setLoader(const Loader& ld) const;

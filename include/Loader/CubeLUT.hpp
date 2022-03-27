@@ -47,6 +47,7 @@ public:
 	std::vector<float> domainMax{1, 1, 1};
 	table1D LUT1D;
 	table3D LUT3D;
+	
 
 	CubeLUT()
 	{

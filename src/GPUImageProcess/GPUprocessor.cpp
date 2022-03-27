@@ -4,15 +4,10 @@ GpuProcessor::GpuProcessor(const Loader& ld) : loader(ld)
 {
 }
 
-bool GpuProcessor::is3D() const
-{
-	return loader.getCube().LUT1D.empty();
-}
-
 cv::Mat GpuProcessor::process()
 {
 	std::cout << "Processing the image...\n";
-	if (const float opacity = loader.getVm()["strength"].as<float>(); !is3D())
+	if (const float opacity = loader.getVm()["strength"].as<float>(); !loader.getCube().is3D())
 	{
 		// cout << "Applying basic 1D LUT..." << endl;
 		cout << "GPU-accelerated 1D LUTs are not implemented yet" << endl;
@@ -21,12 +16,12 @@ cv::Mat GpuProcessor::process()
 	else if (loader.getVm().count("trilinear"))
 	{
 		cout << "Applying trilinear interpolation..." << endl;
-		newImg = applyTrilinearGpu(loader, opacity);
+		newImg = GpuTrilinear::applyTrilinearGpu(loader, opacity);
 	}
 	else
 	{
 		cout << "Applying nearest-value interpolation..." << endl;
-		newImg = applyNearestGpu(loader, opacity);
+		//newImg = applyNearestGpu(loader, opacity);
 	}
 	return newImg;
 }
