@@ -8,7 +8,7 @@
 #include <DataLoader/dataLoader.hpp>
 #include <GPUImageProcess/LUT3D/applyNearestValueHost.hpp>
 #include <GPUImageProcess/LUT3D/applyTrilinearHost.hpp>
-#include <GPUImageProcess/Utils/CudaUtils.hpp>
+#include <GPUImageProcess/Utils/cudaUtils.hpp>
 
 
 class GpuProcessor
@@ -19,7 +19,9 @@ class GpuProcessor
 public:
 	GpuProcessor(const DataLoader& ld);
 	GpuProcessor() = delete;
+	void execute();
+private:
 	cv::Mat process();
 	void save() const;
-	void execute();
+	bool isCudaAvailable() const;
 };

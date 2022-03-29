@@ -9,7 +9,6 @@ cv::Mat GpuProcessor::process()
 	// TODO: Implement as standalone commands retrieved from a map
 	// with keys equal to command line args. Use inheritance to respect
 	// DRY (there are tons of similar code in the different interpolation classes).
-	// TODO: Catch exceptions (after implementing CUDA error handling)
 	std::cout << "Processing the image...\n";
 	if (const float opacity = loader.getVm()["strength"].as<float>(); !loader.getCube().is3D())
 	{
@@ -40,13 +39,30 @@ void GpuProcessor::save() const
 	}
 	catch (cv::Exception& e)
 	{
-		cerr << e.what() << endl; // output exception message
+		cerr << e.what() << "\n"; // output exception message
 	}
 	CudaUtils::freeUnifiedPtr<unsigned char>(newImg.data);
 }
 
 void GpuProcessor::execute()
 {
+	if (!isCudaAvailable())
+	{
+		throw std::runtime_error("ERROR (CUDA): Unknown error\n");
+	}
 	process();
 	save();
+}
+
+bool GpuProcessor::isCudaAvailable() const
+{
+	if (!CudaUtils::isCudaDriverAvailable())
+	{
+		throw std::runtime_error("ERROR (CUDA): CUDA driver was not detected\n");
+	}
+	if (!CudaUtils::isCudaDeviceAvailable())
+	{
+		throw std::runtime_error("ERROR (CUDA): No CUDA devices were detected\n");
+	}
+	return true;
 }

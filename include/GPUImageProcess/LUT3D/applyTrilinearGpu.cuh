@@ -4,7 +4,7 @@
 #include <Eigen/Dense>
 #include <tuple>
 
-#include <GPUImageProcess/Utils/CudaUtils.hpp>
+#include <GPUImageProcess/Utils/cudaUtils.hpp>
 
 namespace GpuTrilinearDevice
 {
