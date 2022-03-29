@@ -19,7 +19,9 @@ class GpuProcessor
 public:
 	GpuProcessor(const DataLoader& ld);
 	GpuProcessor() = delete;
+	void execute();
+private:
 	cv::Mat process();
 	void save() const;
-	void execute();
+	bool isCudaAvailable() const;
 };
