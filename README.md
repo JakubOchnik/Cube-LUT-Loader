@@ -32,7 +32,6 @@ A simple C++ tool that lets you apply a Cube format LUT to your image.
 ## In progress
 - GPU acceleration for 1D LUTs
 - Comprehensive performance comparison between all implementations
-- Proper CUDA error handling
 - Support of color depths other than 8-bit
 - Batch processing
 
