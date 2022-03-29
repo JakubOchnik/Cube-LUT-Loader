@@ -33,7 +33,7 @@ int TaskDispatcher::start()
 	{
 		// TODO: Add verification (driver & compute capability),
 		// possibly display some device info.
-		cout << "GPU acceleration enabled\n";
+		std::cout << "GPU acceleration enabled\n";
 		GpuProcessor processor(loader);
 		try
 		{
@@ -46,7 +46,7 @@ int TaskDispatcher::start()
 	}
 	else
 	{
-		cout << "Using " << loader.getThreads() << " CPU thread(s)\n";
+		std::cout << "Using " << loader.getThreads() << " CPU thread(s)\n";
 		Processor processor(loader);
 		try
 		{

@@ -10,8 +10,6 @@
 #include <unsupported/Eigen/CXX11/Tensor>
 #include <fstream>
 
-using namespace std;
-
 // Licensed under Creative Commons Attribution Non-Commercial 3.0 License
 // Author: Adobe Inc. (with some slight modifications made by Jakub Ochnik)
 // Source:
@@ -21,10 +19,9 @@ using namespace std;
 class CubeLUT
 {
 public:
-	using tableRow = Eigen::Vector3f; // boost::numeric::ublas::vector<float>;
-	using table1D = Eigen::Tensor<float, 2>;//vector<tableRow>;
-	// using table2D = vector<table1D>;
-	using table3D = Eigen::Tensor<float, 4>;//vector<table2D>;
+	using tableRow = Eigen::Vector3f;
+	using table1D = Eigen::Tensor<float, 2>;
+	using table3D = Eigen::Tensor<float, 4>;
 
 	enum LUTState
 	{
@@ -42,7 +39,7 @@ public:
 	};
 
 	LUTState status;
-	string title;
+	std::string title;
 	std::vector<float> domainMin{0, 0, 0};
 	std::vector<float> domainMax{1, 1, 1};
 	table1D LUT1D;
@@ -54,13 +51,13 @@ public:
 		status = NotInitialized;
 	}
 
-	LUTState LoadCubeFile(ifstream& infile);
+	LUTState LoadCubeFile(std::ifstream& infile);
 
 	bool is3D() const;
 private:
-	string ReadLine(ifstream& infile, char lineSeparator);
-	void ParseTableRow(const string& lineOfText, const int r, const int g, const int b);
-	void ParseTableRow(const string& lineOfText, const int i);
+	std::string ReadLine(std::ifstream& infile, char lineSeparator);
+	void ParseTableRow(const std::string& lineOfText, const int r, const int g, const int b);
+	void ParseTableRow(const std::string& lineOfText, const int i);
 };
 
 #endif

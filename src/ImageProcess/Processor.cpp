@@ -12,17 +12,17 @@ cv::Mat_<cv::Vec3b> Processor::process()
 	std::cout << "Processing the image...\n";
 	if (const float opacity = loader.getVm()["strength"].as<float>(); !loader.getCube().is3D())
 	{
-		cout << "Applying basic 1D LUT..." << endl;
+		std::cout << "Applying basic 1D LUT...\n";
 		newImg = Basic1D::applyBasic1D(loader.getImg(), loader.getCube(), opacity, loader.getThreads());
 	}
 	else if (loader.getVm().count("trilinear"))
 	{
-		cout << "Applying trilinear interpolation..." << endl;
+		std::cout << "Applying trilinear interpolation...\n";
 		newImg = Trilinear::applyTrilinear(loader.getImg(), loader.getCube(), opacity, loader.getThreads());
 	}
 	else
 	{
-		cout << "Applying nearest-value interpolation..." << endl;
+		std::cout << "Applying nearest-value interpolation...\n";
 		newImg = NearestValue::applyNearest(loader.getImg(), loader.getCube(), opacity, loader.getThreads());
 	}
 	return newImg;

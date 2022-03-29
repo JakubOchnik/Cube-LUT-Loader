@@ -24,7 +24,7 @@ void DataLoader::loadImg()
 void DataLoader::loadLut()
 {
 	std::cout << "Importing LUT...\n";
-	ifstream infile(vm["lut"].as<std::string>());
+	std::ifstream infile(vm["lut"].as<std::string>());
 	if (!infile.good())
 	{
 		const std::string msg{"Could not open input LUT file: " + vm["lut"].as<std::string>()};

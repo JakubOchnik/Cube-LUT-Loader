@@ -13,17 +13,17 @@ cv::Mat GpuProcessor::process()
 	if (const float opacity = loader.getVm()["strength"].as<float>(); !loader.getCube().is3D())
 	{
 		// cout << "Applying basic 1D LUT..." << endl;
-		cout << "GPU-accelerated 1D LUTs are not implemented yet" << endl;
+		std::cout << "GPU-accelerated 1D LUTs are not implemented yet\n";
 		//newImg = applyBasic1D(loader.getImg(), loader.getCube(), opacity);
 	}
 	else if (loader.getVm().count("trilinear"))
 	{
-		cout << "Applying trilinear interpolation..." << endl;
+		std::cout << "Applying trilinear interpolation...\n";
 		newImg = GpuTrilinear::applyTrilinearGpu(loader, opacity, threadsPerBlock);
 	}
 	else
 	{
-		cout << "Applying nearest-value interpolation..." << endl;
+		std::cout << "Applying nearest-value interpolation...\n";
 		newImg = GpuNearestVal::applyNearestGpu(loader, opacity, threadsPerBlock);
 	}
 	return newImg;
@@ -39,7 +39,7 @@ void GpuProcessor::save() const
 	}
 	catch (cv::Exception& e)
 	{
-		cerr << e.what() << "\n"; // output exception message
+		std::cerr << e.what() << "\n"; // output exception message
 	}
 	CudaUtils::freeUnifiedPtr<unsigned char>(newImg.data);
 }

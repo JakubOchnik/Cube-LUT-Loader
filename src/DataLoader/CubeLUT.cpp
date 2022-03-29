@@ -6,11 +6,11 @@
 // Cube LUT Specification 1.0
 // https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf
 
-string CubeLUT::ReadLine(ifstream& infile, const char lineSeparator)
+std::string CubeLUT::ReadLine(std::ifstream& infile, const char lineSeparator)
 {
 	// Skip empty lines and comments
 	const char CommentMarker = '#';
-	string textLine;
+	std::string textLine;
 	while (textLine.empty() || textLine[0] == CommentMarker)
 	{
 		if (infile.eof())
@@ -18,7 +18,7 @@ string CubeLUT::ReadLine(ifstream& infile, const char lineSeparator)
 			status = PrematureEndOfFile;
 			break;
 		}
-		getline(infile, textLine, lineSeparator);
+		std::getline(infile, textLine, lineSeparator);
 		if (infile.fail())
 		{
 			status = ReadError;
@@ -28,11 +28,11 @@ string CubeLUT::ReadLine(ifstream& infile, const char lineSeparator)
 	return textLine;
 }
 
-void CubeLUT::ParseTableRow(const string& lineOfText, const int r, const int g, const int b)
+void CubeLUT::ParseTableRow(const std::string& lineOfText, const int r, const int g, const int b)
 {
 	// Parse values from the file and assign them to the LUT tensor (4D matrix)
 	const int N = 3;
-	istringstream line(lineOfText);
+	std::istringstream line(lineOfText);
 	float tmp;
 	for (int i{ 0 }; i < N; ++i)
 	{
@@ -45,11 +45,11 @@ void CubeLUT::ParseTableRow(const string& lineOfText, const int r, const int g, 
 		LUT3D(r, g, b, i) = tmp;
 	}
 }
-void CubeLUT::ParseTableRow(const string& lineOfText, const int i)
+void CubeLUT::ParseTableRow(const std::string& lineOfText, const int i)
 {
 	// Parse values from the file and assign them to the LUT tensor (2D matrix)
 	const int N = 3;
-	istringstream line(lineOfText);
+	std::istringstream line(lineOfText);
 	float tmp;
 	for (int j{ 0 }; j < N; ++j)
 	{
@@ -63,8 +63,9 @@ void CubeLUT::ParseTableRow(const string& lineOfText, const int i)
 	}
 }
 
-CubeLUT::LUTState CubeLUT::LoadCubeFile(ifstream& infile)
+CubeLUT::LUTState CubeLUT::LoadCubeFile(std::ifstream& infile)
 {
+	using namespace std;
 	// defaults
 	status = OK;
 	title.clear();

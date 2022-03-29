@@ -1,8 +1,8 @@
 #pragma once
 #ifdef _WIN32
 // Workaround for WinAPI colliding with some
-// C++17 symbols.
-#define WIN32_LEAN_AND_MEAN
+// C++17 symbols (caused by using namespace std):
+// #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #else
 #include <dlfcn.h>
