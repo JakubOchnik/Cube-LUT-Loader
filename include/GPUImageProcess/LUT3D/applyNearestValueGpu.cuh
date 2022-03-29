@@ -3,6 +3,8 @@
 #include "device_launch_parameters.h"
 #include <tuple>
 
+#include <GPUImageProcess/Utils/CudaUtils.hpp>
+
 namespace GpuNearestValDevice
 {
 	void run(dim3 threads, dim3 blocks, unsigned char* image, char channels, float* LUT, char LUTsize, float opacity,

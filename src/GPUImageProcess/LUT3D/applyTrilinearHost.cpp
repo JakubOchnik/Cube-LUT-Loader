@@ -13,9 +13,9 @@ cv::Mat GpuTrilinear::applyTrilinearGpu(const DataLoader& loader, const float op
 	uchar* imgPtr{nullptr};
 
 	// Copy data to GPU
-	cudaMalloc(reinterpret_cast<void**>(&lutPtr), lutSize);
-	cudaMemcpy(lutPtr, loader.getCube().LUT3D.data(), lutSize, cudaMemcpyHostToDevice);
-	cudaMallocManaged(&imgPtr, imgSize);
+	cudaErrorChk(cudaMalloc(reinterpret_cast<void**>(&lutPtr), lutSize));
+	cudaErrorChk(cudaMemcpy(lutPtr, loader.getCube().LUT3D.data(), lutSize, cudaMemcpyHostToDevice));
+	cudaErrorChk(cudaMallocManaged(&imgPtr, imgSize));
 	memcpy(imgPtr, loader.getImg().data, imgSize);
 
 	const int blocksX = (width + threads - 1) / threads;
@@ -28,7 +28,7 @@ cv::Mat GpuTrilinear::applyTrilinearGpu(const DataLoader& loader, const float op
 	                        std::tuple(width, height));
 
 	// Free memory and copy data back to host
-	cudaFree(lutPtr);
+	cudaErrorChk(cudaFree(lutPtr));
 	auto finalImg = cv::Mat(height, width, CV_8UC3, imgPtr);
 	return finalImg;
 }

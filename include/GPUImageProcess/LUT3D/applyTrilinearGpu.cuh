@@ -4,6 +4,8 @@
 #include <Eigen/Dense>
 #include <tuple>
 
+#include <GPUImageProcess/Utils/CudaUtils.hpp>
+
 namespace GpuTrilinearDevice
 {
 	void run(dim3 threads, dim3 blocks, unsigned char* image, char channels, float* LUT, int LUTsize, float opacity,
