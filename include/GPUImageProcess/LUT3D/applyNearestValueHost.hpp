@@ -7,7 +7,7 @@
 #include <DataLoader/CubeLUT.hpp>
 #include <DataLoader/dataLoader.hpp>
 #include <GPUImageProcess/LUT3D/applyNearestValueGpu.cuh>
-#include <GPUImageProcess/Utils/CudaUtils.hpp>
+#include <GPUImageProcess/Utils/cudaUtils.hpp>
 
 namespace GpuNearestVal
 {

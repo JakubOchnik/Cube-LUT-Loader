@@ -3,7 +3,7 @@
 #include "device_launch_parameters.h"
 #include <tuple>
 
-#include <GPUImageProcess/Utils/CudaUtils.hpp>
+#include <GPUImageProcess/Utils/cudaUtils.hpp>
 
 namespace GpuNearestValDevice
 {

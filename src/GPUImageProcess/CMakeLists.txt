@@ -5,3 +5,4 @@ target_sources(${PROJECT_NAME} PUBLIC
                 )
 
 add_subdirectory(${SOURCE_DIR}/GPUImageProcess/LUT3D)
+add_subdirectory(${SOURCE_DIR}/GPUImageProcess/Utils)
