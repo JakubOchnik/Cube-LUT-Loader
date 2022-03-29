@@ -19,7 +19,7 @@ bool CudaUtils::isCudaDeviceAvailable()
 {
     cudaDeviceProp prop;
 	int devCount{};
-	cudaGetDeviceCount(&devCount);
+	cudaErrorChk(cudaGetDeviceCount(&devCount));
 	if (devCount < 1 || cudaGetDeviceProperties(&prop, 0) != cudaSuccess)
 	{
 		return false;
@@ -41,8 +41,10 @@ std::map<std::string, std::string> CudaUtils::getCudaDeviceInfo()
     deviceInfo["ComputeCapability"] = std::to_string(prop.major) + "." + std::to_string(prop.minor);
     deviceInfo["TotalGlobalMem"] = std::to_string(prop.totalGlobalMem);
     deviceInfo["MaxThreadsPerBlock"] = std::to_string(prop.maxThreadsPerBlock);
-    deviceInfo["MaxThreadsDim"] = std::to_string(prop.maxThreadsDim[0]) + "x" + std::to_string(prop.maxThreadsDim[1]) + "x" + std::to_string(prop.maxThreadsDim[2]);
-    deviceInfo["MaxGridSize"] = std::to_string(prop.maxGridSize[0]) + "x" + std::to_string(prop.maxGridSize[1]) + "x" + std::to_string(prop.maxGridSize[2]);
+    deviceInfo["MaxThreadsDim"] = std::to_string(prop.maxThreadsDim[0]) + "x" + std::to_string(prop.maxThreadsDim[1]) + \
+                                "x" + std::to_string(prop.maxThreadsDim[2]);
+    deviceInfo["MaxGridSize"] = std::to_string(prop.maxGridSize[0]) + "x" + std::to_string(prop.maxGridSize[1]) + "x" + \
+                                std::to_string(prop.maxGridSize[2]);
     return deviceInfo;
 }
 
