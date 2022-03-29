@@ -35,13 +35,27 @@ int TaskDispatcher::start()
 		// possibly display some device info.
 		cout << "GPU acceleration enabled\n";
 		GpuProcessor processor(loader);
-		processor.execute();
+		try
+		{
+			processor.execute();
+		}
+		catch (const std::exception& e)
+		{
+			std::cerr << e.what() << '\n';
+		}
 	}
 	else
 	{
 		cout << "Using " << loader.getThreads() << " CPU thread(s)\n";
 		Processor processor(loader);
-		processor.execute();
+		try
+		{
+			processor.execute();
+		}
+		catch (const std::exception& e)
+		{
+			std::cerr << e.what() << '\n';
+		}
 	}
 	return 0;
 }

@@ -7,6 +7,7 @@
 #include <DataLoader/CubeLUT.hpp>
 #include <DataLoader/dataLoader.hpp>
 #include <GPUImageProcess/LUT3D/applyTrilinearGpu.cuh>
+#include <GPUImageProcess/Utils/CudaUtils.hpp>
 
 namespace GpuTrilinear
 {

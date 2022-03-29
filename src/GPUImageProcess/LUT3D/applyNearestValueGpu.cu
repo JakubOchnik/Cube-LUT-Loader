@@ -7,7 +7,8 @@ namespace GpuNearestValDevice
 	{
 		applyNearestKernel<<<blocks, threads>>>(image, channels, LUT, LUTsize, opacity, std::get<0>(imgSize),
 		                                        std::get<1>(imgSize));
-		cudaDeviceSynchronize();
+		cudaErrorChk(cudaPeekAtLastError());
+		cudaErrorChk(cudaDeviceSynchronize());
 	}
 }
 
