@@ -13,4 +13,4 @@ namespace GpuTrilinearDevice
 }
 
 __global__ void applyTrilinear(unsigned char* image, char channels, const float* LUT, int LUTsize, float opacity,
-                               int xMax, int yMax);
+                               int width, int height);
