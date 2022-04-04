@@ -13,7 +13,7 @@ namespace GpuNearestValDevice
 }
 
 __global__ void applyNearestKernel(unsigned char* image, char channels, const float* LUT, char LUTsize, float opacity,
-                                   const int xMax, const int yMax)
+                                   const int width, const int height)
 {
 	using uchar = unsigned char;
 	using uint = unsigned int;
@@ -21,13 +21,13 @@ __global__ void applyNearestKernel(unsigned char* image, char channels, const fl
 	const int x = blockIdx.x * blockDim.x + threadIdx.x;
 	const int y = blockIdx.y * blockDim.y + threadIdx.y;
 
-	if (x >= xMax || y >= yMax)
+	if (x >= width || y >= height)
 	{
 		// Check if the kernel coordinates are out of image bounds
 		return;
 	}
 
-	const int pixelIndex = (x + y * (gridDim.x * blockDim.x)) * channels;
+	const int pixelIndex = (x + y * width) * channels;
 	// Get original colors of the processed pixel
 	const int b = image[pixelIndex];
 	const int g = image[pixelIndex + 1];

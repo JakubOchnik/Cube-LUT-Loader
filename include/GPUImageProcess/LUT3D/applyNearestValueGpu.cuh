@@ -12,4 +12,4 @@ namespace GpuNearestValDevice
 }
 
 __global__ void applyNearestKernel(unsigned char* image, char channels, const float* LUT, char LUTsize, float opacity,
-                                   int xMax, int yMax);
+                                   int width, int height);

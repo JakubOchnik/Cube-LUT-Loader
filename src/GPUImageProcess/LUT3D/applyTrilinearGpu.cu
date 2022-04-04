@@ -13,20 +13,20 @@ namespace GpuTrilinearDevice
 }
 
 __global__ void applyTrilinear(unsigned char* image, const char channels, const float* LUT, const int LUTsize,
-                               const float opacity, const int xMax, const int yMax)
+                               const float opacity, const int width, const int height)
 {
 	using uchar = unsigned char;
 	// Get the index of pixel in flattened image array
 	const int x = blockIdx.x * blockDim.x + threadIdx.x;
 	const int y = blockIdx.y * blockDim.y + threadIdx.y;
 
-	if (x >= xMax || y >= yMax)
+	if (x >= width || y >= height)
 	{
 		// Check if the kernel coordinates are out of image bounds
 		return;
 	}
 
-	const int pixelIdx = (x + y * (gridDim.x * blockDim.x)) * channels;
+	const int pixelIdx = (x + y * width) * channels;
 
 	// Get original colors of the processed pixel
 	const int b = image[pixelIdx];
