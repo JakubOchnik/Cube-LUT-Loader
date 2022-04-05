@@ -12,3 +12,4 @@ x64/
 *.user
 build/
 .vscode/
+docs/.ipynb_checkpoints/
