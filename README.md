@@ -30,6 +30,22 @@ A simple C++ tool that lets you apply a Cube format LUT to your image.
 - CUDA GPU implementation (highly effective with larger images)
 
 ## Performance
+### Test details:
+Computer setup:  
+| Component | Name                                                    |
+| --------- | ------------------------------------------------------- |
+| CPU       | Intel Core i7-7700HQ@2.8GHz (8 logical threads, 4 cores)|
+| GPU       | NVIDIA GeForce GTX 1050 (4096MiB of VRAM, CUDA 11.6)    |
+| RAM       | 32GB DDR4 (2400 Mhz)                                    |
+
+Test images:  
+| Name | Resolution |
+| ---- | ---------- |
+| UH   | 8640x5760  |
+| H    | 4803x3181  |
+| L    | 2400x1590  |
+| M    | 1920x1272  |
+| S    | 640x424    |
 ### Trilinear interpolation
 ![Trilinear interpolation graph](docs/performance/img/tri_interp.png "Trilinear interpolation graph").  
 
