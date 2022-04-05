@@ -78,8 +78,7 @@ boost::program_options::variables_map TaskDispatcher::parseInputArgs(const int a
 		("threads,j",
 		 boost::program_options::value<uint>()->default_value(std::thread::hardware_concurrency()),
 		 "Number of threads [= Number of physical threads]")
-		("gpu", "Use GPU acceleration")
-		("test", "Performance test mode");
+		("gpu", "Use GPU acceleration");
 
 	boost::program_options::variables_map vm;
 	store(parse_command_line(argc, argv, desc), vm);

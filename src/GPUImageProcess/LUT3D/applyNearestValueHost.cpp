@@ -2,7 +2,6 @@
 
 cv::Mat GpuNearestVal::applyNearestGpu(const DataLoader& loader, const float opacity, const int threads)
 {
-	// TODO: Implement CUDA error handling
 	int width{loader.getImg().cols}, height{loader.getImg().rows};
 	const int imgSize = width * height * 3 * sizeof(unsigned char);
 	const int lutSize = static_cast<int>(pow(loader.getCube().LUT3D.dimension(0), 3) * 3 * sizeof(float));
