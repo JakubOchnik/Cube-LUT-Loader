@@ -8,7 +8,7 @@
 #include <DataLoader/dataLoader.hpp>
 #include <GPUImageProcess/LUT3D/applyNearestValueHost.hpp>
 #include <GPUImageProcess/LUT3D/applyTrilinearHost.hpp>
-#include <GPUImageProcess/Utils/cudaUtils.hpp>
+#include <GPUImageProcess/Utils/CudaUtils.hpp>
 
 
 class GpuProcessor
