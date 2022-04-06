@@ -35,13 +35,14 @@ public:
 		TitleMissingQuote,
 		DomainBoundsReversed,
 		LUTSizeOutOfRange,
-		CouldNotParseTableData
+		CouldNotParseTableData,
+		OutOfDomain
 	};
 
 	LUTState status;
 	std::string title;
-	std::vector<float> domainMin{0, 0, 0};
-	std::vector<float> domainMax{1, 1, 1};
+	std::vector<float> domainMin{0.0f, 0.0f, 0.0f};
+	std::vector<float> domainMax{1.0f, 1.0f, 1.0f};
 	table1D LUT1D;
 	table3D LUT3D;
 	

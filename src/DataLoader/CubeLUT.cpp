@@ -42,6 +42,11 @@ void CubeLUT::ParseTableRow(const std::string& lineOfText, const int r, const in
 			status = CouldNotParseTableData;
 			break;
 		}
+		else if (tmp < domainMin[i] || tmp > domainMax[i])
+		{
+			status = OutOfDomain;
+			break;
+		}
 		LUT3D(r, g, b, i) = tmp;
 	}
 }
@@ -69,8 +74,6 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(std::ifstream& infile)
 	// defaults
 	status = OK;
 	title.clear();
-	domainMin = {0,0,0};
-	domainMax = {1,1,1};
 
 	const char NewlineCharacter = '\n';
 	char lineSeparator = NewlineCharacter;
@@ -174,13 +177,11 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(std::ifstream& infile)
 	if (status == OK && domainMin[0] >= domainMax[0] || domainMin[1] >= domainMax[1] || domainMin[2] >= domainMax[2])
 		status = DomainBoundsReversed;
 
-	// parsowanie wczytanych danych
 	infile.seekg(linePos - 1);
 	while (infile.get() != '\n')
 	{
 		infile.seekg(--linePos);
 	}
-	// sprawdzenie czy jest poczatek linijki
 
 	if (LUT1D.size() > 0)
 	{
