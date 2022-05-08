@@ -4,9 +4,9 @@
  * @name Cube LUT loader
  * @version 0.1
  * @date 2022-03-27
- * 
+ *
  * @license MIT
- * 
+ *
  */
 
 #include <TaskDispatcher/TaskDispatcher.hpp>

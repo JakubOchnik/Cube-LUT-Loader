@@ -1,13 +1,11 @@
-#include <GPUImageProcess/GPUprocessor.hpp>
-#include <boost/program_options.hpp>
 #include <DataLoader/CubeLUT.hpp>
+#include <GPUImageProcess/GPUprocessor.hpp>
 #include <GPUImageProcess/LUT3D/applyNearestValueHost.hpp>
 #include <GPUImageProcess/LUT3D/applyTrilinearHost.hpp>
 #include <GPUImageProcess/Utils/CudaUtils.hpp>
+#include <boost/program_options.hpp>
 
-GpuProcessor::GpuProcessor(const DataLoader& ld) : loader(ld)
-{
-}
+GpuProcessor::GpuProcessor(const DataLoader& ld) : loader(ld) {}
 
 cv::Mat GpuProcessor::process()
 {
@@ -15,21 +13,24 @@ cv::Mat GpuProcessor::process()
 	// with keys equal to command line args. Use inheritance to respect
 	// DRY (there are tons of similar code in the different interpolation classes).
 	std::cout << "Processing the image...\n";
-	if (const float opacity = loader.getVm()["strength"].as<float>(); !loader.getCube().is3D())
+	if (const float opacity = loader.getVm()["strength"].as<float>();
+		!loader.getCube().is3D())
 	{
 		// cout << "Applying basic 1D LUT..." << endl;
 		std::cout << "GPU-accelerated 1D LUTs are not implemented yet\n";
-		//newImg = applyBasic1D(loader.getImg(), loader.getCube(), opacity);
+		// newImg = applyBasic1D(loader.getImg(), loader.getCube(), opacity);
 	}
 	else if (loader.getVm().count("trilinear"))
 	{
 		std::cout << "Applying trilinear interpolation...\n";
-		newImg = GpuTrilinear::applyTrilinearGpu(loader, opacity, threadsPerBlock);
+		newImg =
+			GpuTrilinear::applyTrilinearGpu(loader, opacity, threadsPerBlock);
 	}
 	else
 	{
 		std::cout << "Applying nearest-value interpolation...\n";
-		newImg = GpuNearestVal::applyNearestGpu(loader, opacity, threadsPerBlock);
+		newImg =
+			GpuNearestVal::applyNearestGpu(loader, opacity, threadsPerBlock);
 	}
 	return newImg;
 }
@@ -63,11 +64,13 @@ bool GpuProcessor::isCudaAvailable() const
 {
 	if (!CudaUtils::isCudaDriverAvailable())
 	{
-		throw std::runtime_error("ERROR (CUDA): CUDA driver was not detected\n");
+		throw std::runtime_error(
+			"ERROR (CUDA): CUDA driver was not detected\n");
 	}
 	if (!CudaUtils::isCudaDeviceAvailable())
 	{
-		throw std::runtime_error("ERROR (CUDA): No CUDA devices were detected\n");
+		throw std::runtime_error(
+			"ERROR (CUDA): No CUDA devices were detected\n");
 	}
 	return true;
 }
