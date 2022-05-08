@@ -1,5 +1,9 @@
 #include <DataLoader/CubeLUT.hpp>
 
+#include <iostream>
+#include <sstream>
+#include <fstream>
+
 // Credit of this parser code: Adobe Inc.
 // Author: Adobe Inc.
 // Source:

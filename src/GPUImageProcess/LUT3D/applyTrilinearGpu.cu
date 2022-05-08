@@ -1,4 +1,6 @@
 ﻿#include <GPUImageProcess/LUT3D/applyTrilinearGpu.cuh>
+#include <Eigen/Dense>
+#include <GPUImageProcess/Utils/CudaUtils.hpp>
 
 namespace GpuTrilinearDevice
 {

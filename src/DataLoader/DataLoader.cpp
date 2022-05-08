@@ -1,4 +1,6 @@
 #include <DataLoader/dataLoader.hpp>
+#include <iostream>
+#include <fstream>
 
 DataLoader::DataLoader(const boost::program_options::variables_map varMap) : vm(varMap)
 {

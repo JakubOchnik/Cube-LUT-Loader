@@ -1,4 +1,5 @@
 #include <GPUImageProcess/Utils/CudaUtils.hpp>
+#include <sstream>
 
 bool CudaUtils::isCudaDriverAvailable()
 {

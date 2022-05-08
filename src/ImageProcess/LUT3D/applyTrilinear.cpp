@@ -1,4 +1,7 @@
 #include <ImageProcess/LUT3D/applyTrilinear.hpp>
+#include <thread>
+#include <vector>
+#include <functional>
 
 void Trilinear::calculatePixel(const int x, const int y, const CubeLUT& lut, const float opacity,
                                const WorkerData& data)

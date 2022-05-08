@@ -2,13 +2,10 @@
 #ifndef CubeLUT_H
 #define CubeLUT_H
 
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
 #include <Eigen/Dense>
 #include <unsupported/Eigen/CXX11/Tensor>
-#include <fstream>
+#include <vector>
+#include <string>
 
 // Licensed under Creative Commons Attribution Non-Commercial 3.0 License
 // Author: Adobe Inc. (with some slight modifications made by Jakub Ochnik)

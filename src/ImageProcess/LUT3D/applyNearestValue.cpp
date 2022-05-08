@@ -1,4 +1,8 @@
 #include <ImageProcess/LUT3D/applyNearestValue.hpp>
+#include <Eigen/Dense>
+#include <thread>
+#include <vector>
+#include <functional>
 
 void NearestValue::calculatePixel(const int x, const int y, const CubeLUT& lut, const float opacity,
                                   const WorkerData& data)

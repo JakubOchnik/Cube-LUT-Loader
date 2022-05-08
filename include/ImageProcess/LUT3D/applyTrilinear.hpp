@@ -1,10 +1,6 @@
 #pragma once
 #include <opencv2/opencv.hpp>
 #include <Eigen/Dense>
-#include <thread>
-#include <vector>
-#include <functional>
-
 #include <DataLoader/CubeLUT.hpp>
 
 namespace Trilinear
