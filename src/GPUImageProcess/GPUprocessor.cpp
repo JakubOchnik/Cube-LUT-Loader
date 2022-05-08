@@ -1,4 +1,9 @@
 #include <GPUImageProcess/GPUprocessor.hpp>
+#include <boost/program_options.hpp>
+#include <DataLoader/CubeLUT.hpp>
+#include <GPUImageProcess/LUT3D/applyNearestValueHost.hpp>
+#include <GPUImageProcess/LUT3D/applyTrilinearHost.hpp>
+#include <GPUImageProcess/Utils/CudaUtils.hpp>
 
 GpuProcessor::GpuProcessor(const DataLoader& ld) : loader(ld)
 {

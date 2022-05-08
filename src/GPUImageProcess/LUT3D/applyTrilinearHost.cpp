@@ -1,4 +1,11 @@
 #include <GPUImageProcess/LUT3D/applyTrilinearHost.hpp>
+#include "cuda_runtime.h"
+#include "device_launch_parameters.h"
+#include <tuple>
+
+#include <DataLoader/CubeLUT.hpp>
+#include <GPUImageProcess/LUT3D/applyTrilinearGpu.cuh>
+#include <GPUImageProcess/Utils/CudaUtils.hpp>
 
 cv::Mat GpuTrilinear::applyTrilinearGpu(const DataLoader& loader, const float opacity, const int threads)
 {

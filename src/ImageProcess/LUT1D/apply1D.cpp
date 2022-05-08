@@ -1,4 +1,6 @@
 #include <ImageProcess/LUT1D/apply1D.hpp>
+#include <thread>
+#include <vector>
 
 float Basic1D::getAvgVal(const CubeLUT& lut, const uint nValues, const uchar value, const uchar channel)
 {

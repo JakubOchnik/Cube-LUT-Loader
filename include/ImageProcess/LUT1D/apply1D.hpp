@@ -1,7 +1,5 @@
 #pragma once
 #include <opencv2/opencv.hpp>
-#include <thread>
-#include <vector>
 
 #include <DataLoader/CubeLUT.hpp>
 

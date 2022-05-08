@@ -1,4 +1,9 @@
 #include <TaskDispatcher/TaskDispatcher.hpp>
+#include <ImageProcess/Processor.hpp>
+#include <GPUImageProcess/GPUprocessor.hpp>
+
+#include <iostream>
+#include <thread>
 
 TaskDispatcher::TaskDispatcher(const int aCnt, char* aVal[]) : argCount(aCnt), args(aVal), loader(DataLoader())
 {
@@ -31,8 +36,6 @@ int TaskDispatcher::start()
 
 	if (loader.getVm().count("gpu"))
 	{
-		// TODO: Add verification (driver & compute capability),
-		// possibly display some device info.
 		std::cout << "GPU acceleration enabled\n";
 		GpuProcessor processor(loader);
 		try
