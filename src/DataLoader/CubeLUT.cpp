@@ -1,8 +1,7 @@
 #include <DataLoader/CubeLUT.hpp>
-
+#include <fstream>
 #include <iostream>
 #include <sstream>
-#include <fstream>
 
 // Credit of this parser code: Adobe Inc.
 // Author: Adobe Inc.
@@ -13,7 +12,7 @@
 std::string CubeLUT::ReadLine(std::ifstream& infile, const char lineSeparator)
 {
 	// Skip empty lines and comments
-	const char CommentMarker = '#';
+	const char	CommentMarker = '#';
 	std::string textLine;
 	while (textLine.empty() || textLine[0] == CommentMarker)
 	{
@@ -32,13 +31,16 @@ std::string CubeLUT::ReadLine(std::ifstream& infile, const char lineSeparator)
 	return textLine;
 }
 
-void CubeLUT::ParseTableRow(const std::string& lineOfText, const int r, const int g, const int b)
+void CubeLUT::ParseTableRow(const std::string& lineOfText,
+							const int		   r,
+							const int		   g,
+							const int		   b)
 {
 	// Parse values from the file and assign them to the LUT tensor (4D matrix)
-	const int N = 3;
+	const int		   N = 3;
 	std::istringstream line(lineOfText);
-	float tmp;
-	for (int i{ 0 }; i < N; ++i)
+	float			   tmp;
+	for (int i{0}; i < N; ++i)
 	{
 		line >> tmp;
 		if (line.fail())
@@ -57,10 +59,10 @@ void CubeLUT::ParseTableRow(const std::string& lineOfText, const int r, const in
 void CubeLUT::ParseTableRow(const std::string& lineOfText, const int i)
 {
 	// Parse values from the file and assign them to the LUT tensor (2D matrix)
-	const int N = 3;
+	const int		   N = 3;
 	std::istringstream line(lineOfText);
-	float tmp;
-	for (int j{ 0 }; j < N; ++j)
+	float			   tmp;
+	for (int j{0}; j < N; ++j)
 	{
 		line >> tmp;
 		if (line.fail())
@@ -80,10 +82,10 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(std::ifstream& infile)
 	title.clear();
 
 	const char NewlineCharacter = '\n';
-	char lineSeparator = NewlineCharacter;
+	char	   lineSeparator	= NewlineCharacter;
 
 	const char CarriageReturnCharacter = '\r';
-	for (int i{ 0 }; i < 255; ++i)
+	for (int i{0}; i < 255; ++i)
 	{
 		char inc = infile.get();
 		if (inc == NewlineCharacter)
@@ -93,7 +95,9 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(std::ifstream& infile)
 			if (infile.get() == NewlineCharacter)
 				break;
 			lineSeparator = CarriageReturnCharacter;
-			clog << "INFO: This file uses non-compliant line separator \\r (0x0D)" << endl;
+			clog << "INFO: This file uses non-compliant line separator \\r "
+					"(0x0D)"
+				 << endl;
 		}
 		if (i > 250)
 		{
@@ -109,16 +113,16 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(std::ifstream& infile)
 	long linePos;
 	while (status == OK)
 	{
-		linePos = infile.tellg();
+		linePos			  = infile.tellg();
 		string lineOfText = ReadLine(infile, lineSeparator);
 		if (!status == OK)
 			break;
 
 		istringstream line(lineOfText);
-		string keyword;
+		string		  keyword;
 		line >> keyword;
 
-		if ("+" < keyword && keyword < ":") //numbers
+		if ("+" < keyword && keyword < ":") // numbers
 		{
 			infile.seekg(linePos);
 			break;
@@ -126,7 +130,7 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(std::ifstream& infile)
 		if (keyword == "TITLE" && CntTitle++ == 0)
 		{
 			const char QUOTE = '"';
-			char startOfTitle;
+			char	   startOfTitle;
 			line >> startOfTitle;
 			if (startOfTitle != QUOTE)
 			{
@@ -178,7 +182,8 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(std::ifstream& infile)
 
 	if (status == OK && CntSize == 0)
 		status = LUTSizeOutOfRange;
-	if (status == OK && domainMin[0] >= domainMax[0] || domainMin[1] >= domainMax[1] || domainMin[2] >= domainMax[2])
+	if (status == OK && domainMin[0] >= domainMax[0]
+		|| domainMin[1] >= domainMax[1] || domainMin[2] >= domainMax[2])
 		status = DomainBoundsReversed;
 
 	infile.seekg(linePos - 1);
@@ -190,7 +195,7 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(std::ifstream& infile)
 	if (LUT1D.size() > 0)
 	{
 		N = LUT1D.dimension(0);
-		for (int i{ 0 }; i < N && status == OK; ++i)
+		for (int i{0}; i < N && status == OK; ++i)
 		{
 			ParseTableRow(ReadLine(infile, lineSeparator), i);
 		}
@@ -198,11 +203,11 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(std::ifstream& infile)
 	else
 	{
 		N = LUT3D.dimension(0);
-		for (int b{ 0 }; b < N && status == OK; ++b)
+		for (int b{0}; b < N && status == OK; ++b)
 		{
-			for (int g{ 0 }; g < N && status == OK; ++g)
+			for (int g{0}; g < N && status == OK; ++g)
 			{
-				for (int r{ 0 }; r < N && status == OK; ++r)
+				for (int r{0}; r < N && status == OK; ++r)
 				{
 					ParseTableRow(ReadLine(infile, lineSeparator), r, g, b);
 				}

@@ -1,9 +1,8 @@
 #pragma once
-#include <opencv2/opencv.hpp>
-
 #include <DataLoader/dataLoader.hpp>
+#include <opencv2/opencv.hpp>
 
 namespace GpuNearestVal
 {
-	cv::Mat applyNearestGpu(const DataLoader& loader, float opacity, int threads);
+cv::Mat applyNearestGpu(const DataLoader& loader, float opacity, int threads);
 }

@@ -1,8 +1,9 @@
 #include <DataLoader/dataLoader.hpp>
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
-DataLoader::DataLoader(const boost::program_options::variables_map varMap) : vm(varMap)
+DataLoader::DataLoader(const boost::program_options::variables_map varMap)
+	: vm(varMap)
 {
 }
 
@@ -18,7 +19,8 @@ void DataLoader::loadImg()
 
 	if (img.empty())
 	{
-		const std::string msg{"Could not open input file: " + vm["input"].as<std::string>()};
+		const std::string msg{"Could not open input file: "
+							  + vm["input"].as<std::string>()};
 		throw std::runtime_error(msg.c_str());
 	}
 }
@@ -29,7 +31,8 @@ void DataLoader::loadLut()
 	std::ifstream infile(vm["lut"].as<std::string>());
 	if (!infile.good())
 	{
-		const std::string msg{"Could not open input LUT file: " + vm["lut"].as<std::string>()};
+		const std::string msg{"Could not open input LUT file: "
+							  + vm["lut"].as<std::string>()};
 		throw std::runtime_error(msg.c_str());
 	}
 	std::cout << "Parsing LUT...\n";
@@ -37,7 +40,9 @@ void DataLoader::loadLut()
 	infile.close();
 	if (ret != 0)
 	{
-		const std::string msg{"Could not parse the cube info in the input file. Return code = " + std::to_string(ret)};
+		const std::string msg{
+			"Could not parse the cube info in the input file. Return code = "
+			+ std::to_string(ret)};
 		throw std::runtime_error(msg.c_str());
 	}
 }
