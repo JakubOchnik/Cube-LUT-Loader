@@ -1,6 +1,8 @@
 add_executable(${PROJECT_NAME} ${SOURCE_DIR}/main.cpp)
 
-find_package(CUDAToolkit)
+if (BUILD_CUDA)
+    find_package(CUDAToolkit)
+endif()
 
 find_package(OpenCV REQUIRED)
 message(STATUS "OpenCV include dir: ${OpenCV_INCLUDE_DIRS}")
@@ -11,10 +13,18 @@ message(STATUS "Boost include dir: ${Boost_INCLUDE_DIRS}")
 
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${OpenCV_INCLUDE_DIRS} ${INCLUDE_DIR} ${CUDA_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+if (BUILD_CUDA)
+    set(INCLUDE_DIRS ${OpenCV_INCLUDE_DIRS} ${INCLUDE_DIR} ${CUDA_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+else()
+    set(INCLUDE_DIRS ${OpenCV_INCLUDE_DIRS} ${INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
+endif()
+
+target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS} Boost::program_options Eigen3::Eigen)
 
-add_subdirectory(${SOURCE_DIR}/GPUImageProcess)
+if (BUILD_CUDA)
+    add_subdirectory(${SOURCE_DIR}/GPUImageProcess)
+endif()
 add_subdirectory(${SOURCE_DIR}/ImageProcess)
 add_subdirectory(${SOURCE_DIR}/TaskDispatcher)
 add_subdirectory(${SOURCE_DIR}/DataLoader)

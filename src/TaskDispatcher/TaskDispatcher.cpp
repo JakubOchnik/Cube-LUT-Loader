@@ -1,4 +1,6 @@
+#ifdef BUILD_CUDA
 #include <GPUImageProcess/GPUprocessor.hpp>
+#endif
 #include <ImageProcess/Processor.hpp>
 #include <TaskDispatcher/TaskDispatcher.hpp>
 #include <iostream>
@@ -36,6 +38,7 @@ int TaskDispatcher::start()
 
 	if (loader.getVm().count("gpu"))
 	{
+#ifdef BUILD_CUDA
 		std::cout << "GPU acceleration enabled\n";
 		GpuProcessor processor(loader);
 		try
@@ -46,6 +49,9 @@ int TaskDispatcher::start()
 		{
 			std::cerr << e.what() << '\n';
 		}
+#else
+		std::cout << "GPU acceleration is unsupported in this build\n";
+#endif
 	}
 	else
 	{
