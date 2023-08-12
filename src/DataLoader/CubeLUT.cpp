@@ -27,6 +27,10 @@ std::string CubeLUT::ReadLine(std::ifstream& infile, const char lineSeparator)
 			status = ReadError;
 			break;
 		}
+		if (!textLine.empty() && textLine.back() == '\r') {
+			// Strip \r from line endings (relevant for files with CRLF line endings)
+			textLine.pop_back();
+		}
 	}
 	return textLine;
 }
