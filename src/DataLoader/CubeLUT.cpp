@@ -3,11 +3,13 @@
 #include <iostream>
 #include <sstream>
 
-// Credit of this parser code: Adobe Inc.
-// Author: Adobe Inc.
-// Source:
-// Cube LUT Specification 1.0
-// https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf
+/**
+ * @file CubeLUT.cpp
+ * @author Jakub Ochnik
+ * @note Parts of the .cube file parser code are courtesy of Adobe Systems Inc.
+ * It is licensed under the Creative Commons Attribution Non-Commercial 3.0.
+ * Source: https://web.archive.org/web/20220220033515/https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf
+ */
 
 std::string CubeLUT::ReadLine(std::ifstream& infile, const char lineSeparator)
 {
