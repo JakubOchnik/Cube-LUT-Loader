@@ -121,8 +121,10 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(std::ifstream& infile)
 	{
 		linePos			  = infile.tellg();
 		string lineOfText = ReadLine(infile, lineSeparator);
-		if (!status == OK)
+		if (status != OK)
+		{
 			break;
+		}
 
 		istringstream line(lineOfText);
 		string		  keyword;
