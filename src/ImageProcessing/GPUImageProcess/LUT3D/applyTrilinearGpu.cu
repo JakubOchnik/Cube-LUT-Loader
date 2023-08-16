@@ -1,21 +1,21 @@
-﻿#include <GPUImageProcess/LUT3D/applyTrilinearGpu.cuh>
+﻿#include <ImageProcessing/GPUImageProcess/LUT3D/applyTrilinearGpu.cuh>
 #include <Eigen/Dense>
-#include <GPUImageProcess/Utils/CudaUtils.hpp>
+#include <ImageProcessing/GPUImageProcess/Utils/CudaUtils.hpp>
 
 namespace GpuTrilinearDevice
 {
-	void run(dim3 threads, dim3 blocks, unsigned char* image, const char channels, float* LUT, const int LUTsize,
-	         const float opacity, const std::tuple<int, int>& imgSize)
+	void run(dim3 threads, dim3 blocks, unsigned char *image, const char channels, float *LUT, const int LUTsize,
+			 const float opacity, const std::tuple<int, int> &imgSize)
 	{
 		applyTrilinear<<<blocks, threads>>>(image, channels, LUT, LUTsize, opacity, std::get<0>(imgSize),
-		                                    std::get<1>(imgSize));
+											std::get<1>(imgSize));
 		cudaErrorChk(cudaPeekAtLastError());
 		cudaErrorChk(cudaDeviceSynchronize());
 	}
 }
 
-__global__ void applyTrilinear(unsigned char* image, const char channels, const float* LUT, const int LUTsize,
-                               const float opacity, const int width, const int height)
+__global__ void applyTrilinear(unsigned char *image, const char channels, const float *LUT, const int LUTsize,
+							   const float opacity, const int width, const int height)
 {
 	using uchar = unsigned char;
 	// Get the index of pixel in flattened image array
@@ -73,19 +73,19 @@ __global__ void applyTrilinear(unsigned char* image, const char channels, const 
 
 	using namespace Eigen;
 	Vector3f v1 = Vector3f(LUT[ind1], LUT[ind1 + chIncr], LUT[ind1 + 2 * chIncr]) * (1 - delta_r) +
-		Vector3f(LUT[ind2], LUT[ind2 + chIncr], LUT[ind2 + 2 * chIncr]) * delta_r;
+				  Vector3f(LUT[ind2], LUT[ind2 + chIncr], LUT[ind2 + 2 * chIncr]) * delta_r;
 	ind1 = idx(r0, g0, b1);
 	ind2 = idx(r1, g0, b1);
 	Vector3f v2 = Vector3f(LUT[ind1], LUT[ind1 + chIncr], LUT[ind1 + 2 * chIncr]) * (1 - delta_r) +
-		Vector3f(LUT[ind2], LUT[ind2 + chIncr], LUT[ind2 + 2 * chIncr]) * delta_r;
+				  Vector3f(LUT[ind2], LUT[ind2 + chIncr], LUT[ind2 + 2 * chIncr]) * delta_r;
 	ind1 = idx(r0, g1, b0);
 	ind2 = idx(r1, g1, b0);
 	Vector3f v3 = Vector3f(LUT[ind1], LUT[ind1 + chIncr], LUT[ind1 + 2 * chIncr]) * (1 - delta_r) +
-		Vector3f(LUT[ind2], LUT[ind2 + chIncr], LUT[ind2 + 2 * chIncr]) * delta_r;
+				  Vector3f(LUT[ind2], LUT[ind2 + chIncr], LUT[ind2 + 2 * chIncr]) * delta_r;
 	ind1 = idx(r0, g1, b1);
 	ind2 = idx(r1, g1, b1);
 	Vector3f v4 = Vector3f(LUT[ind1], LUT[ind1 + chIncr], LUT[ind1 + 2 * chIncr]) * (1 - delta_r) +
-		Vector3f(LUT[ind2], LUT[ind2 + chIncr], LUT[ind2 + 2 * chIncr]) * delta_r;
+				  Vector3f(LUT[ind2], LUT[ind2 + chIncr], LUT[ind2 + 2 * chIncr]) * delta_r;
 
 	// 2nd step
 	v1 = v1 * (1 - delta_g) + v3 * delta_g;

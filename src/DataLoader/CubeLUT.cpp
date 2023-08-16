@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <boost/format.hpp>
 
 /**
  * @file CubeLUT.cpp
@@ -10,6 +11,8 @@
  * It is licensed under the Creative Commons Attribution Non-Commercial 3.0.
  * Source: https://web.archive.org/web/20220220033515/https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf
  */
+
+CubeLUT::CubeLUT(bool checkBounds) : status{NotInitialized}, boundCheckDisabled{checkBounds} {}
 
 std::string CubeLUT::ReadLine(std::ifstream& infile, const char lineSeparator)
 {
@@ -56,8 +59,19 @@ void CubeLUT::ParseTableRow(const std::string& lineOfText,
 		}
 		else if (tmp < domainMin[i] || tmp > domainMax[i])
 		{
-			status = OutOfDomain;
-			break;
+			if (boundCheckDisabled)
+			{
+				if (!domainViolationDetected)
+				{
+					domainViolationDetected = true;
+					std::cerr << boost::format("WARNING: Detected values outside of domain <%1% - %2%>. Results may be inaccurate.\n") % domainMin[i], domainMax[i];
+				}
+			}
+			else
+			{
+				status = OutOfDomain;
+				break;
+			}
 		}
 		LUT3D(r, g, b, i) = tmp;
 	}
@@ -87,32 +101,8 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(std::ifstream& infile)
 	status = OK;
 	title.clear();
 
-	const char NewlineCharacter = '\n';
-	char	   lineSeparator	= NewlineCharacter;
-
-	const char CarriageReturnCharacter = '\r';
-	for (int i{0}; i < 255; ++i)
-	{
-		char inc = infile.get();
-		if (inc == NewlineCharacter)
-			break;
-		if (inc == CarriageReturnCharacter)
-		{
-			if (infile.get() == NewlineCharacter)
-				break;
-			lineSeparator = CarriageReturnCharacter;
-			clog << "INFO: This file uses non-compliant line separator \\r "
-					"(0x0D)"
-				 << endl;
-		}
-		if (i > 250)
-		{
-			status = LineError;
-			break;
-		}
-	}
-	infile.seekg(0);
-	infile.clear();
+	const char newlineCharacter = '\n';
+	char	   lineSeparator	= newlineCharacter;
 
 	int N, CntTitle, CntSize, CntMin, CntMax;
 	N = CntTitle = CntSize = CntMin = CntMax = 0;
@@ -189,10 +179,13 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(std::ifstream& infile)
 	}
 
 	if (status == OK && CntSize == 0)
+	{
 		status = LUTSizeOutOfRange;
-	if (status == OK && domainMin[0] >= domainMax[0]
-		|| domainMin[1] >= domainMax[1] || domainMin[2] >= domainMax[2])
+	}
+	if (status == OK && domainMin[0] >= domainMax[0] || domainMin[1] >= domainMax[1] || domainMin[2] >= domainMax[2])
+	{
 		status = DomainBoundsReversed;
+	}
 
 	infile.seekg(linePos - 1);
 	while (infile.get() != '\n')

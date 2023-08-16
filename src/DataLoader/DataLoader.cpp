@@ -3,13 +3,8 @@
 #include <iostream>
 
 DataLoader::DataLoader(const boost::program_options::variables_map varMap)
-	: vm(varMap)
+	: vm(varMap), cube{varMap.count("disable-domain-check") > 0}
 {
-}
-
-void DataLoader::setArgs(const boost::program_options::variables_map varMap)
-{
-	this->vm = varMap;
 }
 
 void DataLoader::loadImg()
