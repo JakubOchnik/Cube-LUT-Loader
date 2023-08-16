@@ -1,11 +1,11 @@
-#include <ImageProcess/LUT1D/apply1D.hpp>
+#include <ImageProcessing/CPUImageProcess/LUT1D/apply1D.hpp>
 #include <thread>
 #include <vector>
 
-float Basic1D::getAvgVal(const CubeLUT& lut,
-						 const uint		nValues,
-						 const uchar	value,
-						 const uchar	channel)
+float Basic1D::getAvgVal(const CubeLUT &lut,
+						 const uint nValues,
+						 const uchar value,
+						 const uchar channel)
 {
 	// Cast to avoid potential index overflow
 	using EigenIndex = Eigen::Tensor<float, 2, 0, Eigen::DenseIndex>::Index;
@@ -28,11 +28,11 @@ uchar Basic1D::getClippedVal(const float value)
 	return static_cast<uchar>(round(value * 255));
 }
 
-void Basic1D::calculatePixel(const int		   x,
-							 const int		   y,
-							 const CubeLUT&	   lut,
-							 const float	   opacity,
-							 const WorkerData& data)
+void Basic1D::calculatePixel(const int x,
+							 const int y,
+							 const CubeLUT &lut,
+							 const float opacity,
+							 const WorkerData &data)
 {
 	const uchar b = data.image[(x + y * data.width) * data.channels + 0]; // b
 	const uchar g = data.image[(x + y * data.width) * data.channels + 1]; // g
@@ -50,11 +50,11 @@ void Basic1D::calculatePixel(const int		   x,
 		r + static_cast<uchar>((newR - r) * opacity);
 }
 
-void Basic1D::calculateArea(const int		  x,
-							const CubeLUT&	  lut,
-							const float		  opacity,
-							const WorkerData& data,
-							const int		  segWidth)
+void Basic1D::calculateArea(const int x,
+							const CubeLUT &lut,
+							const float opacity,
+							const WorkerData &data,
+							const int segWidth)
 {
 	// Iterate over the area of width range: <x, x + segWidth>
 	for (int localX{x}; localX < x + segWidth; ++localX)
@@ -66,21 +66,21 @@ void Basic1D::calculateArea(const int		  x,
 	}
 }
 
-cv::Mat_<cv::Vec3b> Basic1D::applyBasic1D(const cv::Mat& img,
-										  const CubeLUT& lut,
-										  const float	 opacity,
-										  const uint	 threadPool)
+cv::Mat_<cv::Vec3b> Basic1D::applyBasic1D(const cv::Mat &img,
+										  const CubeLUT &lut,
+										  const float opacity,
+										  const uint threadPool)
 {
 	cv::Mat_<cv::Vec3b> tmp = img.clone();
-	uchar *				image{img.data}, *newImage{tmp.data};
+	uchar *image{img.data}, *newImage{tmp.data};
 
-	const int  lutSize{static_cast<int>(lut.LUT1D.dimension(0) / 3)};
-	const int  nValues{lutSize / 256}; // assuming 8-bit image
-	WorkerData commonData{image,		  newImage, tmp.cols, tmp.rows,
-						  img.channels(), lutSize,	nValues};
+	const int lutSize{static_cast<int>(lut.LUT1D.dimension(0) / 3)};
+	const int nValues{lutSize / 256}; // assuming 8-bit image
+	WorkerData commonData{image, newImage, tmp.cols, tmp.rows,
+						  img.channels(), lutSize, nValues};
 
 	const int threadWidth = static_cast<int>(tmp.cols / threadPool);
-	const int remainder	  = static_cast<int>(tmp.cols % threadPool);
+	const int remainder = static_cast<int>(tmp.cols % threadPool);
 
 	// Create a vector of threads to be executed
 	std::vector<std::thread> threads;
@@ -95,7 +95,7 @@ cv::Mat_<cv::Vec3b> Basic1D::applyBasic1D(const cv::Mat& img,
 	// Launch the last thread with a slightly larger width
 	threads.emplace_back(calculateArea, x, std::cref(lut), opacity,
 						 std::ref(commonData), threadWidth + remainder);
-	for (auto& thread : threads)
+	for (auto &thread : threads)
 	{
 		thread.join();
 	}

@@ -1,36 +1,43 @@
 #ifdef BUILD_CUDA
-#include <GPUImageProcess/GPUprocessor.hpp>
+#include <ImageProcessing/GPUImageProcess/GPUprocessor.hpp>
 #endif
-#include <ImageProcess/Processor.hpp>
+#include <ImageProcessing/CPUImageProcess/CPUProcessor.hpp>
 #include <TaskDispatcher/TaskDispatcher.hpp>
 #include <iostream>
 #include <thread>
+#include <variant>
 
-TaskDispatcher::TaskDispatcher(const int aCnt, char* aVal[])
-	: argCount(aCnt), args(aVal), loader(DataLoader())
+using namespace boost::program_options;
+
+TaskDispatcher::TaskDispatcher(const int aCnt, char *aVal[])
+	: argCount(aCnt), args(aVal)
 {
 }
 
 int TaskDispatcher::start()
 {
-	boost::program_options::variables_map vm;
+	variables_map vm;
 	try
 	{
-		vm = parseInputArgs(argCount, args);
+		const auto parseOutput = parseInputArgs(argCount, args);
+		if (std::holds_alternative<options_description>(parseOutput)) {
+			std::cout << "--HELP--\n" << std::get<options_description>(parseOutput);
+			return 0;
+		}
+		vm = std::move(std::get<variables_map>(parseOutput));
 	}
-	catch (const boost::program_options::error& ex)
+	catch (const boost::program_options::error &ex)
 	{
 		std::cerr << ex.what() << '\n';
 		return -1;
 	}
-
-	loader.setArgs(vm);
+	DataLoader loader{vm};
 
 	try
 	{
 		loader.load();
 	}
-	catch (const std::exception& ex)
+	catch (const std::exception &ex)
 	{
 		std::cerr << ex.what() << '\n';
 		return -1;
@@ -45,7 +52,7 @@ int TaskDispatcher::start()
 		{
 			processor.execute();
 		}
-		catch (const std::exception& e)
+		catch (const std::exception &e)
 		{
 			std::cerr << e.what() << '\n';
 		}
@@ -56,12 +63,12 @@ int TaskDispatcher::start()
 	else
 	{
 		std::cout << "Using " << loader.getThreads() << " CPU thread(s)\n";
-		Processor processor(loader);
+		CPUProcessor processor(loader);
 		try
 		{
 			processor.execute();
 		}
-		catch (const std::exception& e)
+		catch (const std::exception &e)
 		{
 			std::cerr << e.what() << '\n';
 		}
@@ -69,37 +76,27 @@ int TaskDispatcher::start()
 	return 0;
 }
 
-boost::program_options::variables_map
-TaskDispatcher::parseInputArgs(const int argc, char** argv) const
+std::variant<boost::program_options::variables_map, boost::program_options::options_description>
+TaskDispatcher::parseInputArgs(const int argc, char **argv) const
 {
 	boost::program_options::options_description desc{"Options"};
-	desc.add_options()("help,h", "Help screen")(
-		"input,i", boost::program_options::value<std::string>(),
-		"Input file path")(
-		"lut,l", boost::program_options::value<std::string>(), "LUT file path")(
-		"output,o",
-		boost::program_options::value<std::string>()->default_value("out.png"),
-		"Output file path [= out.png]")(
-		"strength,s",
-		boost::program_options::value<float>()->default_value(1.0f),
-		"Strength of the effect [= 1.0]")("trilinear,t",
-										  "Trilinear interpolation of 3D LUT")(
-		"nearest_value,n", "No interpolation of 3D LUT")(
-		"threads,j",
-		boost::program_options::value<uint>()->default_value(
-			std::thread::hardware_concurrency()),
-		"Number of threads [= Number of physical threads]")(
-		"gpu", "Use GPU acceleration");
+	desc.add_options()
+	("help,h", "Help screen")
+	("input,i", boost::program_options::value<std::string>(), "Input file path")
+	("lut,l", boost::program_options::value<std::string>(), "LUT file path")
+	("output,o", boost::program_options::value<std::string>()->default_value("out.png"), "Output file path [= out.png]")
+	("strength,s", boost::program_options::value<float>()->default_value(1.0f), "Strength of the effect [= 1.0]")
+	("trilinear,t", "Trilinear interpolation of 3D LUT")("nearest_value,n", "No interpolation of 3D LUT")
+	("threads,j", boost::program_options::value<uint>()->default_value(std::thread::hardware_concurrency()),"Number of threads [= Number of physical threads]")
+	("gpu", "Use GPU acceleration")
+	("disable-domain-check", "Disable checking domain bounds for LUT values");
 
 	boost::program_options::variables_map vm;
 	store(parse_command_line(argc, argv, desc), vm);
 
 	if (vm.count("help"))
 	{
-		std::cout << "-- HELP --\n" << desc;
-		// TODO: not a greatest solution ;)
-		// TODO: Improvement: use external logger class for logging
-		throw boost::program_options::error("");
+		return desc;
 	}
 	if (!vm.count("input") || !vm.count("lut") || !vm.count("output"))
 	{

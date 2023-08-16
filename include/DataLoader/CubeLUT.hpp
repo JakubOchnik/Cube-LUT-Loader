@@ -1,17 +1,9 @@
 #pragma once
-#ifndef CubeLUT_H
-#define CubeLUT_H
 
 #include <Eigen/Dense>
 #include <string>
 #include <unsupported/Eigen/CXX11/Tensor>
 #include <vector>
-
-// Licensed under Creative Commons Attribution Non-Commercial 3.0 License
-// Author: Adobe Inc. (with some slight modifications made by Jakub Ochnik)
-// Source:
-// "Cube LUT Specification 1.0"
-// https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf
 
 class CubeLUT
 {
@@ -43,7 +35,7 @@ public:
 	table1D			   LUT1D;
 	table3D			   LUT3D;
 
-	CubeLUT() { status = NotInitialized; }
+	CubeLUT(bool checkBounds);
 
 	LUTState LoadCubeFile(std::ifstream& infile);
 
@@ -56,6 +48,7 @@ private:
 							  const int			 g,
 							  const int			 b);
 	void		ParseTableRow(const std::string& lineOfText, const int i);
-};
 
-#endif
+	bool boundCheckDisabled {false};
+	bool domainViolationDetected {false};
+};

@@ -1,13 +1,13 @@
 #include <DataLoader/CubeLUT.hpp>
-#include <ImageProcess/LUT1D/apply1D.hpp>
-#include <ImageProcess/LUT3D/applyNearestValue.hpp>
-#include <ImageProcess/LUT3D/applyTrilinear.hpp>
-#include <ImageProcess/Processor.hpp>
+#include <ImageProcessing/CPUImageProcess/LUT1D/apply1D.hpp>
+#include <ImageProcessing/CPUImageProcess/LUT3D/applyNearestValue.hpp>
+#include <ImageProcessing/CPUImageProcess/LUT3D/applyTrilinear.hpp>
+#include <ImageProcessing/CPUImageProcess/CPUProcessor.hpp>
 #include <boost/program_options.hpp>
 
-Processor::Processor(const DataLoader& ld) : loader(ld) {}
+CPUProcessor::CPUProcessor(const DataLoader &ld) : ImageProcessor(ld) {}
 
-cv::Mat_<cv::Vec3b> Processor::process()
+cv::Mat CPUProcessor::process()
 {
 	// TODO: Implement as standalone commands retrieved from a map
 	// with keys equal to command line args. Use inheritance to respect
@@ -33,16 +33,4 @@ cv::Mat_<cv::Vec3b> Processor::process()
 											opacity, loader.getThreads());
 	}
 	return newImg;
-}
-
-void Processor::save() const
-{
-	std::cout << "Saving...\n";
-	imwrite(loader.getVm()["output"].as<std::string>(), newImg);
-}
-
-void Processor::execute()
-{
-	process();
-	save();
 }

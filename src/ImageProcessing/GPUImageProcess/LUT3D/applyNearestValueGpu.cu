@@ -1,19 +1,19 @@
-#include <GPUImageProcess/LUT3D/applyNearestValueGpu.cuh>
+#include <ImageProcessing/GPUImageProcess/LUT3D/applyNearestValueGpu.cuh>
 
 namespace GpuNearestValDevice
 {
-	void run(dim3 threads, dim3 blocks, unsigned char* image, const char channels, float* LUT, const char LUTsize,
-	         const float opacity, const std::tuple<int, int>& imgSize)
+	void run(dim3 threads, dim3 blocks, unsigned char *image, const char channels, float *LUT, const char LUTsize,
+			 const float opacity, const std::tuple<int, int> &imgSize)
 	{
 		applyNearestKernel<<<blocks, threads>>>(image, channels, LUT, LUTsize, opacity, std::get<0>(imgSize),
-		                                        std::get<1>(imgSize));
+												std::get<1>(imgSize));
 		cudaErrorChk(cudaPeekAtLastError());
 		cudaErrorChk(cudaDeviceSynchronize());
 	}
 }
 
-__global__ void applyNearestKernel(unsigned char* image, char channels, const float* LUT, char LUTsize, float opacity,
-                                   const int width, const int height)
+__global__ void applyNearestKernel(unsigned char *image, char channels, const float *LUT, char LUTsize, float opacity,
+								   const int width, const int height)
 {
 	using uchar = unsigned char;
 	using uint = unsigned int;

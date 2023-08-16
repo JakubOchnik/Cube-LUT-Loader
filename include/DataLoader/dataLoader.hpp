@@ -11,8 +11,6 @@ class DataLoader
 
 public:
 	DataLoader(boost::program_options::variables_map varMap);
-	DataLoader() = default;
-	void setArgs(boost::program_options::variables_map varMap);
 	void loadImg();
 	void loadLut();
 	void load();
