@@ -1,5 +1,5 @@
 #pragma once
-#include <DataLoader/dataLoader.hpp>
+#include <DataLoader/DataLoader.hpp>
 #include <boost/program_options.hpp>
 #include <variant>
 
