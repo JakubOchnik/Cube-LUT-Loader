@@ -12,9 +12,9 @@
  * Source: https://web.archive.org/web/20220220033515/https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf
  */
 
-CubeLUT::CubeLUT(bool checkBounds) : status{NotInitialized}, boundCheckDisabled{checkBounds} {}
+CubeLUT::CubeLUT() : status{NotInitialized} {}
 
-std::string CubeLUT::ReadLine(std::ifstream& infile, const char lineSeparator)
+std::string CubeLUT::readLine(std::ifstream& infile, const char lineSeparator)
 {
 	// Skip empty lines and comments
 	const char	CommentMarker = '#';
@@ -40,7 +40,17 @@ std::string CubeLUT::ReadLine(std::ifstream& infile, const char lineSeparator)
 	return textLine;
 }
 
-void CubeLUT::ParseTableRow(const std::string& lineOfText,
+float CubeLUT::clipValue(float input, int channel) const {
+	if (input < domainMin[channel]) {
+		return domainMin[channel];
+	}
+	if (input > domainMax[channel]) {
+		return domainMax[channel];
+	}
+	return input;
+}
+
+void CubeLUT::parseTableRow(const std::string& lineOfText,
 							const int		   r,
 							const int		   g,
 							const int		   b)
@@ -59,24 +69,17 @@ void CubeLUT::ParseTableRow(const std::string& lineOfText,
 		}
 		else if (tmp < domainMin[i] || tmp > domainMax[i])
 		{
-			if (boundCheckDisabled)
+			if (!domainViolationDetected)
 			{
-				if (!domainViolationDetected)
-				{
-					domainViolationDetected = true;
-					std::cerr << boost::format("WARNING: Detected values outside of domain <%1% - %2%>. Results may be inaccurate.\n") % domainMin[i], domainMax[i];
-				}
+				domainViolationDetected = true;
+				std::cerr << boost::format("WARNING: Detected LUT values outside of domain <%1% - %2%>. Clipping the input.\n") % domainMin[i] % domainMax[i];
 			}
-			else
-			{
-				status = OutOfDomain;
-				break;
-			}
+			tmp = clipValue(tmp, i);
 		}
 		LUT3D(r, g, b, i) = tmp;
 	}
 }
-void CubeLUT::ParseTableRow(const std::string& lineOfText, const int i)
+void CubeLUT::parseTableRow(const std::string& lineOfText, const int i)
 {
 	// Parse values from the file and assign them to the LUT tensor (2D matrix)
 	const int		   N = 3;
@@ -94,10 +97,8 @@ void CubeLUT::ParseTableRow(const std::string& lineOfText, const int i)
 	}
 }
 
-CubeLUT::LUTState CubeLUT::LoadCubeFile(std::ifstream& infile)
+CubeLUT::LUTState CubeLUT::loadCubeFile(std::ifstream& infile)
 {
-	using namespace std;
-	// defaults
 	status = OK;
 	title.clear();
 
@@ -110,14 +111,14 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(std::ifstream& infile)
 	while (status == OK)
 	{
 		linePos			  = infile.tellg();
-		string lineOfText = ReadLine(infile, lineSeparator);
+		std::string lineOfText = readLine(infile, lineSeparator);
 		if (status != OK)
 		{
 			break;
 		}
 
-		istringstream line(lineOfText);
-		string		  keyword;
+		std::istringstream line(lineOfText);
+		std::string		  keyword;
 		line >> keyword;
 
 		if ("+" < keyword && keyword < ":") // numbers
@@ -198,7 +199,7 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(std::ifstream& infile)
 		N = LUT1D.dimension(0);
 		for (int i{0}; i < N && status == OK; ++i)
 		{
-			ParseTableRow(ReadLine(infile, lineSeparator), i);
+			parseTableRow(readLine(infile, lineSeparator), i);
 		}
 	}
 	else
@@ -210,7 +211,7 @@ CubeLUT::LUTState CubeLUT::LoadCubeFile(std::ifstream& infile)
 			{
 				for (int r{0}; r < N && status == OK; ++r)
 				{
-					ParseTableRow(ReadLine(infile, lineSeparator), r, g, b);
+					parseTableRow(readLine(infile, lineSeparator), r, g, b);
 				}
 			}
 		}

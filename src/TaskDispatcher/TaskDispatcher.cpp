@@ -88,8 +88,7 @@ TaskDispatcher::parseInputArgs(const int argc, char **argv) const
 	("strength,s", boost::program_options::value<float>()->default_value(1.0f), "Strength of the effect [= 1.0]")
 	("trilinear,t", "Trilinear interpolation of 3D LUT")("nearest_value,n", "No interpolation of 3D LUT")
 	("threads,j", boost::program_options::value<uint>()->default_value(std::thread::hardware_concurrency()),"Number of threads [= Number of physical threads]")
-	("gpu", "Use GPU acceleration")
-	("disable-domain-check", "Disable checking domain bounds for LUT values");
+	("gpu", "Use GPU acceleration");
 
 	boost::program_options::variables_map vm;
 	store(parse_command_line(argc, argv, desc), vm);

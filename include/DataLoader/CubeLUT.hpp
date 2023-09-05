@@ -35,20 +35,20 @@ public:
 	table1D			   LUT1D;
 	table3D			   LUT3D;
 
-	CubeLUT(bool checkBounds);
+	CubeLUT();
 
-	LUTState LoadCubeFile(std::ifstream& infile);
+	LUTState loadCubeFile(std::ifstream& infile);
 
 	bool is3D() const;
 
 private:
-	std::string ReadLine(std::ifstream& infile, char lineSeparator);
-	void		ParseTableRow(const std::string& lineOfText,
+	std::string readLine(std::ifstream& infile, char lineSeparator);
+	void		parseTableRow(const std::string& lineOfText,
 							  const int			 r,
 							  const int			 g,
 							  const int			 b);
-	void		ParseTableRow(const std::string& lineOfText, const int i);
+	void		parseTableRow(const std::string& lineOfText, const int i);
+	float clipValue(float input, int channel) const;
 
-	bool boundCheckDisabled {false};
 	bool domainViolationDetected {false};
 };

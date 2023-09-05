@@ -1,11 +1,8 @@
-#include <DataLoader/dataLoader.hpp>
+#include <DataLoader/DataLoader.hpp>
 #include <fstream>
 #include <iostream>
 
-DataLoader::DataLoader(const boost::program_options::variables_map varMap)
-	: vm(varMap), cube{varMap.count("disable-domain-check") > 0}
-{
-}
+DataLoader::DataLoader(const boost::program_options::variables_map varMap) : vm(varMap) {}
 
 void DataLoader::loadImg()
 {
@@ -26,12 +23,11 @@ void DataLoader::loadLut()
 	std::ifstream infile(vm["lut"].as<std::string>());
 	if (!infile.good())
 	{
-		const std::string msg{"Could not open input LUT file: "
-							  + vm["lut"].as<std::string>()};
+		const std::string msg{"Could not open input LUT file: " + vm["lut"].as<std::string>()};
 		throw std::runtime_error(msg.c_str());
 	}
 	std::cout << "Parsing LUT...\n";
-	const int ret = cube.LoadCubeFile(infile);
+	const int ret = cube.loadCubeFile(infile);
 	infile.close();
 	if (ret != 0)
 	{

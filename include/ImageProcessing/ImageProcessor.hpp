@@ -1,5 +1,5 @@
 #pragma once
-#include <DataLoader/dataLoader.hpp>
+#include <DataLoader/DataLoader.hpp>
 #include <opencv2/opencv.hpp>
 
 class ImageProcessor
