@@ -1,7 +1,7 @@
 #pragma once
 #include <DataLoader/CubeLUT.hpp>
 #include <boost/program_options.hpp>
-#include <opencv2/opencv.hpp>
+#include <opencv2/core.hpp>
 
 class DataLoader
 {

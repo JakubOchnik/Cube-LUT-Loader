@@ -1,5 +1,7 @@
 #include <ImageProcessing/ImageProcessor.hpp>
 #include <boost/program_options.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <iostream>
 
 ImageProcessor::ImageProcessor(const DataLoader &ld) : loader(ld) {}
 
@@ -9,7 +11,7 @@ void ImageProcessor::save() const
     const auto name = loader.getVm()["output"].as<std::string>();
     try
     {
-        imwrite(name, newImg);
+        cv::imwrite(name, newImg);
     }
     catch (cv::Exception &e)
     {

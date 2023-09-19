@@ -1,6 +1,6 @@
 #pragma once
 #include <DataLoader/DataLoader.hpp>
-#include <opencv2/opencv.hpp>
+#include <opencv2/core.hpp>
 #include <ImageProcessing/ImageProcessor.hpp>
 
 class GpuProcessor : public ImageProcessor

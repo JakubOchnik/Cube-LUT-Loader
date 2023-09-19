@@ -4,7 +4,8 @@ Tested on Ubuntu 22.04.
 1. Install all of the required dependencies
 ```bash
 sudo apt install build-essential cmake g++ # C++ build utilities
-sudo apt install libopencv-dev # OpenCV libraries
+sudo apt install libopencv-dev # OpenCV libraries - if you build it yourself, 
+                               # you only need opencv_core and opencv_imgcodecs
 sudo apt install libboost-all-dev libeigen3-dev # Boost & Eigen3 libraries
 # Optionally install CUDA Toolkit (required for building CUDA code)
 ```
