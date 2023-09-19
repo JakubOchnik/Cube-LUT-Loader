@@ -1,6 +1,7 @@
 #include <DataLoader/DataLoader.hpp>
 #include <fstream>
 #include <iostream>
+#include <opencv2/imgcodecs.hpp>
 
 DataLoader::DataLoader(const boost::program_options::variables_map varMap) : vm(varMap) {}
 

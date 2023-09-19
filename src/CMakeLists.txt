@@ -21,7 +21,7 @@ else()
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS} Boost::program_options Eigen3::Eigen)
+target_link_libraries(${PROJECT_NAME} PUBLIC opencv_core opencv_imgcodecs Boost::program_options Eigen3::Eigen)
 
 add_subdirectory(${SOURCE_DIR}/ImageProcessing)
 add_subdirectory(${SOURCE_DIR}/TaskDispatcher)

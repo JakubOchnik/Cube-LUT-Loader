@@ -4,6 +4,7 @@
 #include <ImageProcessing/CPUImageProcess/LUT3D/applyTrilinear.hpp>
 #include <ImageProcessing/CPUImageProcess/CPUProcessor.hpp>
 #include <boost/program_options.hpp>
+#include <iostream>
 
 CPUProcessor::CPUProcessor(const DataLoader &ld) : ImageProcessor(ld) {}
 
