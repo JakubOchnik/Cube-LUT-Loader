@@ -6,6 +6,6 @@
 class CPUProcessor : public ImageProcessor
 {
 public:
-	CPUProcessor(const DataLoader &ld);
+	explicit CPUProcessor(const DataLoader& ld);
 	cv::Mat process() override;
 };

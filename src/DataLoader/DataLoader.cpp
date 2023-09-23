@@ -2,47 +2,47 @@
 #include <fstream>
 #include <iostream>
 #include <opencv2/imgcodecs.hpp>
+#include <boost/format.hpp>
 
 DataLoader::DataLoader(const boost::program_options::variables_map varMap) : vm(varMap) {}
 
-void DataLoader::loadImg()
+bool DataLoader::loadImg()
 {
-	std::cout << "Importing image...\n";
+	std::cout << "[INFO] Importing image...\n";
 	img = cv::imread(vm["input"].as<std::string>());
 
 	if (img.empty())
 	{
-		const std::string msg{"Could not open input file: "
-							  + vm["input"].as<std::string>()};
-		throw std::runtime_error(msg.c_str());
+		std::cerr << boost::format("[ERROR] Could not open input image file: %1%\n") % vm["input"].as<std::string>();
+		return false;
 	}
+	return true;
 }
 
-void DataLoader::loadLut()
+bool DataLoader::loadLut()
 {
-	std::cout << "Importing LUT...\n";
+	bool success = true;
+	std::cout << "[INFO] Importing LUT...\n";
 	std::ifstream infile(vm["lut"].as<std::string>());
 	if (!infile.good())
 	{
-		const std::string msg{"Could not open input LUT file: " + vm["lut"].as<std::string>()};
-		throw std::runtime_error(msg.c_str());
+		std::cerr << boost::format("[ERROR] Could not open input LUT file: %1%\n") % vm["lut"].as<std::string>();
+		return false;
 	}
-	std::cout << "Parsing LUT...\n";
-	const int ret = cube.loadCubeFile(infile);
+	std::cout << "[INFO] Parsing LUT...\n";
+	try {
+		cube.loadCubeFile(infile);
+	} catch (const std::runtime_error& ex) {
+		std::cerr << boost::format("[ERROR] %1%\n") % ex.what();
+		success = false;
+	}
 	infile.close();
-	if (ret != 0)
-	{
-		const std::string msg{
-			"Could not parse the cube info in the input file. Return code = "
-			+ std::to_string(ret)};
-		throw std::runtime_error(msg.c_str());
-	}
+	return success;
 }
 
-void DataLoader::load()
+bool DataLoader::load()
 {
-	loadImg();
-	loadLut();
+	return loadImg() && loadLut();
 }
 
 const cv::Mat_<cv::Vec3b>& DataLoader::getImg() const

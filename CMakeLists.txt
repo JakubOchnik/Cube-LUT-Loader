@@ -12,6 +12,11 @@ endif()
 
 set(CMAKE_CXX_STANDARD 17)
 
+option(ENABLE_CODE_ANALYSIS "Run code analysis" OFF)
+if(ENABLE_CODE_ANALYSIS)
+    set(CMAKE_CXX_CPPCHECK "cppcheck --enable=all --std=c++17")
+endif()
+
 set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 add_subdirectory(src)

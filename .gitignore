@@ -45,6 +45,11 @@ x64/
 build/
 .vscode/
 *.ipynb_checkpoints/
+*.cmake
+Makefile
+**/CMakeFiles/
+CMakeCache.txt
+compile_commands.json
 
 # Other
 *.cube
