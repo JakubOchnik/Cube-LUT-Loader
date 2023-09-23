@@ -15,21 +15,13 @@ struct WorkerData
 	const int	   nValues;
 };
 
-cv::Mat_<cv::Vec3b> applyBasic1D(const cv::Mat& img,
-								 const CubeLUT& lut,
-								 float			opacity,
-								 uint			threadPool);
+cv::Mat_<cv::Vec3b> applyBasic1D(const cv::Mat& img, const Table1D& lut, float opacity, uint threadPool);
 
-void calculateArea(int				 x,
-				   const CubeLUT&	 lut,
-				   float			 opacity,
-				   const WorkerData& data,
-				   int				 segWidth);
+void calculateArea(int x,const Table1D& lut, float opacity, const WorkerData& data, int segWidth);
 
-void calculatePixel(
-	int x, int y, const CubeLUT& lut, float opacity, const WorkerData& data);
+void calculatePixel(int x, int y, const Table1D& lut, float opacity, const WorkerData& data);
 
-float getAvgVal(const CubeLUT& lut, uint nValues, uchar value, uchar channel);
+float getAvgVal(const Table1D& lut, uint nValues, uchar value, uchar channel);
 
 uchar getClippedVal(float value);
 } // namespace Basic1D

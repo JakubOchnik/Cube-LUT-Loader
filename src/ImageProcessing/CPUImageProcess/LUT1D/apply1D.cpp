@@ -2,7 +2,7 @@
 #include <thread>
 #include <vector>
 
-float Basic1D::getAvgVal(const CubeLUT &lut,
+float Basic1D::getAvgVal(const Table1D &lut,
 						 const uint nValues,
 						 const uchar value,
 						 const uchar channel)
@@ -13,7 +13,7 @@ float Basic1D::getAvgVal(const CubeLUT &lut,
 	float val{0.0f};
 	for (uint i{0}; i < nValues; ++i)
 	{
-		val += lut.LUT1D(value * static_cast<EigenIndex>(nValues) + i, channel);
+		val += lut(value * static_cast<EigenIndex>(nValues) + i, channel);
 	}
 	return val / static_cast<float>(nValues);
 }
@@ -30,7 +30,7 @@ uchar Basic1D::getClippedVal(const float value)
 
 void Basic1D::calculatePixel(const int x,
 							 const int y,
-							 const CubeLUT &lut,
+							 const Table1D &lut,
 							 const float opacity,
 							 const WorkerData &data)
 {
@@ -51,7 +51,7 @@ void Basic1D::calculatePixel(const int x,
 }
 
 void Basic1D::calculateArea(const int x,
-							const CubeLUT &lut,
+							const Table1D &lut,
 							const float opacity,
 							const WorkerData &data,
 							const int segWidth)
@@ -67,14 +67,14 @@ void Basic1D::calculateArea(const int x,
 }
 
 cv::Mat_<cv::Vec3b> Basic1D::applyBasic1D(const cv::Mat &img,
-										  const CubeLUT &lut,
+										  const Table1D &lut,
 										  const float opacity,
 										  const uint threadPool)
 {
 	cv::Mat_<cv::Vec3b> tmp = img.clone();
 	uchar *image{img.data}, *newImage{tmp.data};
 
-	const int lutSize{static_cast<int>(lut.LUT1D.dimension(0) / 3)};
+	const int lutSize{static_cast<int>(lut.dimension(0) / 3)};
 	const int nValues{lutSize / 256}; // assuming 8-bit image
 	WorkerData commonData{image, newImage, tmp.cols, tmp.rows,
 						  img.channels(), lutSize, nValues};

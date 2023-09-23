@@ -12,24 +12,27 @@
  * Source: https://web.archive.org/web/20220220033515/https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf
  */
 
-CubeLUT::CubeLUT() : status{NotInitialized} {}
+constexpr char QUOTE_SYMBOL = '"';
+constexpr char NEWLINE_SEPARATOR = '\n';
+constexpr char COMMENT_MARKER = '#';
 
-std::string CubeLUT::readLine(std::ifstream& infile, const char lineSeparator)
+CubeLUT::CubeLUT() : parsingStatus{NotInitialized} {}
+
+std::string CubeLUT::readLine(std::ifstream& infile)
 {
 	// Skip empty lines and comments
-	const char	CommentMarker = '#';
 	std::string textLine;
-	while (textLine.empty() || textLine[0] == CommentMarker)
+	while (textLine.empty() || textLine[0] == COMMENT_MARKER)
 	{
 		if (infile.eof())
 		{
-			status = PrematureEndOfFile;
+			parsingStatus = PrematureEndOfFile;
 			break;
 		}
-		std::getline(infile, textLine, lineSeparator);
+		std::getline(infile, textLine, NEWLINE_SEPARATOR);
 		if (infile.fail())
 		{
-			status = ReadError;
+			parsingStatus = ReadError;
 			break;
 		}
 		if (!textLine.empty() && textLine.back() == '\r') {
@@ -50,21 +53,19 @@ float CubeLUT::clipValue(float input, int channel) const {
 	return input;
 }
 
-void CubeLUT::parseTableRow(const std::string& lineOfText,
-							const int		   r,
-							const int		   g,
-							const int		   b)
+void CubeLUT::parseTableRow3D(const std::string& lineOfText, const int r, const int g, const int b)
 {
 	// Parse values from the file and assign them to the LUT tensor (4D matrix)
-	const int		   N = 3;
+	const int N = 3;
 	std::istringstream line(lineOfText);
-	float			   tmp;
+	float tmp;
+	auto& lut3d = std::get<Table3D>(table);
 	for (int i{0}; i < N; ++i)
 	{
 		line >> tmp;
 		if (line.fail())
 		{
-			status = CouldNotParseTableData;
+			parsingStatus = CouldNotParseTableData;
 			break;
 		}
 		else if (tmp < domainMin[i] || tmp > domainMax[i])
@@ -72,154 +73,181 @@ void CubeLUT::parseTableRow(const std::string& lineOfText,
 			if (!domainViolationDetected)
 			{
 				domainViolationDetected = true;
-				std::cerr << boost::format("WARNING: Detected LUT values outside of domain <%1% - %2%>. Clipping the input.\n") % domainMin[i] % domainMax[i];
+				std::cerr << boost::format("[WARNING] Detected LUT values outside of domain <%1% - %2%>. Clipping the input.\n") % domainMin[i] % domainMax[i];
 			}
 			tmp = clipValue(tmp, i);
 		}
-		LUT3D(r, g, b, i) = tmp;
+		lut3d(r, g, b, i) = tmp;
 	}
 }
-void CubeLUT::parseTableRow(const std::string& lineOfText, const int i)
+void CubeLUT::parseTableRow1D(const std::string& lineOfText, const int i)
 {
 	// Parse values from the file and assign them to the LUT tensor (2D matrix)
-	const int		   N = 3;
+	const int N = 3;
 	std::istringstream line(lineOfText);
-	float			   tmp;
+	float tmp;
+	auto& lut1d = std::get<Table1D>(table);
 	for (int j{0}; j < N; ++j)
 	{
 		line >> tmp;
 		if (line.fail())
 		{
-			status = CouldNotParseTableData;
+			parsingStatus = CouldNotParseTableData;
 			break;
 		}
-		LUT1D(i, j) = tmp;
+		lut1d(i, j) = tmp;
 	}
 }
 
-CubeLUT::LUTState CubeLUT::loadCubeFile(std::ifstream& infile)
-{
-	status = OK;
-	title.clear();
+void CubeLUT::parseLUTParameters(std::ifstream& infile, long& linePos) {
+	bool titleFound{false};
+	bool domainMinFound{false}, domainMaxFound{false};
+	bool lutSizeFound{false};
 
-	const char newlineCharacter = '\n';
-	char	   lineSeparator	= newlineCharacter;
-
-	int N, CntTitle, CntSize, CntMin, CntMax;
-	N = CntTitle = CntSize = CntMin = CntMax = 0;
-	long linePos;
-	while (status == OK)
+	while (parsingStatus == OK)
 	{
-		linePos			  = infile.tellg();
-		std::string lineOfText = readLine(infile, lineSeparator);
-		if (status != OK)
+		linePos = infile.tellg();
+		std::string lineOfText = readLine(infile);
+		if (parsingStatus != OK)
 		{
 			break;
 		}
 
 		std::istringstream line(lineOfText);
-		std::string		  keyword;
+		std::string keyword;
 		line >> keyword;
 
-		if ("+" < keyword && keyword < ":") // numbers
+		if (keyword > "+"  && keyword < ":") // number
 		{
 			infile.seekg(linePos);
+			// finished parsing parameters
 			break;
 		}
-		if (keyword == "TITLE" && CntTitle++ == 0)
+		if (keyword == "TITLE" && !titleFound)
 		{
-			const char QUOTE = '"';
-			char	   startOfTitle;
+			char startOfTitle;
 			line >> startOfTitle;
-			if (startOfTitle != QUOTE)
+			if (startOfTitle != QUOTE_SYMBOL)
 			{
-				status = TitleMissingQuote;
-				break;
+				std::cerr << "[WARNING] Missing quote for the LUT title";
+				continue;
 			}
-			getline(line, title, QUOTE);
+			titleFound = true;
+			std::getline(line, title, QUOTE_SYMBOL);
 		}
-		else if (keyword == "DOMAIN_MIN" && CntMin++ == 0)
+		else if (keyword == "DOMAIN_MIN" && !domainMinFound)
 		{
 			line >> domainMin[0] >> domainMin[1] >> domainMin[2];
 		}
-		else if (keyword == "DOMAIN_MAX" && CntMax++ == 0)
+		else if (keyword == "DOMAIN_MAX" && !domainMaxFound)
 		{
 			line >> domainMax[0] >> domainMax[1] >> domainMax[2];
 		}
-		else if (keyword == "LUT_1D_SIZE" && CntSize++ == 0)
+		else if (keyword == "LUT_1D_SIZE" && !lutSizeFound)
 		{
-			line >> N;
-			if (N < 2 || N > 65536)
+			line >> size;
+			if (size < 2 || size > 65536)
 			{
-				status = LUTSizeOutOfRange;
+				parsingStatus = LUTSizeOutOfRange;
 				break;
 			}
-			LUT1D = table1D(N, 3);
+			type = LUTType::LUT1D;
 		}
-		else if (keyword == "LUT_3D_SIZE" && CntSize++ == 0)
+		else if (keyword == "LUT_3D_SIZE" && !lutSizeFound)
 		{
-			line >> N;
-			if (N < 2 || N > 256)
+			line >> size;
+			if (size < 2 || size > 256)
 			{
-				status = LUTSizeOutOfRange;
+				parsingStatus = LUTSizeOutOfRange;
 				break;
 			}
-			LUT3D = table3D(N, N, N, 3);
+			type = LUTType::LUT3D;
 		}
 		else
 		{
-			status = UnknownOrRepeatedKeyword;
-			break;
+			std::cerr << "[WARNING] Unknown or repeated keyword: " << keyword;
+			continue;
 		}
 
 		if (line.fail())
 		{
-			status = ReadError;
+			parsingStatus = ReadError;
 			break;
 		}
 	}
+}
 
-	if (status == OK && CntSize == 0)
-	{
-		status = LUTSizeOutOfRange;
-	}
-	if (status == OK && domainMin[0] >= domainMax[0] || domainMin[1] >= domainMax[1] || domainMin[2] >= domainMax[2])
-	{
-		status = DomainBoundsReversed;
-	}
-
-	infile.seekg(linePos - 1);
-	while (infile.get() != '\n')
-	{
-		infile.seekg(--linePos);
-	}
-
-	if (LUT1D.size() > 0)
-	{
-		N = LUT1D.dimension(0);
-		for (int i{0}; i < N && status == OK; ++i)
+void CubeLUT::parseLUTTable(std::ifstream& infile) {
+	if (type == LUTType::LUT1D) {
+		table = Table1D(size, 3);
+		auto& lut1d = std::get<Table1D>(table);
+		const auto N = lut1d.dimension(0);
+		for (int i{0}; i < N && parsingStatus == OK; ++i)
 		{
-			parseTableRow(readLine(infile, lineSeparator), i);
+			parseTableRow1D(readLine(infile), i);
 		}
-	}
-	else
-	{
-		N = LUT3D.dimension(0);
-		for (int b{0}; b < N && status == OK; ++b)
+	} else if (type == LUTType::LUT3D) {
+		auto N = size;
+		table = Table3D(N, N, N, 3);
+		auto& lut3d = std::get<Table3D>(table);
+		N = lut3d.dimension(0);
+		for (int b{0}; b < N && parsingStatus == OK; ++b)
 		{
-			for (int g{0}; g < N && status == OK; ++g)
+			for (int g{0}; g < N && parsingStatus == OK; ++g)
 			{
-				for (int r{0}; r < N && status == OK; ++r)
+				for (int r{0}; r < N && parsingStatus == OK; ++r)
 				{
-					parseTableRow(readLine(infile, lineSeparator), r, g, b);
+					parseTableRow3D(readLine(infile), r, g, b);
 				}
 			}
 		}
 	}
-	return status;
 }
 
-bool CubeLUT::is3D() const
+CubeLUT::LUTState CubeLUT::loadCubeFile(std::ifstream& infile)
 {
-	return LUT1D.size() == 0;
+	parsingStatus = OK;
+	title.clear();
+
+	long linePos = 0;
+	parseLUTParameters(infile, linePos);
+	
+	if (!hasType()) {
+		return CouldNotParseParams;
+	}
+
+	if (!hasRange()) {
+		// no range
+	}
+
+	if (parsingStatus == LUTSizeOutOfRange)
+	{
+		// no size or out of range
+		return LUTSizeOutOfRange;
+	}
+
+	if (parsingStatus == OK && domainMin[0] >= domainMax[0] || domainMin[1] >= domainMax[1] || domainMin[2] >= domainMax[2])
+	{
+		// reverse domain bounds
+		return DomainBoundsReversed;
+	}
+
+	// Rewind the file to the beginning of LUT table
+	infile.seekg(linePos - 1);
+	while (linePos > 0 && infile.get() != '\n')
+	{
+		infile.seekg(--linePos);
+	}
+
+	parseLUTTable(infile);
+	return parsingStatus;
+}
+
+LUTType CubeLUT::getType() const
+{
+	return type;
+}
+
+const std::variant<Table1D, Table3D>& CubeLUT::getTable() const {
+	return table;
 }

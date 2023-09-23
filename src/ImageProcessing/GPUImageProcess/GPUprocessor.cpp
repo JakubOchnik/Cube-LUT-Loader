@@ -13,8 +13,7 @@ cv::Mat GpuProcessor::process()
 	// with keys equal to command line args. Use inheritance to respect
 	// DRY (there are tons of similar code in the different interpolation classes).
 	std::cout << "Processing the image...\n";
-	if (const float opacity = loader.getVm()["strength"].as<float>();
-		!loader.getCube().is3D())
+	if (const float opacity = loader.getVm()["strength"].as<float>(); loader.getCube().getType() != LUTType::LUT3D)
 	{
 		// cout << "Applying basic 1D LUT..." << endl;
 		std::cout << "GPU-accelerated 1D LUTs are not implemented yet\n";

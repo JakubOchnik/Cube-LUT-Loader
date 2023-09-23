@@ -6,7 +6,7 @@
 
 void NearestValue::calculatePixel(const int x,
 								  const int y,
-								  const CubeLUT &lut,
+								  const Table3D &lut,
 								  const float opacity,
 								  const WorkerData &data)
 {
@@ -21,9 +21,9 @@ void NearestValue::calculatePixel(const int x,
 	const int r = data.image[pixelIndex + 2]; // r
 	const auto rIdx = static_cast<uint>(round(r * (data.lutSize - 1) / 255.0f));
 
-	const auto newB = static_cast<int>(lut.LUT3D(rIdx, gIdx, bIdx, 2) * 255);
-	const auto newG = static_cast<int>(lut.LUT3D(rIdx, gIdx, bIdx, 1) * 255);
-	const auto newR = static_cast<int>(lut.LUT3D(rIdx, gIdx, bIdx, 0) * 255);
+	const auto newB = static_cast<int>(lut(rIdx, gIdx, bIdx, 2) * 255);
+	const auto newG = static_cast<int>(lut(rIdx, gIdx, bIdx, 1) * 255);
+	const auto newR = static_cast<int>(lut(rIdx, gIdx, bIdx, 0) * 255);
 
 	data.newImage[pixelIndex] = static_cast<uchar>(b + (newB - b) * opacity);
 	data.newImage[pixelIndex + 1] = static_cast<uchar>(g + (newG - g) * opacity);
@@ -31,7 +31,7 @@ void NearestValue::calculatePixel(const int x,
 }
 
 void NearestValue::calculateArea(const int x,
-								 const CubeLUT &lut,
+								 const Table3D &lut,
 								 const float opacity,
 								 const WorkerData &data,
 								 const int segWidth)
@@ -47,7 +47,7 @@ void NearestValue::calculateArea(const int x,
 }
 
 cv::Mat NearestValue::applyNearest(cv::Mat img,
-								   const CubeLUT &lut,
+								   const Table3D &lut,
 								   const float opacity,
 								   const uint threadPool)
 {
@@ -56,7 +56,7 @@ cv::Mat NearestValue::applyNearest(cv::Mat img,
 	uchar *image{img.data}, *newImage{tmp.data};
 	WorkerData commonData{
 		image, newImage, tmp.cols,
-		tmp.rows, img.channels(), static_cast<int>(lut.LUT3D.dimension(0))};
+		tmp.rows, img.channels(), static_cast<int>(lut.dimension(0))};
 
 	// Processing
 	// Divide the picture into threadPool vertical windows and process them
