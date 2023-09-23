@@ -9,6 +9,11 @@
 
 using namespace boost::program_options;
 
+enum {
+	FAIL_EXIT = -1,
+	SUCCESS_EXIT
+};
+
 TaskDispatcher::TaskDispatcher(const int aCnt, char *aVal[])
 	: argCount(aCnt), args(aVal)
 {
@@ -29,24 +34,19 @@ int TaskDispatcher::start()
 	catch (const boost::program_options::error &ex)
 	{
 		std::cerr << ex.what() << '\n';
-		return -1;
+		return FAIL_EXIT;
 	}
 	DataLoader loader{vm};
 
-	try
-	{
-		loader.load();
-	}
-	catch (const std::exception &ex)
-	{
-		std::cerr << ex.what() << '\n';
-		return -1;
+	bool loadSuccessful = loader.load();
+	if (!loadSuccessful) {
+		return FAIL_EXIT;
 	}
 
 	if (loader.getVm().count("gpu"))
 	{
 #ifdef BUILD_CUDA
-		std::cout << "GPU acceleration enabled\n";
+		std::cout << "[INFO] GPU acceleration enabled\n";
 		GpuProcessor processor(loader);
 		try
 		{
@@ -57,12 +57,12 @@ int TaskDispatcher::start()
 			std::cerr << e.what() << '\n';
 		}
 #else
-		std::cout << "GPU acceleration is unsupported in this build\n";
+		std::cerr << "[ERROR] GPU acceleration is unsupported in this build\n";
 #endif
 	}
 	else
 	{
-		std::cout << "Using " << loader.getThreads() << " CPU thread(s)\n";
+		std::cout << "[INFO] Using " << loader.getThreads() << " CPU thread(s)\n";
 		CPUProcessor processor(loader);
 		try
 		{
@@ -73,11 +73,10 @@ int TaskDispatcher::start()
 			std::cerr << e.what() << '\n';
 		}
 	}
-	return 0;
+	return SUCCESS_EXIT;
 }
 
-std::variant<boost::program_options::variables_map, boost::program_options::options_description>
-TaskDispatcher::parseInputArgs(const int argc, char **argv) const
+std::variant<TaskDispatcher::VariablesMap, TaskDispatcher::OptionsDescription> TaskDispatcher::parseInputArgs(const int argc, char **argv) const
 {
 	boost::program_options::options_description desc{"Options"};
 	desc.add_options()
@@ -86,7 +85,8 @@ TaskDispatcher::parseInputArgs(const int argc, char **argv) const
 	("lut,l", boost::program_options::value<std::string>(), "LUT file path")
 	("output,o", boost::program_options::value<std::string>()->default_value("out.png"), "Output file path [= out.png]")
 	("strength,s", boost::program_options::value<float>()->default_value(1.0f), "Strength of the effect [= 1.0]")
-	("trilinear,t", "Trilinear interpolation of 3D LUT")("nearest_value,n", "No interpolation of 3D LUT")
+	("trilinear,t", "Trilinear interpolation of 3D LUT")
+	("nearest_value,n", "No interpolation of 3D LUT")
 	("threads,j", boost::program_options::value<uint>()->default_value(std::thread::hardware_concurrency()),"Number of threads [= Number of physical threads]")
 	("gpu", "Use GPU acceleration");
 
