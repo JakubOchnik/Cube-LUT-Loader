@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0.0)
 
-# Toggle building GPU accelerated version
-set(BUILD_CUDA OFF)
+option(BUILD_TESTS "Build tests" OFF)
+option(BUILD_CUDA "Build project with CUDA libraries" OFF)
 
 if(BUILD_CUDA)
     project(lut_loader VERSION 0.1.0 LANGUAGES CUDA CXX)
@@ -12,11 +12,8 @@ endif()
 
 set(CMAKE_CXX_STANDARD 17)
 
-option(ENABLE_CODE_ANALYSIS "Run code analysis" OFF)
-if(ENABLE_CODE_ANALYSIS)
-    set(CMAKE_CXX_CPPCHECK "cppcheck --enable=all --std=c++17")
-endif()
-
 set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
+set(MAIN_LIB_NAME lut_loader_base)
+set(LIBRARIES_TO_LINK opencv_core opencv_imgcodecs Boost::program_options Eigen3::Eigen)
 add_subdirectory(src)

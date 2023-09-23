@@ -27,7 +27,6 @@ public:
 private:
 	std::variant<Table1D, Table3D> table;
 
-
 	LUTType type = LUTType::UNKNOWN;
 	uint32_t size = 0;
 	std::string title;

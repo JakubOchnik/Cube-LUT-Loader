@@ -1,6 +1,6 @@
 include_directories(${INCLUDE_DIR})
 
-target_sources(${PROJECT_NAME} PUBLIC 
+target_sources(${MAIN_LIB_NAME} PUBLIC
                 ${SOURCE_DIR}/ImageProcessing/GPUImageProcess/LUT3D/applyNearestValueGpu.cu
                 ${SOURCE_DIR}/ImageProcessing/GPUImageProcess/LUT3D/applyTrilinearGpu.cu
                 ${SOURCE_DIR}/ImageProcessing/GPUImageProcess/LUT3D/applyTrilinearHost.cpp
