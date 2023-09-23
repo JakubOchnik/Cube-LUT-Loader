@@ -5,7 +5,7 @@
 
 void Trilinear::calculatePixel(const int x,
 							   const int y,
-							   const CubeLUT &lut,
+							   const Table3D &lut,
 							   const float opacity,
 							   const WorkerData &data)
 {
@@ -50,16 +50,16 @@ void Trilinear::calculatePixel(const int x,
 	using Vec3fWrap = Tensor<float, 1>;
 	// 1st step
 	Vec3fWrap v1 =
-		(lut.LUT3D.slice(Arr4{r0, g0, b0, 0}, data.extents) * (1 - delta_r) + lut.LUT3D.slice(Arr4{r1, g0, b0, 0}, data.extents) * delta_r)
+		(lut.slice(Arr4{r0, g0, b0, 0}, data.extents) * (1 - delta_r) + lut.slice(Arr4{r1, g0, b0, 0}, data.extents) * delta_r)
 			.reshape(Eigen::array<Index, 1>{3});
 	Vec3fWrap v2 =
-		(lut.LUT3D.slice(Arr4{r0, g0, b1, 0}, data.extents) * (1 - delta_r) + lut.LUT3D.slice(Arr4{r1, g0, b1, 0}, data.extents) * delta_r)
+		(lut.slice(Arr4{r0, g0, b1, 0}, data.extents) * (1 - delta_r) + lut.slice(Arr4{r1, g0, b1, 0}, data.extents) * delta_r)
 			.reshape(Eigen::array<Index, 1>{3});
 	const Vec3fWrap v3 =
-		(lut.LUT3D.slice(Arr4{r0, g1, b0, 0}, data.extents) * (1 - delta_r) + lut.LUT3D.slice(Arr4{r1, g1, b0, 0}, data.extents) * delta_r)
+		(lut.slice(Arr4{r0, g1, b0, 0}, data.extents) * (1 - delta_r) + lut.slice(Arr4{r1, g1, b0, 0}, data.extents) * delta_r)
 			.reshape(Eigen::array<Index, 1>{3});
 	const Vec3fWrap v4 =
-		(lut.LUT3D.slice(Arr4{r0, g1, b1, 0}, data.extents) * (1 - delta_r) + lut.LUT3D.slice(Arr4{r1, g1, b1, 0}, data.extents) * delta_r)
+		(lut.slice(Arr4{r0, g1, b1, 0}, data.extents) * (1 - delta_r) + lut.slice(Arr4{r1, g1, b1, 0}, data.extents) * delta_r)
 			.reshape(Eigen::array<Index, 1>{3});
 
 	// 2nd step
@@ -83,7 +83,7 @@ void Trilinear::calculatePixel(const int x,
 }
 
 void Trilinear::calculateArea(const int x,
-							  const CubeLUT &lut,
+							  const Table3D &lut,
 							  const float opacity,
 							  const WorkerData &data,
 							  const int segWidth)
@@ -98,7 +98,7 @@ void Trilinear::calculateArea(const int x,
 }
 
 cv::Mat Trilinear::applyTrilinear(cv::Mat img,
-								  const CubeLUT &lut,
+								  const Table3D &lut,
 								  const float opacity,
 								  const uint threadPool)
 {
@@ -107,7 +107,7 @@ cv::Mat Trilinear::applyTrilinear(cv::Mat img,
 	unsigned char *image = img.data;
 	unsigned char *newImage = tmp.data;
 	WorkerData commonData{
-		image, newImage, tmp.cols, tmp.rows, img.channels(), static_cast<int>(lut.LUT3D.dimension(0)), {1, 1, 1, 3}};
+		image, newImage, tmp.cols, tmp.rows, img.channels(), static_cast<int>(lut.dimension(0)), {1, 1, 1, 3}};
 
 	// Processing
 	// Divide the picture into threadPool vertical windows and process them

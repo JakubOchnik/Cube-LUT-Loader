@@ -5,7 +5,7 @@
 #include <TaskDispatcher/TaskDispatcher.hpp>
 #include <iostream>
 #include <thread>
-#include <variant>
+#include <iostream>
 
 using namespace boost::program_options;
 

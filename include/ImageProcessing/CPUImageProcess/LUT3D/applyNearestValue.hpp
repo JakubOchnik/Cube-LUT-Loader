@@ -14,14 +14,9 @@ struct WorkerData
 	const int	   lutSize;
 };
 
-cv::Mat applyNearest(cv::Mat img, const CubeLUT& lut, float opacity, uint threadPool);
+cv::Mat applyNearest(cv::Mat img, const Table3D& lut, float opacity, uint threadPool);
 
-void calculateArea(int				 x,
-				   const CubeLUT&	 lut,
-				   float			 opacity,
-				   const WorkerData& data,
-				   int				 segWidth);
+void calculateArea(int x, const Table3D& lut, float opacity, const WorkerData& data, int segWidth);
 
-void calculatePixel(
-	int x, int y, const CubeLUT& lut, float opacity, const WorkerData& data);
+void calculatePixel(int x, int y, const Table3D& lut, float opacity, const WorkerData& data);
 } // namespace NearestValue

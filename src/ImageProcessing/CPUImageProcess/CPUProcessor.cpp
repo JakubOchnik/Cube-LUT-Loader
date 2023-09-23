@@ -14,23 +14,22 @@ cv::Mat CPUProcessor::process()
 	// with keys equal to command line args. Use inheritance to respect
 	// DRY (there are tons of similar code in the different interpolation classes).
 	std::cout << "Processing the image...\n";
-	if (const float opacity = loader.getVm()["strength"].as<float>();
-		!loader.getCube().is3D())
+	if (const float opacity = loader.getVm()["strength"].as<float>(); loader.getCube().getType() != LUTType::LUT3D)
 	{
 		std::cout << "Applying basic 1D LUT...\n";
-		newImg = Basic1D::applyBasic1D(loader.getImg(), loader.getCube(),
+		newImg = Basic1D::applyBasic1D(loader.getImg(), std::get<Table1D>(loader.getCube().getTable()),
 									   opacity, loader.getThreads());
 	}
 	else if (loader.getVm().count("trilinear"))
 	{
 		std::cout << "Applying trilinear interpolation...\n";
-		newImg = Trilinear::applyTrilinear(loader.getImg(), loader.getCube(),
+		newImg = Trilinear::applyTrilinear(loader.getImg(), std::get<Table3D>(loader.getCube().getTable()),
 										   opacity, loader.getThreads());
 	}
 	else
 	{
 		std::cout << "Applying nearest-value interpolation...\n";
-		newImg = NearestValue::applyNearest(loader.getImg(), loader.getCube(),
+		newImg = NearestValue::applyNearest(loader.getImg(), std::get<Table3D>(loader.getCube().getTable()),
 											opacity, loader.getThreads());
 	}
 	return newImg;
