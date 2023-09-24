@@ -27,4 +27,6 @@ target_link_libraries(
 target_include_directories(lut_loader_test PUBLIC ${SOURCE_DIR} ${INCLUDE_DIR} ${TEST_DIR})
 
 include(GoogleTest)
-gtest_discover_tests(lut_loader_test)
+gtest_discover_tests(lut_loader_test
+  WORKING_DIRECTORY "/usr/bin"
+)
