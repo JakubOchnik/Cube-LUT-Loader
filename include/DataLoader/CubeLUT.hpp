@@ -20,7 +20,7 @@ class CubeLUT
 public:
 	using TableRow = Eigen::Vector3f;
 
-	void loadCubeFile(std::ifstream& infile);
+	void loadCubeFile(std::istream& infile);
 	LUTType getType() const;
 	const std::variant<Table1D, Table3D>& getTable() const;
 
@@ -28,22 +28,24 @@ private:
 	std::variant<Table1D, Table3D> table;
 
 	LUTType type = LUTType::UNKNOWN;
-	uint32_t size = 0;
-	std::string title;
-	std::vector<float> domainMin{0.0f, 0.0f, 0.0f};
-	std::vector<float> domainMax{1.0f, 1.0f, 1.0f};
-
 	bool hasType() {
 		return type != LUTType::UNKNOWN;
 	}
 
-	std::string readLine(std::ifstream& infile);
+	std::string readLine(std::istream& infile);
 	void parseTableRow3D(const std::string& lineOfText, const int r, const int g, const int b);
 	void parseTableRow1D(const std::string& lineOfText, const int i);
-	void parseLUTTable(std::ifstream& infile);
-	float clipValue(float input, int channel) const;
-	void parseLUTParameters(std::ifstream& infile, long& linePos);
+	void parseLUTParameters(std::istream& infile, long& linePos);
 	float parseColorValue(std::istringstream& line, unsigned char channel);
+	void clear();
 
-	bool domainViolationDetected {false};
+protected:
+	virtual float clipValue(float input, int channel) const;
+	virtual void parseLUTTable(std::istream& infile);
+
+	uint32_t size = 0;
+	std::string title;
+	std::array<float, 3> domainMin{0.0f, 0.0f, 0.0f};
+	std::array<float, 3> domainMax{1.0f, 1.0f, 1.0f};
+	bool domainViolationDetected{false};
 };

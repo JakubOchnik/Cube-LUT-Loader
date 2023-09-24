@@ -21,7 +21,7 @@ constexpr uint32_t LUT_1D_MIN_SIZE = 2;
 constexpr uint32_t LUT_3D_MAX_SIZE = 256;
 constexpr uint32_t LUT_3D_MIN_SIZE = 2;
 
-std::string CubeLUT::readLine(std::ifstream& infile)
+std::string CubeLUT::readLine(std::istream& infile)
 {
 	// Return the next line, but:
 	// - skip empty lines and comments
@@ -97,7 +97,7 @@ void CubeLUT::parseTableRow1D(const std::string& lineOfText, const int i)
 	}
 }
 
-void CubeLUT::parseLUTParameters(std::ifstream& infile, long& linePos) {
+void CubeLUT::parseLUTParameters(std::istream& infile, long& linePos) {
 	bool titleFound{false};
 	bool domainMinFound{false}, domainMaxFound{false};
 	bool lutSizeFound{false};
@@ -169,7 +169,7 @@ void CubeLUT::parseLUTParameters(std::ifstream& infile, long& linePos) {
 	}
 }
 
-void CubeLUT::parseLUTTable(std::ifstream& infile) {
+void CubeLUT::parseLUTTable(std::istream& infile) {
 	if (type == LUTType::LUT1D) {
 		table = Table1D(size, 3);
 		auto& lut1d = std::get<Table1D>(table);
@@ -196,9 +196,9 @@ void CubeLUT::parseLUTTable(std::ifstream& infile) {
 	}
 }
 
-void CubeLUT::loadCubeFile(std::ifstream& infile)
+void CubeLUT::loadCubeFile(std::istream& infile)
 {
-	title.clear();
+	clear();
 
 	long linePos = 0;
 	parseLUTParameters(infile, linePos);
@@ -210,9 +210,7 @@ void CubeLUT::loadCubeFile(std::ifstream& infile)
 
 	if (domainMin[0] >= domainMax[0] || domainMin[1] >= domainMax[1] || domainMin[2] >= domainMax[2])
 	{
-		// TODO think about it: rather swap it and print warning
-		const auto errorMsg = boost::format("Domain bounds are reversed");
-		throw std::runtime_error(errorMsg.str());
+		throw std::runtime_error("Domain bounds are reversed (DOMAIN_MIN is larger than DOMAIN_MAX)");
 	}
 
 	// Rewind the file to the beginning of LUT table
@@ -222,6 +220,9 @@ void CubeLUT::loadCubeFile(std::ifstream& infile)
 		infile.seekg(--linePos);
 	}
 
+	if (infile.fail()) {
+		throw std::runtime_error("Failed to parse LUT values");
+	}
 	parseLUTTable(infile);
 }
 
@@ -232,4 +233,20 @@ LUTType CubeLUT::getType() const
 
 const std::variant<Table1D, Table3D>& CubeLUT::getTable() const {
 	return table;
+}
+
+void CubeLUT::clear() {
+	type = LUTType::UNKNOWN;
+	title.clear();
+	domainMin = {0.0, 0.0, 0.0};
+	domainMax = {1.0, 1.0, 1.0};
+	size = 0;
+	domainViolationDetected = false;
+	if (table.index() == 0) {
+		auto& table1D = std::get<Table1D>(table);
+		table1D = Table1D();
+	} else {
+		auto& table3D = std::get<Table3D>(table);
+		table3D = Table3D();
+	}
 }
