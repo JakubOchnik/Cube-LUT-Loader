@@ -4,5 +4,5 @@
 
 namespace GpuNearestVal
 {
-cv::Mat applyNearestGpu(const DataLoader& loader, float opacity, int threads);
+cv::Mat applyNearestGpu(cv::Mat input, const Table3D &lut, const float opacity, const int threads);
 }

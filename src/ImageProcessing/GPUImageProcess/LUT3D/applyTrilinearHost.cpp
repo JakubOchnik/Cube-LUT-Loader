@@ -6,25 +6,22 @@
 #include <ImageProcessing/GPUImageProcess/Utils/CudaUtils.hpp>
 #include <tuple>
 
-cv::Mat GpuTrilinear::applyTrilinearGpu(const DataLoader &loader,
-										const float opacity,
-										const int threads)
+cv::Mat GpuTrilinear::applyTrilinearGpu(cv::Mat input, const Table3D &lut, const float opacity, const int threads)
 {
-	int width{loader.getImg().cols}, height{loader.getImg().rows};
+	int width{input.cols}, height{input.rows};
 	const int imgSize = width * height * 3 * sizeof(unsigned char);
 	const int lutSize = static_cast<int>(
-		pow(loader.getCube().LUT3D.dimension(0), 3) * 3 * sizeof(float));
+		pow(lut.dimension(0), 3) * 3 * sizeof(float));
 
 	// Declare device (or/and host) pointers
-	float *lutPtr{nullptr};
-	uchar *imgPtr{nullptr};
+	float* lutPtr{nullptr};
+	uchar* imgPtr{nullptr};
 
 	// Copy data to GPU
-	cudaErrorChk(cudaMalloc(reinterpret_cast<void **>(&lutPtr), lutSize));
-	cudaErrorChk(cudaMemcpy(lutPtr, loader.getCube().LUT3D.data(), lutSize,
-							cudaMemcpyHostToDevice));
+	cudaErrorChk(cudaMalloc(reinterpret_cast<void**>(&lutPtr), lutSize));
+	cudaErrorChk(cudaMemcpy(lutPtr, lut.data(), lutSize, cudaMemcpyHostToDevice));
 	cudaErrorChk(cudaMallocManaged(&imgPtr, imgSize));
-	memcpy(imgPtr, loader.getImg().data, imgSize);
+	memcpy(imgPtr, input.data, imgSize);
 
 	const int blocksX = (width + threads - 1) / threads;
 	const int blocksY = (height + threads - 1) / threads;
@@ -32,9 +29,7 @@ cv::Mat GpuTrilinear::applyTrilinearGpu(const DataLoader &loader,
 	const dim3 blocksGrid(blocksX, blocksY);
 
 	// Process data
-	GpuTrilinearDevice::run(threadsGrid, blocksGrid, imgPtr, 3, lutPtr,
-							loader.getCube().LUT3D.dimension(0), opacity,
-							std::tuple(width, height));
+	GpuTrilinearDevice::run(threadsGrid, blocksGrid, imgPtr, 3, lutPtr, lut.dimension(0), opacity, {width, height});
 
 	// Free memory and copy data back to host
 	cudaErrorChk(cudaFree(lutPtr));
