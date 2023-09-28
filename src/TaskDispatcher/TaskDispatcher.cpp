@@ -33,7 +33,7 @@ int TaskDispatcher::start()
 	}
 	catch (const boost::program_options::error &ex)
 	{
-		std::cerr << ex.what() << '\n';
+		std::cerr << "[ERROR] " << ex.what() << '\n';
 		return FAIL_EXIT;
 	}
 	DataLoader loader{vm};
@@ -54,7 +54,7 @@ int TaskDispatcher::start()
 		}
 		catch (const std::exception &e)
 		{
-			std::cerr << e.what() << '\n';
+			std::cerr << "[ERROR] " << e.what() << '\n';
 		}
 #else
 		std::cerr << "[ERROR] GPU acceleration is unsupported in this build\n";
