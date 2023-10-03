@@ -1,4 +1,6 @@
 # Cube LUT Loader
+<center><img src="docs/example_pic.jpg" alt="drawing" width="600"/></center>
+
 A simple command-line C++ tool that lets you apply a Cube format LUT to your image.
 It contains multithreaded and GPU-accelerated (CUDA) modes, which result in very high performance.
 
@@ -29,48 +31,44 @@ However, if you don't have one, you can still use the program in CPU mode!
 - 1D LUT support
 - 3D LUT support
     - Nearest value mode (faster, low quality of tonal transitions)
-    - Trilinear interpolation (slower, higher quality)
+    - Trilinear interpolation (slower, high quality)
 - Simple input arguments-based interface
 - Multithreaded implementation (the number of physical CPU threads is used by default)
 - CUDA GPU implementation (highly effective with larger images)
 
 ## Performance
 ### Test details
-Computer setup:  
-| Component | Name                                                    |
-| --------- | ------------------------------------------------------- |
-| CPU       | Intel Core i7-7700HQ@2.8GHz (8 logical threads, 4 cores)|
-| GPU       | NVIDIA GeForce GTX 1050 (4096MiB of VRAM, CUDA 11.6)    |
-| RAM       | 32GB DDR4 (2400 Mhz)                                    |
+Test setups:  
+| Component | Name                                                     |
+| --------- | -------------------------------------------------------- |
+| CPU       | Intel Core i7-13700@2.1Ghz (Turbo Boost: 5.2Ghz, 16C/24T)|
+| GPU       | NVIDIA GeForce RTX 3080 10GB                             |
+| RAM       | 32GB DDR4 (3600 Mhz)                                     |
 
-Test images:  
-| Name | Resolution |
-| ---- | ---------- |
-| UH   | 8640x5760  |
-| H    | 4803x3181  |
-| L    | 2400x1590  |
-| M    | 1920x1272  |
-| S    | 640x424    |
+| Component | Name                       |
+| --------- | ---------------------------|
+| Name      | Apple MacBook Pro 16" 2023 |
+| CPU       | Apple M2 Pro               |
+| RAM       | 32GB                       |
 
-### Trilinear interpolation
-![Trilinear interpolation graph](docs/performance/img/tri_interp.png "Trilinear interpolation graph")  
+Tests were performed on a set of 9 pictures with a resolution from 1 to 151 MPix and a 3D LUT of size 33.
 
-The trilinear interpolation method provides excellent results at the cost of high mathematical complexity.
-This is a perfect scenario for a GPU, as it fully utilizes its potential to accelerate heavy compute operations combined with the parallel nature of the image matrix.
-The memory copying/allocation costs are fully compensated by the performance gains up until 1920x1080 resolution. For very small images, multithreaded implementation
-seems to be the best fit.  
-### Nearest value interpolation
-![Nearest-value interpolation graph](docs/performance/img/nv_interp.png "Nearest-value interpolation graph")  
+![Trilinear interpolation graph](docs/performance/img/3l.png "Trilinear interpolation graph")  
 
-The results are different for the nearest-value interpolation method. Its computational complexity is not high enough to compensate for the GPU memory I/O latency, so the performance of CUDA kernels is generally worse than multithreaded implementation. However, GPU may start to provide some benefit over the 8-threaded CPU for ultra-high-resolution images (over 50 MP).
+The trilinear interpolation method provides excellent image quality at the cost of higher mathematical complexity.
+This is a perfect scenario for a GPU, as it fully utilizes its potential to accelerate heavy floating point compute operations combined with the parallel nature of the image matrix.
+The memory copying/allocation costs are fully compensated by the performance gains for images of size higher than 1 MPix. 
+
+![Nearest-value interpolation graph](docs/performance/img/nn.png "Nearest-value interpolation graph")  
+The nearest-value interpolation provides worse image quality, but it's much faster than the previous method. Its computational complexity is not high enough to compensate for the GPU memory I/O latency, so the performance of CUDA kernels is worse than multithreaded implementation.
+
+![3L vs NN interpolation graph for CPU](docs/performance/img/3lnn.png "3L vs NN interpolation graph for CPU")  
+Nearest-neighbor interpolation is significantly faster on the CPU than the trilinear method.
+
+![3L vs NN interpolation graph for GPU](docs/performance/img/3lnngpu.png "3L vs NN interpolation graph for GPU")  
+The results are nearly identical, meaning that almost entire time cost is consumed by the memory I/O operations (copying image matrix between the local RAM and GPU VRAM).
 
 ## In progress
 - GPU acceleration for 1D LUTs
 - Support of color depths other than 8-bit
 - Batch processing
-
-## Legal disclaimer
-The .cube LUT parser is used under Creative Commons Attribuition Non-Commercial 3.0 License.
-It was created by Adobe Inc.  
-Source: Cube LUT Specification 1.0  
-https://wwwimages2.adobe.com/content/dam/acom/en/products/speedgrade/cc/pdfs/cube-lut-specification-1.0.pdf
