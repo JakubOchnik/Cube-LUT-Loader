@@ -37,6 +37,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${MAIN_LIB_NAME})
 # Configure test target
 if (BUILD_TESTS)
     set(TEST_DIR ${SOURCE_DIR}/test)
-    enable_testing()
     add_subdirectory(test)
 endif()

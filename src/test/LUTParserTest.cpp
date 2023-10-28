@@ -110,7 +110,7 @@ TEST_P(ValueClippingTest, clippingTest) {
     EXPECT_TRUE(lut.isDomainViolationDetected());
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
         LUTParserTest,
         ValueClippingTest,
         ::testing::Values(
@@ -143,7 +143,7 @@ TEST_P(UnsupportedLUTSizeTest, lutSizeUnsupported) {
     EXPECT_EQ(lut.getType(), LUTType::UNKNOWN);
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
         LUTParserTest,
         UnsupportedLUTSizeTest,
         ::testing::Values(

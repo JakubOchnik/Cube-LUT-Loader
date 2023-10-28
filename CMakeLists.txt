@@ -10,6 +10,10 @@ else()
     project(lut_loader VERSION 0.1.0 LANGUAGES CXX)
 endif()
 
+if(BUILD_TESTS)
+        enable_testing()
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 
 set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
