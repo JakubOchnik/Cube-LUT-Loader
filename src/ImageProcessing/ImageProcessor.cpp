@@ -8,7 +8,7 @@ ImageProcessor::ImageProcessor(const DataLoader &ld) : loader(ld) {}
 
 void ImageProcessor::save() const
 {
-    const auto outputPath = loader.getVm()["output"].as<std::string>();
+    const auto& outputPath = loader.getInputParams().getOutputImgPath();
     std::cout << boost::format("[INFO] Saving image to: %1%\n") % outputPath;
     try
     {

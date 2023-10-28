@@ -15,13 +15,14 @@ cv::Mat GpuProcessor::process()
 	// DRY (there are tons of similar code in the different interpolation classes).
 	auto& inputImg = loader.getImg();
 	std::cout << "[INFO] Processing the image...\n";
-	if (const float opacity = loader.getVm()["strength"].as<float>(); loader.getCube().getType() != LUTType::LUT3D)
+	const auto& inputParams = loader.getInputParams();
+	if (const float opacity = inputParams.getEffectStrength(); loader.getCube().getType() != LUTType::LUT3D)
 	{
 		// cout << "Applying basic 1D LUT..." << endl;
 		throw std::runtime_error("GPU-accelerated 1D LUTs are not implemented yet");
 		// newImg = applyBasic1D(loader.getImg(), loader.getCube(), opacity);
 	}
-	else if (loader.getVm().count("trilinear"))
+	else if (inputParams.getInterpolationMethod() == InterpolationMethod::Trilinear)
 	{
 		std::cout << "[INFO] Applying trilinear interpolation...\n";
 		newImg = GpuTrilinear::applyTrilinearGpu(inputImg, std::get<Table3D>(loader.getCube().getTable()), opacity, threadsPerBlock);
