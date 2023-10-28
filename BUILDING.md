@@ -1,23 +1,31 @@
-# Build instructions
-## Linux
-Tested on Ubuntu 22.04.
+# Building
+## Used libraries
+- OpenCV 4.5.5: `opencv_core`, `opencv_imgcodecs`
+- Boost 1.78.0: `program_options`, `format` (header-only)
+- Eigen 3.4.0: Vectors and Tensor module, header-only
+- CUDA 11.6: used for GPU mode
+
+Newer versions of the above libraries should work too.
+
+## Build instructions
 1. Install all of the required dependencies
-```bash
-sudo apt install build-essential cmake g++ # C++ build utilities
-sudo apt install libopencv-dev # OpenCV libraries - if you build it yourself, 
-                               # you only need opencv_core and opencv_imgcodecs
-sudo apt install libboost-all-dev libeigen3-dev # Boost & Eigen3 libraries
+```
+# For OpenCV, only opencv_core and opencv_imgcodecs are required.
 # Optionally install CUDA Toolkit (required for building CUDA code)
+
+# Linux (Ubuntu 22.04 used as an example):
+sudo apt install libopencv-dev # OpenCV libraries
+sudo apt install libboost-all-dev libeigen3-dev # Boost & Eigen3 libraries
+sudo apt install build-essential cmake g++ # C++ build utilities
+
+# Windows:
+# Manually install the libraries. If applicable, install them at their default directories or configure proper environment variables to make sure CMake automatically finds them.
 ```
-2. Toggle CUDA in `CMakeLists.txt`
+2. Configure `BUILD_CUDA` and `BUILD_TESTS` variables in root-level `CMakeLists.txt`
+3. Build the project in your IDE or using the following commands:
 ```
-set(BUILD_CUDA OFF) / set(BUILD_CUDA ON)
+cmake . -B build/
+cmake --build build/ --target lut_loader -j
 ```
-3. Build the project using the following commands:
-```
-cmake . -DCMAKE_BUILD_TYPE:STRING=Debug -B build/
-cmake --build build/ --config Debug --target lut_loader -j
-```
-*Note that you may adjust the build directory as well as the build type (Release/Debug).*
-## Windows
-Work in progress!
+
+To build tests, enable `BUILD_TESTS` variable and build target `lut_loader_test`. Make sure to run the test executable from the proper working directory (`REPO_ROOT/src/test`).
