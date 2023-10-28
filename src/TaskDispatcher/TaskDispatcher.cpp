@@ -7,8 +7,6 @@
 #include <thread>
 #include <iostream>
 
-using namespace boost::program_options;
-
 enum {
 	FAIL_EXIT = -1,
 	SUCCESS_EXIT
@@ -21,29 +19,29 @@ TaskDispatcher::TaskDispatcher(const int aCnt, char *aVal[])
 
 int TaskDispatcher::start()
 {
-	variables_map vm;
+	InputParams parameters;
 	try
 	{
-		const auto parseOutput = parseInputArgs(argCount, args);
-		if (std::holds_alternative<options_description>(parseOutput)) {
-			std::cout << "--HELP--\n" << std::get<options_description>(parseOutput);
+		std::string helpText;
+		parameters = parseInputArgs(argCount, args, helpText);
+		if (parameters.getShowHelp()) {
+			std::cout << "--HELP--\n" << helpText;
 			return 0;
 		}
-		vm = std::move(std::get<variables_map>(parseOutput));
 	}
 	catch (const boost::program_options::error &ex)
 	{
 		std::cerr << "[ERROR] " << ex.what() << '\n';
 		return FAIL_EXIT;
 	}
-	DataLoader loader{vm};
+	DataLoader loader{ parameters };
 
 	bool loadSuccessful = loader.load();
 	if (!loadSuccessful) {
 		return FAIL_EXIT;
 	}
 
-	if (loader.getVm().count("gpu"))
+	if (parameters.getProcessingMode() == ProcessingMode::GPU)
 	{
 #ifdef BUILD_CUDA
 		std::cout << "[INFO] GPU acceleration enabled\n";
@@ -76,7 +74,7 @@ int TaskDispatcher::start()
 	return SUCCESS_EXIT;
 }
 
-std::variant<TaskDispatcher::VariablesMap, TaskDispatcher::OptionsDescription> TaskDispatcher::parseInputArgs(const int argc, char **argv) const
+InputParams TaskDispatcher::parseInputArgs(const int argc, char **argv, std::string& helpText) const
 {
 	boost::program_options::options_description desc{"Options"};
 	desc.add_options()
@@ -87,7 +85,7 @@ std::variant<TaskDispatcher::VariablesMap, TaskDispatcher::OptionsDescription> T
 	("strength,s", boost::program_options::value<float>()->default_value(1.0f), "Strength of the effect [= 1.0]")
 	("trilinear,t", "Trilinear interpolation of 3D LUT")
 	("nearest_value,n", "No interpolation of 3D LUT")
-	("threads,j", boost::program_options::value<uint>()->default_value(std::thread::hardware_concurrency()),"Number of threads [= Number of physical threads]")
+	("threads,j", boost::program_options::value<unsigned int>()->default_value(std::thread::hardware_concurrency()),"Number of threads [= Number of physical threads]")
 	("gpu", "Use GPU acceleration");
 
 	boost::program_options::variables_map vm;
@@ -95,12 +93,18 @@ std::variant<TaskDispatcher::VariablesMap, TaskDispatcher::OptionsDescription> T
 
 	if (vm.count("help"))
 	{
-		return desc;
+		std::stringstream ss;
+		ss << desc;
+		helpText = ss.str();
 	}
+
 	if (!vm.count("input") || !vm.count("lut") || !vm.count("output"))
 	{
 		throw boost::program_options::error("No input/output/LUT specified!");
 	}
 
-	return vm;
+	if (vm.count("trilinear") && vm.count("nearest_value")) {
+		std::cout << "[WARNING] Ambiguous input: multiple interpolation methods specified. Using trilinear.\n";
+	}
+	return InputParams{ std::move(vm) };
 }

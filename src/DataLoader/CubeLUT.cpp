@@ -97,10 +97,14 @@ void CubeLUT::parseTableRow1D(const std::string& lineOfText, const int i)
 	}
 }
 
-void CubeLUT::parseLUTParameters(std::istream& infile, long& linePos) {
+bool CubeLUT::parseLUTParameters(std::istream& infile, long& linePos) {
 	bool titleFound{false};
 	bool domainMinFound{false}, domainMaxFound{false};
 	bool lutSizeFound{false};
+
+	if (infile.fail() || infile.eof()) {
+		return false;
+	}
 
 	while (!infile.fail() && !infile.eof())
 	{
@@ -164,9 +168,10 @@ void CubeLUT::parseLUTParameters(std::istream& infile, long& linePos) {
 
 		if (line.fail())
 		{
-			throw std::runtime_error("Read error");
+			return false;
 		}
 	}
+	return true;
 }
 
 void CubeLUT::parseLUTTable(std::istream& infile) {
@@ -201,11 +206,12 @@ void CubeLUT::loadCubeFile(std::istream& infile)
 	clear();
 
 	long linePos = 0;
-	parseLUTParameters(infile, linePos);
+	if (!parseLUTParameters(infile, linePos)) {
+		throw std::runtime_error("Failed to read LUT file");
+	}
 	
 	if (!hasType()) {
-		const auto errorMsg = boost::format("Unknown LUT type: specify the LUT_1D_SIZE/LUT_3D_SIZE tag");
-		throw std::runtime_error(errorMsg.str());
+		throw std::runtime_error("Unknown LUT type: specify the LUT_1D_SIZE/LUT_3D_SIZE tag");
 	}
 
 	if (domainMin[0] >= domainMax[0] || domainMin[1] >= domainMax[1] || domainMin[2] >= domainMax[2])

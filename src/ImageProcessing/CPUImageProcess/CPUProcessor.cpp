@@ -14,13 +14,14 @@ cv::Mat CPUProcessor::process()
 	// with keys equal to command line args. Use inheritance to respect
 	// DRY (there are tons of similar code in the different interpolation classes).
 	std::cout << "[INFO] Processing the image...\n";
-	if (const float opacity = loader.getVm()["strength"].as<float>(); loader.getCube().getType() != LUTType::LUT3D)
+	const auto& inputParams = loader.getInputParams();
+	if (const float opacity = inputParams.getEffectStrength(); loader.getCube().getType() != LUTType::LUT3D)
 	{
 		std::cout << "[INFO] Applying basic 1D LUT...\n";
 		newImg = Basic1D::applyBasic1D(loader.getImg(), std::get<Table1D>(loader.getCube().getTable()),
 									   opacity, loader.getThreads());
 	}
-	else if (loader.getVm().count("trilinear"))
+	else if (inputParams.getInterpolationMethod() == InterpolationMethod::Trilinear)
 	{
 		std::cout << "[INFO] Applying trilinear interpolation...\n";
 		newImg = Trilinear::applyTrilinear(loader.getImg(), std::get<Table3D>(loader.getCube().getTable()),
