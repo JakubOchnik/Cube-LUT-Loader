@@ -88,6 +88,7 @@ INSTANTIATE_TEST_SUITE_P(
             std::vector<std::string>{},
             std::vector<std::string>{"-l", "abcd.cube"},
             std::vector<std::string>{"-i", "abcd.png"},
-            std::vector<std::string>{"-t"}
+            std::vector<std::string>{"-t"},
+            std::vector<std::string>{"-l", "-t", "-i"}
         )
 );
