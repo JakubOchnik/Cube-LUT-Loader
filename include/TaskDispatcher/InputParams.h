@@ -38,6 +38,7 @@ public:
 
 	ProcessingMode getProcessingMode() const;
 	bool getShowHelp() const;
+	void setShowHelp(bool value);
 	std::string getInputImgPath() const;
 	std::string getOutputImgPath() const;
 	std::string getInputLutPath() const;
