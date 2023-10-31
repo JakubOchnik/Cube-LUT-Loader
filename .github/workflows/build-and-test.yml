@@ -1,0 +1,37 @@
+name: Build and run unit tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  BUILD_TYPE: Release
+  INSTALL_CUDA: ON
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install CUDA
+      if: env.INSTALL_CUDA == 'ON'
+      uses: Jimver/cuda-toolkit@v0.2.11
+      with:
+        linux-local-args: '["--toolkit"]'
+
+    - name: Install Boost, Eigen3 and OpenCV
+      run: sudo apt-get install -y libeigen3-dev libboost-all-dev libopencv-dev
+
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DBUILD_TESTS=ON -DBUILD_CUDA=${{env.INSTALL_CUDA}}
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --target lut_loader_test --config ${{env.BUILD_TYPE}} -j
+
+    - name: Run unit tests
+      working-directory: ${{github.workspace}}/src/test
+      run: ${{github.workspace}}/build/src/test/lut_loader_test
