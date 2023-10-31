@@ -32,6 +32,10 @@ bool InputParams::getShowHelp() const {
 	return showHelp;
 }
 
+void InputParams::setShowHelp(bool value) {
+	showHelp = value;
+}
+
 std::string InputParams::getInputImgPath() const {
 	return inputImgPath;
 }

@@ -23,10 +23,10 @@ int TaskDispatcher::start()
 	try
 	{
 		std::string helpText;
-		parameters = parseInputArgs(argCount, args, helpText);
+		parameters = parseInputArgs(helpText);
 		if (parameters.getShowHelp()) {
 			std::cout << "--HELP--\n" << helpText;
-			return 0;
+			return SUCCESS_EXIT;
 		}
 	}
 	catch (const boost::program_options::error &ex)
@@ -74,7 +74,7 @@ int TaskDispatcher::start()
 	return SUCCESS_EXIT;
 }
 
-InputParams TaskDispatcher::parseInputArgs(const int argc, char **argv, std::string& helpText) const
+InputParams TaskDispatcher::parseInputArgs(std::string& helpText) const
 {
 	boost::program_options::options_description desc{"Options"};
 	desc.add_options()
@@ -89,18 +89,21 @@ InputParams TaskDispatcher::parseInputArgs(const int argc, char **argv, std::str
 	("gpu", "Use GPU acceleration");
 
 	boost::program_options::variables_map vm;
-	store(parse_command_line(argc, argv, desc), vm);
+	store(parse_command_line(argCount, args, desc), vm);
 
 	if (vm.count("help"))
 	{
 		std::stringstream ss;
 		ss << desc;
 		helpText = ss.str();
+		InputParams params;
+		params.setShowHelp(true);
+		return params;
 	}
 
-	if (!vm.count("input") || !vm.count("lut") || !vm.count("output"))
+	if (!vm.count("input") || !vm.count("lut"))
 	{
-		throw boost::program_options::error("No input/output/LUT specified!");
+		throw boost::program_options::error("No input image/LUT specified!");
 	}
 
 	if (vm.count("trilinear") && vm.count("nearest_value")) {

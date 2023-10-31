@@ -12,5 +12,5 @@ public:
 	TaskDispatcher(int aCnt, char** aVal);
 
 	int start();
-	InputParams parseInputArgs(int argc, char *aVal[], std::string& helpText) const;
+	InputParams parseInputArgs(std::string& helpText) const;
 };

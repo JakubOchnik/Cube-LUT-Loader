@@ -15,6 +15,7 @@ FetchContent_MakeAvailable(googletest)
 add_executable(lut_loader_test
     LUTParserTest.cpp
     InputParamsTest.cpp
+    InputArgsParserTest.cpp
 )
 
 target_link_libraries(
