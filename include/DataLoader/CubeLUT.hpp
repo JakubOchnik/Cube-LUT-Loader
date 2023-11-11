@@ -35,7 +35,7 @@ private:
 	std::string readLine(std::istream& infile);
 	void parseTableRow3D(const std::string& lineOfText, const int r, const int g, const int b);
 	void parseTableRow1D(const std::string& lineOfText, const int i);
-	bool parseLUTParameters(std::istream& infile, long& linePos);
+	bool parseLUTParameters(std::istream& infile, std::streamoff& linePos);
 	float parseColorValue(std::istringstream& line, unsigned char channel);
 	void clear();
 
