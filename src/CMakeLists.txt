@@ -1,5 +1,3 @@
-add_executable(${PROJECT_NAME} ${SOURCE_DIR}/main.cpp)
-
 # Detect all the required libraries
 if (BUILD_CUDA)
     find_package(CUDAToolkit)
@@ -32,6 +30,7 @@ add_subdirectory(${SOURCE_DIR}/ImageProcessing)
 add_subdirectory(${SOURCE_DIR}/TaskDispatcher)
 add_subdirectory(${SOURCE_DIR}/DataLoader)
 
+add_executable(${PROJECT_NAME} ${SOURCE_DIR}/main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${MAIN_LIB_NAME})
 
 # Configure test target

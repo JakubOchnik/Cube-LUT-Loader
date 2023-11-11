@@ -97,7 +97,7 @@ void CubeLUT::parseTableRow1D(const std::string& lineOfText, const int i)
 	}
 }
 
-bool CubeLUT::parseLUTParameters(std::istream& infile, long& linePos) {
+bool CubeLUT::parseLUTParameters(std::istream& infile, std::streamoff& linePos) {
 	bool titleFound{false};
 	bool domainMinFound{false}, domainMaxFound{false};
 	bool lutSizeFound{false};
@@ -184,7 +184,7 @@ void CubeLUT::parseLUTTable(std::istream& infile) {
 			parseTableRow1D(readLine(infile), i);
 		}
 	} else if (type == LUTType::LUT3D) {
-		auto N = size;
+		int64_t N = size;
 		table = Table3D(N, N, N, 3);
 		auto& lut3d = std::get<Table3D>(table);
 		N = lut3d.dimension(0);
@@ -205,7 +205,7 @@ void CubeLUT::loadCubeFile(std::istream& infile)
 {
 	clear();
 
-	long linePos = 0;
+	std::streamoff linePos = 0;
 	if (!parseLUTParameters(infile, linePos)) {
 		throw std::runtime_error("Failed to read LUT file");
 	}
