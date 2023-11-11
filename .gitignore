@@ -43,6 +43,7 @@ x64/
 # Temp files
 .vs/
 build/
+out/
 .vscode/
 *.ipynb_checkpoints/
 *.cmake
@@ -50,6 +51,7 @@ Makefile
 **/CMakeFiles/
 CMakeCache.txt
 compile_commands.json
+CMakeSettings.json
 
 # Other
 *.cube

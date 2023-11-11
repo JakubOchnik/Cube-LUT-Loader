@@ -29,7 +29,7 @@ int TaskDispatcher::start()
 			return SUCCESS_EXIT;
 		}
 	}
-	catch (const boost::program_options::error &ex)
+	catch (const std::exception &ex)
 	{
 		std::cerr << "[ERROR] " << ex.what() << '\n';
 		return FAIL_EXIT;
@@ -86,7 +86,9 @@ InputParams TaskDispatcher::parseInputArgs(std::string& helpText) const
 	("trilinear,t", "Trilinear interpolation of 3D LUT")
 	("nearest_value,n", "No interpolation of 3D LUT")
 	("threads,j", boost::program_options::value<unsigned int>()->default_value(std::thread::hardware_concurrency()),"Number of threads [= Number of physical threads]")
-	("gpu", "Use GPU acceleration");
+	("gpu", "Use GPU acceleration")
+	("width", boost::program_options::value<int>(), "Output image width")
+	("height", boost::program_options::value<int>(), "Output image height");
 
 	boost::program_options::variables_map vm;
 	store(parse_command_line(argCount, args, desc), vm);
@@ -109,5 +111,10 @@ InputParams TaskDispatcher::parseInputArgs(std::string& helpText) const
 	if (vm.count("trilinear") && vm.count("nearest_value")) {
 		std::cout << "[WARNING] Ambiguous input: multiple interpolation methods specified. Using trilinear.\n";
 	}
+
+	if ((vm.count("width") || vm.count("height")) && !(vm.count("width") && vm.count("height"))) {
+		std::cout << "[WARNING] Not all output image dimensions have been specified.\n";
+	}
+
 	return InputParams{ std::move(vm) };
 }
