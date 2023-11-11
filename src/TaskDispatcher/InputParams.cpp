@@ -22,6 +22,13 @@ void InputParams::parseInputParams(boost::program_options::variables_map&& vm) {
 	setParam("lut", inputLutPath, vm);
 	setParam("strength", effectStrength, vm);
 	setParam("threads", threads, vm);
+
+	const auto verifyUnsignedInt = [](int value) {
+		return value > 0;
+	};
+
+	setParam<int>("width", outputImageWidth, vm, verifyUnsignedInt);
+	setParam<int>("height", outputImageHeight, vm, verifyUnsignedInt);
 }
 
 ProcessingMode InputParams::getProcessingMode() const {
@@ -58,4 +65,12 @@ unsigned int InputParams::getThreads() const {
 
 InterpolationMethod InputParams::getInterpolationMethod() const {
 	return interpolationMethod;
+}
+
+unsigned int InputParams::getOutputImageWidth() const {
+	return outputImageWidth;
+}
+
+unsigned int InputParams::getOutputImageHeight() const {
+	return outputImageHeight;
 }

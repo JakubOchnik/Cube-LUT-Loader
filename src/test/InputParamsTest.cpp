@@ -11,7 +11,8 @@ void testDefaultValues(const InputParams& params) {
     EXPECT_EQ(params.getThreads(), 1u);
     EXPECT_EQ(params.getProcessingMode(), ProcessingMode::CPU);
     EXPECT_EQ(params.getShowHelp(), false);
-    EXPECT_EQ(params.getInterpolationMethod(), InterpolationMethod::Trilinear);
+    EXPECT_EQ(params.getOutputImageWidth(), 0);
+    EXPECT_EQ(params.getOutputImageHeight(), 0);
 }
 
 TEST_F(InputParamsTest, testDefaultValues)
@@ -38,6 +39,8 @@ TEST_F(InputParamsTest, testParsingValues)
     vm.emplace("strength", boost::program_options::variable_value(.5f, false));
     vm.emplace("threads", boost::program_options::variable_value(16u, false));
     vm.emplace("nearest_value", boost::program_options::variable_value(true, false));
+    vm.emplace("width", boost::program_options::variable_value(1337, false));
+    vm.emplace("height", boost::program_options::variable_value(420, false));
 
     InputParams params(std::move(vm));
     EXPECT_EQ(params.getProcessingMode(), ProcessingMode::GPU);
@@ -48,6 +51,8 @@ TEST_F(InputParamsTest, testParsingValues)
     EXPECT_EQ(params.getEffectStrength(), .5f);
     EXPECT_EQ(params.getThreads(), 16u);
     EXPECT_EQ(params.getInterpolationMethod(), InterpolationMethod::NearestValue);
+    EXPECT_EQ(params.getOutputImageWidth(), 1337);
+    EXPECT_EQ(params.getOutputImageHeight(), 420);
 }
 
 TEST_F(InputParamsTest, testAmbiguousInterpolationInput)
@@ -58,4 +63,15 @@ TEST_F(InputParamsTest, testAmbiguousInterpolationInput)
 
     InputParams params(std::move(vm));
     EXPECT_EQ(params.getInterpolationMethod(), InterpolationMethod::Trilinear);
+}
+
+TEST_F(InputParamsTest, testIncorrectImageOutputSize)
+{
+    boost::program_options::variables_map vm;
+    vm.emplace("width", boost::program_options::variable_value(-10, false));
+    EXPECT_THROW(InputParams(std::move(vm)), std::runtime_error);
+
+    vm.clear();
+    vm.emplace("height", boost::program_options::variable_value(0, false));
+    EXPECT_THROW(InputParams(std::move(vm)), std::runtime_error);
 }

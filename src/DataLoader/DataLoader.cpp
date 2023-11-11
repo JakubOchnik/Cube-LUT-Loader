@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 #include <boost/format.hpp>
 
 DataLoader::DataLoader(InputParams inputParams) : params(inputParams) {}
@@ -9,14 +10,25 @@ DataLoader::DataLoader(InputParams inputParams) : params(inputParams) {}
 bool DataLoader::loadImg()
 {
 	std::cout << "[INFO] Importing image...\n";
-	const auto& inputPath = params.getInputImgPath();
-	img = cv::imread(inputPath);
-
-	if (img.empty())
+	const auto inputPath = params.getInputImgPath();
+	const auto sourceImg = cv::imread(inputPath);
+	if (sourceImg.empty())
 	{
 		std::cerr << boost::format("[ERROR] Could not open input image file: %1%\n") % inputPath;
 		return false;
 	}
+
+	if (params.getOutputImageHeight() || params.getOutputImageWidth()) {
+		unsigned int width = params.getOutputImageWidth() ? params.getOutputImageWidth() : sourceImg.size().width;
+		unsigned int height = params.getOutputImageHeight() ? params.getOutputImageHeight() : sourceImg.size().height;
+		cv::Size newSize(width, height);
+
+		std::cout << boost::format("[INFO] Scaling image to %1%x%2%\n") % width % height;
+		cv::resize(sourceImg, img, newSize, 0, 0, cv::InterpolationFlags::INTER_CUBIC);
+	} else {
+		img = sourceImg;
+	}
+
 	return true;
 }
 
