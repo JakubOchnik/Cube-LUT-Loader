@@ -8,7 +8,7 @@ on:
 
 env:
   BUILD_TYPE: Release
-  INSTALL_CUDA: ON
+  INSTALL_CUDA: OFF # Temporarily disabled due to insufficient resources on Github Actions worker
 
 jobs:
   build:
