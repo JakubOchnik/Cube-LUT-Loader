@@ -1,6 +1,7 @@
 # Cube LUT Loader
 <center><img src="docs/example_pic.jpg" alt="drawing" width="600"/></center>
 
+![Workflow](https://github.com/JakubOchnik/Cube-LUT-Loader/actions/workflows/build-and-test.yml/badge.svg)  
 A simple command-line C++ tool that allows you to apply a Cube format LUT to an image.
 It offers high-performance multi-threaded and GPU-accelerated modes, various interpolation methods, and support for 1D and 3D LUTs.  
 To see the performance comparison between the offered modes, see [performance tests](PERFORMANCE.md).
@@ -25,6 +26,8 @@ To see the performance comparison between the offered modes, see [performance te
   -n [ --nearest_value ]         No interpolation of 3D LUT
   -j [ --threads ] arg (=8)      Number of threads [= Number of physical threads]
   --gpu                          Use GPU acceleration
+  --width arg                    Output image width
+  --height arg                   Output image height
 ```
 
 ## Hardware requirements
