@@ -58,6 +58,7 @@ public:
 	void setInputImgPath(const std::string& inputPath);
 	std::string getOutputImgPath() const;
 	std::string getInputLutPath() const;
+	void setInputLutPath(const std::string& lutPath);
 	float getEffectStrength() const;
 	unsigned int getThreads() const;
 	InterpolationMethod getInterpolationMethod() const;

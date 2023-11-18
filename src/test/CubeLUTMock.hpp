@@ -1,3 +1,4 @@
+#pragma once
 #include <gmock/gmock.h>
 #include <DataLoader/CubeLUT.hpp>
 #include <string>
@@ -27,4 +28,9 @@ public:
     std::array<float, 3> getDomainMax() {
         return domainMax;
     }
+};
+
+class BasicCubeLUTMock : public CubeLUT {
+public:
+    MOCK_METHOD(void, loadCubeFile, (std::istream& infile), (override));
 };

@@ -59,6 +59,10 @@ std::string InputParams::getInputLutPath() const {
 	return inputLutPath;
 }
 
+void InputParams::setInputLutPath(const std::string& lutPath) {
+	inputLutPath = lutPath;
+}
+
 float InputParams::getEffectStrength() const {
 	return effectStrength;
 }
