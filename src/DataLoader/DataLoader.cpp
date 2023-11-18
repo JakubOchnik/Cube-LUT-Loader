@@ -5,7 +5,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <boost/format.hpp>
 
-DataLoader::DataLoader(InputParams inputParams) : params(inputParams) {}
+DataLoader::DataLoader(InputParams inputParams) : params(inputParams), cube(std::make_unique<CubeLUT>()) {}
 
 bool DataLoader::loadImg()
 {
@@ -54,7 +54,7 @@ bool DataLoader::loadLut()
 	}
 	std::cout << "[INFO] Parsing LUT...\n";
 	try {
-		cube.loadCubeFile(infile);
+		cube->loadCubeFile(infile);
 	} catch (const std::runtime_error& ex) {
 		std::cerr << boost::format("[ERROR] %1%\n") % ex.what();
 		success = false;
@@ -75,7 +75,7 @@ const cv::Mat_<cv::Vec3b>& DataLoader::getImg() const
 
 const CubeLUT& DataLoader::getCube() const
 {
-	return this->cube;
+	return *cube;
 }
 
 const InputParams& DataLoader::getInputParams() const

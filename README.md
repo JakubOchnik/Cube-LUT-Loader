@@ -40,4 +40,3 @@ However, if you don't have one, you can still build and use the program in CPU m
 - Support of color depths other than 8-bit
 - Batch processing
 - Increasing unit test coverage
-- GitHub Actions CI

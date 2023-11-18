@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <DataLoaderMock.hpp>
+#include <CubeLUTMock.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
 using namespace ::testing;
@@ -58,4 +59,32 @@ INSTANTIATE_TEST_SUITE_P(
         )
 );
 
-// LUT loading
+TEST_F(DataLoaderTest, testLoadLutIncorrectPath) {
+    DataLoaderMock loader(InputParams{});
+    BasicCubeLUTMock* lutMock = new BasicCubeLUTMock;
+    EXPECT_CALL(*lutMock, loadCubeFile).Times(0);
+    loader.setCube(lutMock);
+    EXPECT_FALSE(loader.loadLut());
+}
+
+TEST_F(DataLoaderTest, testLoadLut) {
+    constexpr auto lutPath = "resources/alog.cube";
+    InputParams params;
+    params.setInputLutPath(lutPath);
+    DataLoaderMock loader(params);
+    BasicCubeLUTMock* lutMock = new BasicCubeLUTMock;
+    EXPECT_CALL(*lutMock, loadCubeFile).Times(1);
+    loader.setCube(lutMock);
+    EXPECT_TRUE(loader.loadLut());
+}
+
+TEST_F(DataLoaderTest, testLoadLutFailed) {
+    constexpr auto lutPath = "resources/alog.cube";
+    InputParams params;
+    params.setInputLutPath(lutPath);
+    DataLoaderMock loader(params);
+    BasicCubeLUTMock* lutMock = new BasicCubeLUTMock;
+    EXPECT_CALL(*lutMock, loadCubeFile).WillOnce(Throw(std::runtime_error("TEST")));
+    loader.setCube(lutMock);
+    EXPECT_FALSE(loader.loadLut());
+}

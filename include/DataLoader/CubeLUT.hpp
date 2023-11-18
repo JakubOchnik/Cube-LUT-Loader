@@ -20,7 +20,9 @@ class CubeLUT
 public:
 	using TableRow = Eigen::Vector3f;
 
-	void loadCubeFile(std::istream& infile);
+	virtual ~CubeLUT() = default;
+
+	virtual void loadCubeFile(std::istream& infile);
 	LUTType getType() const;
 	const std::variant<Table1D, Table3D>& getTable() const;
 

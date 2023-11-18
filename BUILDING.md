@@ -21,7 +21,7 @@ sudo apt install build-essential cmake g++ # C++ build utilities
 # Windows:
 # Manually install the libraries. If applicable, install them at their default directories or configure proper environment variables to make sure CMake automatically finds them.
 ```
-2. Configure `BUILD_CUDA` and `BUILD_TESTS` variables in root-level `CMakeLists.txt`
+2. Configure `BUILD_CUDA` and `BUILD_TESTS` variables in root-level `CMakeLists.txt` or later as `-D` CMake command line arguments.
 3. Build the project in your IDE or using the following commands:
 ```
 cmake . -B build/

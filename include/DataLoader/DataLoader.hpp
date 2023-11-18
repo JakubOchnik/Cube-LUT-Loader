@@ -7,7 +7,6 @@
 class DataLoader
 {
 	cv::Mat_<cv::Vec3b> img;
-	CubeLUT cube;
 	InputParams params;
 
 public:
@@ -22,6 +21,8 @@ public:
 	[[nodiscard]] uint getThreads() const;
 
 protected:
+	std::unique_ptr<CubeLUT> cube;
+
 	virtual cv::Mat readImage(const std::string& inputPath);
 	virtual void resizeImage(cv::Mat inputImg, cv::Mat outputImg, unsigned int width, unsigned int height, int interpolationMode = 2);
 };
