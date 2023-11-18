@@ -55,11 +55,14 @@ public:
 	bool getShowHelp() const;
 	void setShowHelp(bool value);
 	std::string getInputImgPath() const;
+	void setInputImgPath(const std::string& inputPath);
 	std::string getOutputImgPath() const;
 	std::string getInputLutPath() const;
 	float getEffectStrength() const;
 	unsigned int getThreads() const;
 	InterpolationMethod getInterpolationMethod() const;
 	unsigned int getOutputImageWidth() const;
+	void setOutputImageWidth(unsigned int width);
 	unsigned int getOutputImageHeight() const;
+	void setOutputImageHeight(unsigned int height);
 };

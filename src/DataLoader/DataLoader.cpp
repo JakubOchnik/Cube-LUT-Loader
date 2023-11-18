@@ -11,7 +11,7 @@ bool DataLoader::loadImg()
 {
 	std::cout << "[INFO] Importing image...\n";
 	const auto inputPath = params.getInputImgPath();
-	const auto sourceImg = cv::imread(inputPath);
+	const auto sourceImg = readImage(inputPath);
 	if (sourceImg.empty())
 	{
 		std::cerr << boost::format("[ERROR] Could not open input image file: %1%\n") % inputPath;
@@ -21,15 +21,24 @@ bool DataLoader::loadImg()
 	if (params.getOutputImageHeight() || params.getOutputImageWidth()) {
 		unsigned int width = params.getOutputImageWidth() ? params.getOutputImageWidth() : sourceImg.size().width;
 		unsigned int height = params.getOutputImageHeight() ? params.getOutputImageHeight() : sourceImg.size().height;
-		cv::Size newSize(width, height);
 
 		std::cout << boost::format("[INFO] Scaling image to %1%x%2%\n") % width % height;
-		cv::resize(sourceImg, img, newSize, 0, 0, cv::InterpolationFlags::INTER_CUBIC);
+		resizeImage(sourceImg, img, width, height);
 	} else {
 		img = sourceImg;
 	}
 
 	return true;
+}
+
+cv::Mat DataLoader::readImage(const std::string &inputPath)
+{
+	return cv::imread(inputPath);
+}
+
+void DataLoader::resizeImage(cv::Mat inputImg, cv::Mat outputImg, unsigned int width, unsigned int height, int interpolationMode)
+{
+	cv::resize(inputImg, img, cv::Size(width, height), 0, 0, interpolationMode);
 }
 
 bool DataLoader::loadLut()

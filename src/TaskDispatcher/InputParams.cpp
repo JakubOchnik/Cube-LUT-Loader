@@ -47,6 +47,10 @@ std::string InputParams::getInputImgPath() const {
 	return inputImgPath;
 }
 
+void InputParams::setInputImgPath(const std::string& inputPath) {
+	inputImgPath = inputPath;
+}
+
 std::string InputParams::getOutputImgPath() const {
 	return outputImgPath;
 }
@@ -71,6 +75,14 @@ unsigned int InputParams::getOutputImageWidth() const {
 	return outputImageWidth;
 }
 
+void InputParams::setOutputImageWidth(unsigned int width) {
+	outputImageWidth = width;
+}
+
 unsigned int InputParams::getOutputImageHeight() const {
 	return outputImageHeight;
+}
+
+void InputParams::setOutputImageHeight(unsigned int height) {
+	outputImageHeight = height;
 }
