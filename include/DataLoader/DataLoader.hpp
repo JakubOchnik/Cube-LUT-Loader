@@ -20,4 +20,8 @@ public:
 	[[nodiscard]] const CubeLUT& getCube() const;
 	[[nodiscard]] const InputParams& getInputParams() const;
 	[[nodiscard]] uint getThreads() const;
+
+protected:
+	virtual cv::Mat readImage(const std::string& inputPath);
+	virtual void resizeImage(cv::Mat inputImg, cv::Mat outputImg, unsigned int width, unsigned int height, int interpolationMode = 2);
 };
