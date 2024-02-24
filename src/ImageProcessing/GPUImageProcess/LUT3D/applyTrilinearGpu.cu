@@ -14,6 +14,17 @@ namespace GpuTrilinearDevice
 	}
 }
 
+namespace {
+__device__ float getSafeDelta(int boundingBoxA, int boundingBoxB, float floatCoordinate) {
+	const int boundingBoxWidth = boundingBoxB - boundingBoxA;
+	if (floatCoordinate - boundingBoxA == 0 || boundingBoxWidth == 0) {
+		return .0f;
+	}
+	// x_d = (x - x_0) / (x_1 - x_0)
+	return (floatCoordinate - boundingBoxA) / static_cast<float>(boundingBoxWidth);
+}
+}
+
 __global__ void applyTrilinear(unsigned char *image, const char channels, const float *LUT, const int LUTsize,
 							   const float opacity, const int width, const int height)
 {
@@ -35,24 +46,27 @@ __global__ void applyTrilinear(unsigned char *image, const char channels, const 
 	const int g = image[pixelIdx + 1];
 	const int r = image[pixelIdx + 2];
 
-	// Implementation of a formula in the "Method" section: https://en.wikipedia.org/wiki/Trilinear_interpolation
-	// Get the min/max indices of the interpolated 3D "box"
-	const int r1 = static_cast<int>(ceilf(r / 255.0f * static_cast<float>(LUTsize - 1)));
-	const int r0 = static_cast<int>(floorf(r / 255.0f * static_cast<float>(LUTsize - 1)));
-	const int g1 = static_cast<int>(ceilf(g / 255.0f * static_cast<float>(LUTsize - 1)));
-	const int g0 = static_cast<int>(floorf(g / 255.0f * static_cast<float>(LUTsize - 1)));
-	const int b1 = static_cast<int>(ceilf(b / 255.0f * static_cast<float>(LUTsize - 1)));
-	const int b0 = static_cast<int>(floorf(b / 255.0f * static_cast<float>(LUTsize - 1)));
+	// Implementation of a formula in the "Method" section
+	// https://en.wikipedia.org/wiki/Trilinear_interpolation
+
+	const int maxLUTIndex = LUTsize - 1;
+	// Map real RGB coordinates to an integral 'bounding cube' on a lower-accuracy LUT plane
+	// (map RGB point from a 256^3 color cube to e.g. a 33^3 cube)
+	const int r1 = static_cast<int>(ceilf(r / 255.0f * static_cast<float>(maxLUTIndex)));
+	const int r0 = static_cast<int>(floorf(r / 255.0f * static_cast<float>(maxLUTIndex)));
+	const int g1 = static_cast<int>(ceilf(g / 255.0f * static_cast<float>(maxLUTIndex)));
+	const int g0 = static_cast<int>(floorf(g / 255.0f * static_cast<float>(maxLUTIndex)));
+	const int b1 = static_cast<int>(ceilf(b / 255.0f * static_cast<float>(maxLUTIndex)));
+	const int b0 = static_cast<int>(floorf(b / 255.0f * static_cast<float>(maxLUTIndex)));
 
 	// Get the real 3D index to be interpolated
-	const float r_o = r * (LUTsize - 1) / 255.0f;
-	const float g_o = g * (LUTsize - 1) / 255.0f;
-	const float b_o = b * (LUTsize - 1) / 255.0f;
+	const float real_r = r * (maxLUTIndex) / 255.0f;
+	const float real_g = g * (maxLUTIndex) / 255.0f;
+	const float real_b = b * (maxLUTIndex) / 255.0f;
 
-	// TODO comparing floats with 0 is theoretically unsafe
-	const float delta_r = (r_o - r0 == 0 || r1 - r0 == 0 ? 0 : (r_o - r0) / static_cast<float>(r1 - r0));
-	const float delta_g = (g_o - g0 == 0 || g1 - g0 == 0 ? 0 : (g_o - g0) / static_cast<float>(g1 - g0));
-	const float delta_b = (b_o - b0 == 0 || b1 - b0 == 0 ? 0 : (b_o - b0) / static_cast<float>(b1 - b0));
+	const float delta_r = getSafeDelta(r0, r1, real_r);
+	const float delta_g = getSafeDelta(g0, g1, real_g);
+	const float delta_b = getSafeDelta(b0, b1, real_b);
 
 	auto idx = [LUTsize](int r, int g, int b)
 	{
@@ -67,10 +81,12 @@ __global__ void applyTrilinear(unsigned char *image, const char channels, const 
 
 	// Channel increment (a value that should be added to the index to get the next channel)
 	const int chIncr{static_cast<int>(pow(LUTsize, 3))};
-	// 1st pass
 	int ind1 = idx(r0, g0, b0);
 	int ind2 = idx(r1, g0, b0);
 
+	// 1st pass - interpolate along r axis
+	// vx variables are actually RGB triplets of the LUT values (in float) - we can treat the RGB vector like a single value
+	// vertice_lut_value_vector3 = lut[r_0][g_0][b_0] * (1 - delta_r) + lut[r_1][g_0][b_0] * delta_r
 	using namespace Eigen;
 	Vector3f v1 = Vector3f(LUT[ind1], LUT[ind1 + chIncr], LUT[ind1 + 2 * chIncr]) * (1 - delta_r) +
 				  Vector3f(LUT[ind2], LUT[ind2 + chIncr], LUT[ind2 + 2 * chIncr]) * delta_r;
@@ -87,13 +103,14 @@ __global__ void applyTrilinear(unsigned char *image, const char channels, const 
 	Vector3f v4 = Vector3f(LUT[ind1], LUT[ind1 + chIncr], LUT[ind1 + 2 * chIncr]) * (1 - delta_r) +
 				  Vector3f(LUT[ind2], LUT[ind2 + chIncr], LUT[ind2 + 2 * chIncr]) * delta_r;
 
-	// 2nd step
+	// 2nd step - interpolate along g axis
 	v1 = v1 * (1 - delta_g) + v3 * delta_g;
 	v2 = v2 * (1 - delta_g) + v4 * delta_g;
 
-	// 3rd step
+	// 3rd step - interpolate along b axis
 	v1 = v1 * (1 - delta_b) + v2 * delta_b;
 
+	// Change the final interpolated LUT float value to 8-bit RGB
 	const auto newB = static_cast<uchar>(roundf(v1[2] * 255.0f));
 	const auto newG = static_cast<uchar>(roundf(v1[1] * 255.0f));
 	const auto newR = static_cast<uchar>(roundf(v1[0] * 255.0f));

@@ -1,5 +1,6 @@
 #include <Eigen/Dense>
 #include <ImageProcessing/CPUImageProcess/LUT3D/applyNearestValue.hpp>
+#include <ImageProcessing/CPUImageProcess/WorkerData.hpp>
 #include <functional>
 #include <thread>
 #include <vector>
