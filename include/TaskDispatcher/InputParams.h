@@ -1,8 +1,8 @@
 #pragma once
 #include <optional>
 #include <string>
+#include <format>
 #include <boost/program_options.hpp>
-#include <boost/format.hpp>
 
 enum class InterpolationMethod {
 	Trilinear,
@@ -39,8 +39,7 @@ private:
 		if (vm.count(key)) {
 			const auto value = vm[key].as<SourceType>();
 			if (!verificationFunction(value)) {
-				const auto message = boost::format("Incorrect value for %1% (%2%)") % key % value;
-				throw std::runtime_error(message.str());
+				throw std::runtime_error(std::format("Incorrect value for {} ({})", key, value));
 			}
 			field = static_cast<DestinationType>(value);
 		}

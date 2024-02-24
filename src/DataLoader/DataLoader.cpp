@@ -1,10 +1,9 @@
 #include <DataLoader/DataLoader.hpp>
 #include <fstream>
 #include <iostream>
+#include <format>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <boost/format.hpp>
-
 DataLoader::DataLoader(InputParams inputParams) : params(inputParams), cube(std::make_unique<CubeLUT>()) {}
 
 bool DataLoader::loadImg()
@@ -14,7 +13,7 @@ bool DataLoader::loadImg()
 	const auto sourceImg = readImage(inputPath);
 	if (sourceImg.empty())
 	{
-		std::cerr << boost::format("[ERROR] Could not open input image file: %1%\n") % inputPath;
+		std::cerr << std::format("[ERROR] Could not open input image file: {}\n", inputPath);
 		return false;
 	}
 
@@ -22,7 +21,7 @@ bool DataLoader::loadImg()
 		unsigned int width = params.getOutputImageWidth() ? params.getOutputImageWidth() : sourceImg.size().width;
 		unsigned int height = params.getOutputImageHeight() ? params.getOutputImageHeight() : sourceImg.size().height;
 
-		std::cout << boost::format("[INFO] Scaling image to %1%x%2%\n") % width % height;
+		std::cout << std::format("[INFO] Scaling image to {}x{}\n", width, height);
 		resizeImage(sourceImg, img, width, height);
 	} else {
 		img = sourceImg;
@@ -49,14 +48,14 @@ bool DataLoader::loadLut()
 	std::ifstream infile(lutPath);
 	if (!infile.good())
 	{
-		std::cerr << boost::format("[ERROR] Could not open input LUT file: %1%\n") % lutPath;
+		std::cerr << std::format("[ERROR] Could not open input LUT file: {}\n", lutPath);
 		return false;
 	}
 	std::cout << "[INFO] Parsing LUT...\n";
 	try {
 		cube->loadCubeFile(infile);
 	} catch (const std::runtime_error& ex) {
-		std::cerr << boost::format("[ERROR] %1%\n") % ex.what();
+		std::cerr << std::format("[ERROR] {}\n", ex.what());
 		success = false;
 	}
 	infile.close();
