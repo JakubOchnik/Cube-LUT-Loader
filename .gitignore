@@ -52,6 +52,7 @@ Makefile
 CMakeCache.txt
 compile_commands.json
 CMakeSettings.json
+CMakeUserPresets.json
 
 # Other
 *.cube

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.23)
 
 option(BUILD_TESTS "Build tests" OFF)
 option(BUILD_CUDA "Build project with CUDA libraries" OFF)
