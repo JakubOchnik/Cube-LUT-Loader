@@ -9,7 +9,7 @@ on:
 env:
   BUILD_TYPE: Release
   CONAN_PRESET: conan-release
-  INSTALL_CUDA: OFF # Temporarily disabled due to insufficient resources on Github Actions worker
+  INSTALL_CUDA: ON
 
 jobs:
   build_linux:
@@ -20,9 +20,11 @@ jobs:
 
     - name: Install CUDA
       if: env.INSTALL_CUDA == 'ON'
-      uses: Jimver/cuda-toolkit@v0.2.11
+      uses: Jimver/cuda-toolkit@v0.2.15
       with:
-        linux-local-args: '["--toolkit"]'
+        cuda: '12.4.1'
+        method: 'network'
+        sub-packages: '["nvcc", "cudart"]'
 
     - name: Install Conan
       id: conan
@@ -49,6 +51,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Install CUDA
+      if: env.INSTALL_CUDA == 'ON'
+      uses: Jimver/cuda-toolkit@v0.2.15
+      with:
+        cuda: '12.4.1'
+        method: 'network'
+        sub-packages: '["nvcc", "cudart", "visual_studio_integration"]'
 
     - name: Install Conan
       id: conan
