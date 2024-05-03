@@ -8,6 +8,20 @@
 Newer versions of the above libraries should work too.
 
 ## Build instructions
+### Conan (preferred)
+Windows:
+```
+conan install . --build=missing # -s build_type=Debug
+cmake --preset conan-default
+cmake --build --preset conan-release # conan-debug for Debug build
+```
+Linux:
+```
+conan install . --build=missing # -s build_type=Debug
+cmake --preset conan-release # conan-debug for Debug build
+cmake --build --preset conan-release # conan-debug for Debug build
+```
+### Manual
 1. Install all of the required dependencies
 ```
 # For OpenCV, only opencv_core and opencv_imgcodecs are required.

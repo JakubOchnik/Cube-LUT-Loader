@@ -6,11 +6,10 @@ endif()
 find_package(OpenCV REQUIRED)
 message(STATUS "OpenCV include dir: ${OpenCV_INCLUDE_DIRS}")
 
-set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost REQUIRED COMPONENTS program_options)
 message(STATUS "Boost include dir: ${Boost_INCLUDE_DIRS}")
 
-find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 
 # Detect include directories for the external libraries
 if (BUILD_CUDA)
