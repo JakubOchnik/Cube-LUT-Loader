@@ -2,6 +2,7 @@
 boost/1.84.0
 opencv/4.9.0
 eigen/3.4.0
+fmt/10.2.1
 
 [generators]
 CMakeDeps

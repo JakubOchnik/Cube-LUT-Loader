@@ -2,21 +2,21 @@
 #include <boost/program_options.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <iostream>
-#include <boost/format.hpp>
+#include <fmt/format.h>
 
 ImageProcessor::ImageProcessor(const DataLoader &ld) : loader(ld) {}
 
 void ImageProcessor::save() const
 {
     const auto& outputPath = loader.getInputParams().getOutputImgPath();
-    std::cout << boost::format("[INFO] Saving image to: %1%\n") % outputPath;
+    std::cout << fmt::format("[INFO] Saving image to: {}\n", outputPath);
     try
     {
         cv::imwrite(outputPath, newImg);
     }
     catch (cv::Exception &ex)
     {
-        std::cerr << boost::format("[ERROR] %1%\n") % ex.what();
+        std::cerr << fmt::format("[ERROR] {}\n", ex.what());
     }
 }
 
