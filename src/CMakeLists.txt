@@ -10,6 +10,7 @@ find_package(Boost REQUIRED COMPONENTS program_options)
 message(STATUS "Boost include dir: ${Boost_INCLUDE_DIRS}")
 
 find_package(Eigen3 3.4 REQUIRED NO_MODULE)
+find_package(fmt REQUIRED)
 
 # Detect include directories for the external libraries
 if (BUILD_CUDA)

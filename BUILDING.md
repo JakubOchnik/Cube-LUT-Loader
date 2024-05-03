@@ -1,9 +1,10 @@
 # Building
 ## Used libraries
 - OpenCV 4.5.5: `opencv_core`, `opencv_imgcodecs`
-- Boost 1.78.0: `program_options`, `format` (header-only)
+- Boost 1.78.0: `program_options`
 - Eigen 3.4.0: Vectors and Tensor module, header-only
 - CUDA 11.6: used for GPU mode
+- fmt 10.2.1
 
 Newer versions of the above libraries should work too.
 
@@ -29,7 +30,7 @@ cmake --build --preset conan-release # conan-debug for Debug build
 
 # Linux (Ubuntu 22.04 used as an example):
 sudo apt install libopencv-dev # OpenCV libraries
-sudo apt install libboost-all-dev libeigen3-dev # Boost & Eigen3 libraries
+sudo apt install libboost-all-dev libeigen3-dev libfmt-dev # Boost, Eigen3, fmt libraries
 sudo apt install build-essential cmake g++ # C++ build utilities
 
 # Windows:
