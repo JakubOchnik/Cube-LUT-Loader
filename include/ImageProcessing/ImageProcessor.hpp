@@ -6,13 +6,14 @@ class ImageProcessor
 {
 protected:
     cv::Mat_<cv::Vec3b> newImg;
-    const FileIO &loader;
+    FileIO& fileInterface;
 
 public:
-    ImageProcessor(const FileIO &ld);
+    ImageProcessor(FileIO &fileIfc);
     ImageProcessor() = delete;
+    virtual ~ImageProcessor() = default;
 
-    virtual cv::Mat process() = 0;
-    virtual void save() const;
-    virtual void execute();
+    virtual cv::Mat process(float strength, InterpolationMethod method) = 0;
+    virtual cv::Mat execute(float strength, cv::Size dstImageSize, InterpolationMethod method);
+    virtual cv::Mat resizeImage(cv::Mat inputImg, cv::Size size, int interpolationMode = 2);
 };

@@ -75,7 +75,7 @@ InterpolationMethod InputParams::getInterpolationMethod() const {
 	return interpolationMethod;
 }
 
-unsigned int InputParams::getOutputImageWidth() const {
+int InputParams::getOutputImageWidth() const {
 	return outputImageWidth;
 }
 
@@ -83,7 +83,7 @@ void InputParams::setOutputImageWidth(unsigned int width) {
 	outputImageWidth = width;
 }
 
-unsigned int InputParams::getOutputImageHeight() const {
+int InputParams::getOutputImageHeight() const {
 	return outputImageHeight;
 }
 

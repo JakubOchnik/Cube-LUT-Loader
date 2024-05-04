@@ -2,7 +2,22 @@
 #include <sstream>
 #include <iostream>
 
-bool CudaUtils::isCudaDriverAvailable()
+namespace CudaUtils {
+bool isCudaAvailable()
+{
+	if (!CudaUtils::isCudaDriverAvailable())
+	{
+		std::cerr << "[ERROR] CUDA driver was not detected\n";
+	}
+	if (!CudaUtils::isCudaDeviceAvailable())
+	{
+		std::cerr << "[ERROR] No CUDA devices available\n";
+		return false;
+	}
+	return true;
+}
+
+bool isCudaDriverAvailable()
 {
 #ifdef _WIN32
 	if (LoadLibraryA("nvcuda.dll") == nullptr)
@@ -18,7 +33,7 @@ bool CudaUtils::isCudaDriverAvailable()
 	return true;
 }
 
-bool CudaUtils::isCudaDeviceAvailable()
+bool isCudaDeviceAvailable()
 {
 	cudaDeviceProp prop;
 	int devCount{};
@@ -29,6 +44,7 @@ bool CudaUtils::isCudaDeviceAvailable()
 	catch (const std::runtime_error &ex)
 	{
 		std::cerr << ex.what();
+		return false;
 	}
 	if (devCount < 1 || cudaGetDeviceProperties(&prop, 0) != cudaSuccess)
 	{
@@ -37,7 +53,7 @@ bool CudaUtils::isCudaDeviceAvailable()
 	return true;
 }
 
-std::map<std::string, std::string> CudaUtils::getCudaDeviceInfo()
+std::map<std::string, std::string> getCudaDeviceInfo()
 {
 	std::map<std::string, std::string> deviceInfo;
 	cudaDeviceProp prop;
@@ -57,7 +73,7 @@ std::map<std::string, std::string> CudaUtils::getCudaDeviceInfo()
 	return deviceInfo;
 }
 
-std::string CudaUtils::getReadableCudaDeviceInfo()
+std::string getReadableCudaDeviceInfo()
 {
 	std::stringstream ss;
 	auto deviceInfo = CudaUtils::getCudaDeviceInfo();
@@ -67,3 +83,4 @@ std::string CudaUtils::getReadableCudaDeviceInfo()
 	}
 	return ss.str();
 }
+} // namespace CudaUtils

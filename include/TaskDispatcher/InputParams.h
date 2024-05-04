@@ -24,8 +24,8 @@ private:
 	float effectStrength{ 1.0f };
 	unsigned int threads{ 1 };
 	InterpolationMethod interpolationMethod{};
-	unsigned int outputImageWidth{};
-	unsigned int outputImageHeight{};
+	int outputImageWidth{};
+	int outputImageHeight{};
 
 	template<typename T>
 	void setParam(const std::string& key, T& field, const boost::program_options::variables_map& vm) {
@@ -62,8 +62,8 @@ public:
 	float getEffectStrength() const;
 	unsigned int getThreads() const;
 	InterpolationMethod getInterpolationMethod() const;
-	unsigned int getOutputImageWidth() const;
+	int getOutputImageWidth() const;
 	void setOutputImageWidth(unsigned int width);
-	unsigned int getOutputImageHeight() const;
+	int getOutputImageHeight() const;
 	void setOutputImageHeight(unsigned int height);
 };

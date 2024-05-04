@@ -1,27 +1,27 @@
 #include <ImageProcessing/ImageProcessor.hpp>
 #include <boost/program_options.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <iostream>
 #include <fmt/format.h>
+#include <iostream>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
 
-ImageProcessor::ImageProcessor(const FileIO &ld) : loader(ld) {}
+ImageProcessor::ImageProcessor(FileIO& fileIfc) : fileInterface(fileIfc) {}
 
-void ImageProcessor::save() const
-{
-    const auto& outputPath = loader.getInputParams().getOutputImgPath();
-    std::cout << fmt::format("[INFO] Saving image to: {}\n", outputPath);
-    try
-    {
-        cv::imwrite(outputPath, newImg);
-    }
-    catch (cv::Exception &ex)
-    {
-        std::cerr << fmt::format("[ERROR] {}\n", ex.what());
-    }
+cv::Mat ImageProcessor::execute(float strength, cv::Size dstImageSize, InterpolationMethod method) {
+	// Swap original image with the resized one to avoid storing two images simultaneously in memory
+	fileInterface.setImg(resizeImage(fileInterface.getImg(), dstImageSize));
+	return process(strength, method);
 }
 
-void ImageProcessor::execute()
-{
-    process();
-    save();
+cv::Mat ImageProcessor::resizeImage(cv::Mat inputImg, cv::Size size, int interpolationMode) {
+	const auto [width, height] = size;
+	if (!width && !height) {
+		return inputImg;
+	}
+	size.width = width ? width : inputImg.size().width;
+	size.height = height ? height : inputImg.size().height;
+	std::cout << fmt::format("[INFO] Scaling image to {}x{}\n", size.width, size.height);
+	cv::Mat newImage;
+	cv::resize(inputImg, newImage, size, 0, 0, interpolationMode);
+	return newImage;
 }
