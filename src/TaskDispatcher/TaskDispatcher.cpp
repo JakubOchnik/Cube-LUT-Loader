@@ -34,9 +34,9 @@ int TaskDispatcher::start()
 		std::cerr << "[ERROR] " << ex.what() << '\n';
 		return FAIL_EXIT;
 	}
-	DataLoader loader{ parameters };
+	FileIO fileIO{ parameters };
 
-	bool loadSuccessful = loader.load();
+	bool loadSuccessful = fileIO.load();
 	if (!loadSuccessful) {
 		return FAIL_EXIT;
 	}
@@ -45,7 +45,7 @@ int TaskDispatcher::start()
 	{
 #ifdef BUILD_CUDA
 		std::cout << "[INFO] GPU acceleration enabled\n";
-		GpuProcessor processor(loader);
+		GpuProcessor processor(fileIO);
 		try
 		{
 			processor.execute();
@@ -60,8 +60,8 @@ int TaskDispatcher::start()
 	}
 	else
 	{
-		std::cout << "[INFO] Using " << loader.getThreads() << " CPU thread(s)\n";
-		CPUProcessor processor(loader);
+		std::cout << "[INFO] Using " << parameters.getThreads() << " CPU thread(s)\n";
+		CPUProcessor processor(fileIO);
 		try
 		{
 			processor.execute();

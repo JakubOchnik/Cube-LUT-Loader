@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fmt/format.h>
 
-ImageProcessor::ImageProcessor(const DataLoader &ld) : loader(ld) {}
+ImageProcessor::ImageProcessor(const FileIO &ld) : loader(ld) {}
 
 void ImageProcessor::save() const
 {

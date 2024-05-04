@@ -1,4 +1,4 @@
-#include <DataLoader/CubeLUT.hpp>
+#include <FileIO/CubeLUT.hpp>
 #include <ImageProcessing/GPUImageProcess/GPUprocessor.hpp>
 #include <ImageProcessing/GPUImageProcess/LUT3D/applyNearestValueHost.hpp>
 #include <ImageProcessing/GPUImageProcess/LUT3D/applyTrilinearHost.hpp>
@@ -6,7 +6,7 @@
 #include <boost/program_options.hpp>
 #include <iostream>
 
-GpuProcessor::GpuProcessor(const DataLoader &ld) : ImageProcessor(ld) {}
+GpuProcessor::GpuProcessor(const FileIO &ld) : ImageProcessor(ld) {}
 
 cv::Mat GpuProcessor::process()
 {

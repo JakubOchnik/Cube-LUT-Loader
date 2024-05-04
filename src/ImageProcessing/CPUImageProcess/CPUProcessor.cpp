@@ -1,4 +1,4 @@
-#include <DataLoader/CubeLUT.hpp>
+#include <FileIO/CubeLUT.hpp>
 #include <ImageProcessing/CPUImageProcess/LUT1D/apply1D.hpp>
 #include <ImageProcessing/CPUImageProcess/LUT3D/applyNearestValue.hpp>
 #include <ImageProcessing/CPUImageProcess/LUT3D/applyTrilinear.hpp>
@@ -6,7 +6,7 @@
 #include <boost/program_options.hpp>
 #include <iostream>
 
-CPUProcessor::CPUProcessor(const DataLoader &ld) : ImageProcessor(ld) {}
+CPUProcessor::CPUProcessor(const FileIO &ld) : ImageProcessor(ld) {}
 
 cv::Mat CPUProcessor::process()
 {
