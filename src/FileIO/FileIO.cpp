@@ -5,30 +5,26 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <fmt/format.h>
 
-FileIO::FileIO(InputParams inputParams) : params(inputParams), cube(std::make_unique<CubeLUT>()) {}
+FileIO::FileIO(const std::string& inputPath, const std::string& outputPath, const std::string& lutPath)
+	: inputPath(inputPath), outputPath(outputPath), lutPath(lutPath), cube(std::make_unique<CubeLUT>()) {}
 
-bool FileIO::loadImg()
-{
+FileIO::FileIO(const InputParams& params)
+	: inputPath(params.getInputImgPath()), outputPath(params.getOutputImgPath()), lutPath(params.getInputLutPath()),
+	  cube(std::make_unique<CubeLUT>()) {}
+
+bool FileIO::loadImg() {
 	std::cout << "[INFO] Importing image...\n";
-	const auto inputPath = params.getInputImgPath();
 	const auto sourceImg = readImage(inputPath);
-	if (sourceImg.empty())
-	{
+	if (sourceImg.empty()) {
 		std::cerr << fmt::format("[ERROR] Could not open input image file: {}\n", inputPath);
 		return false;
 	}
-
-	if (params.getOutputImageHeight() || params.getOutputImageWidth()) {
-		unsigned int width = params.getOutputImageWidth() ? params.getOutputImageWidth() : sourceImg.size().width;
-		unsigned int height = params.getOutputImageHeight() ? params.getOutputImageHeight() : sourceImg.size().height;
-
-		std::cout << fmt::format("[INFO] Scaling image to {}x{}\n", width, height);
-		resizeImage(sourceImg, img, width, height);
-	} else {
-		img = sourceImg;
-	}
-
+	img = sourceImg;
 	return true;
+}
+
+void FileIO::setImg(cv::Mat newImage) {
+	img = newImage;
 }
 
 cv::Mat FileIO::readImage(const std::string &inputPath)
@@ -36,16 +32,10 @@ cv::Mat FileIO::readImage(const std::string &inputPath)
 	return cv::imread(inputPath);
 }
 
-void FileIO::resizeImage(cv::Mat inputImg, cv::Mat outputImg, unsigned int width, unsigned int height, int interpolationMode)
-{
-	cv::resize(inputImg, img, cv::Size(width, height), 0, 0, interpolationMode);
-}
-
 bool FileIO::loadLut()
 {
 	bool success = true;
 	std::cout << "[INFO] Importing LUT...\n";
-	const auto& lutPath = params.getInputLutPath();
 	std::ifstream infile(lutPath);
 	if (!infile.good())
 	{
@@ -78,12 +68,13 @@ const CubeLUT& FileIO::getCube() const
 	return *cube;
 }
 
-const InputParams& FileIO::getInputParams() const
-{
-	return params;
-}
-
-uint FileIO::getThreads() const
-{
-	return params.getThreads();
+bool FileIO::saveImg(cv::Mat newImg) const {
+	std::cout << fmt::format("[INFO] Saving image to: {}\n", outputPath);
+	try {
+		cv::imwrite(outputPath, newImg);
+	} catch (cv::Exception& ex) {
+		std::cerr << fmt::format("[ERROR] {}\n", ex.what());
+		return false;
+	}
+	return true;
 }

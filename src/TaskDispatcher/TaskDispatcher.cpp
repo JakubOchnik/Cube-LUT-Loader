@@ -1,5 +1,6 @@
 #ifdef BUILD_CUDA
 #include <ImageProcessing/GPUImageProcess/GPUprocessor.hpp>
+#include <ImageProcessing/GPUImageProcess/Utils/CudaUtils.hpp>
 #endif
 #include <ImageProcessing/CPUImageProcess/CPUProcessor.hpp>
 #include <TaskDispatcher/TaskDispatcher.hpp>
@@ -41,36 +42,52 @@ int TaskDispatcher::start()
 		return FAIL_EXIT;
 	}
 
-	if (parameters.getProcessingMode() == ProcessingMode::GPU)
+	cv::Mat finalImage;
+	if (parameters.getProcessingMode() == ProcessingMode::GPU) 
 	{
 #ifdef BUILD_CUDA
+		if (!CudaUtils::isCudaAvailable()) {
+			return FAIL_EXIT;
+		}
 		std::cout << "[INFO] GPU acceleration enabled\n";
 		GpuProcessor processor(fileIO);
 		try
 		{
-			processor.execute();
-		}
-		catch (const std::exception &e)
-		{
+			finalImage = processor.execute(parameters.getEffectStrength(),
+										   {parameters.getOutputImageWidth(), parameters.getOutputImageHeight()},
+										   parameters.getInterpolationMethod());
+		} catch (const std::exception& e) {
 			std::cerr << "[ERROR] " << e.what() << '\n';
+			return FAIL_EXIT;
+		}
+
+		// Currently needs to be done here - unified memory is freed in the destructor of GpuProcessor
+		// TODO: Separate output mat lifetime from GpuProcessor and don't use the default cv::Mat deallocator (bug-prone and unsafe)
+		if (!fileIO.saveImg(finalImage)) {
+			return FAIL_EXIT;
 		}
 #else
 		std::cerr << "[ERROR] GPU acceleration is unsupported in this build\n";
+		return FAIL_EXIT;
 #endif
-	}
-	else
-	{
+	} else {
 		std::cout << "[INFO] Using " << parameters.getThreads() << " CPU thread(s)\n";
-		CPUProcessor processor(fileIO);
+		CPUProcessor processor(fileIO, parameters.getThreads());
 		try
 		{
-			processor.execute();
-		}
-		catch (const std::exception &e)
-		{
+			finalImage = processor.execute(parameters.getEffectStrength(),
+										   {parameters.getOutputImageWidth(), parameters.getOutputImageHeight()},
+										   parameters.getInterpolationMethod());
+		} catch (const std::exception& e) {
 			std::cerr << e.what() << '\n';
+			return FAIL_EXIT;
+		}
+
+		if (!fileIO.saveImg(finalImage)) {
+			return FAIL_EXIT;
 		}
 	}
+
 	return SUCCESS_EXIT;
 }
 

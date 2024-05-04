@@ -8,11 +8,9 @@ class GpuProcessor : public ImageProcessor
 	static constexpr int threadsPerBlock{16};
 
 public:
-	GpuProcessor(const FileIO &ld);
+	GpuProcessor(FileIO& fileIfc);
 	~GpuProcessor();
-	void execute() override;
 
 private:
-	cv::Mat process() override;
-	bool isCudaAvailable() const;
+	cv::Mat process(float strength, InterpolationMethod method) override;
 };

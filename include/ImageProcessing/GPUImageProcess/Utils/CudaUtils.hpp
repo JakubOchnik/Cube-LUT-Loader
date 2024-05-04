@@ -40,4 +40,5 @@ static void freeUnifiedPtr(T* ptr)
 [[nodiscard]] bool								 isCudaDeviceAvailable();
 [[nodiscard]] std::map<std::string, std::string> getCudaDeviceInfo();
 [[nodiscard]] std::string						 getReadableCudaDeviceInfo();
+[[nodiscard]] bool isCudaAvailable();
 } // namespace CudaUtils

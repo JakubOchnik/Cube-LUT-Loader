@@ -5,7 +5,8 @@
 
 class CPUProcessor : public ImageProcessor
 {
+	uint numberOfThreads{1};
 public:
-	explicit CPUProcessor(const FileIO& ld);
-	cv::Mat process() override;
+	explicit CPUProcessor(FileIO& fileIfc, uint threads);
+	cv::Mat process(float strength, InterpolationMethod method) override;
 };
