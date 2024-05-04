@@ -1,11 +1,11 @@
 #pragma once
 #include <gmock/gmock.h>
-#include <DataLoader/DataLoader.hpp>
+#include <FileIO/FileIO.hpp>
 #include <CubeLUTMock.hpp>
 
-class DataLoaderMock : public DataLoader {
+class FileIOMock : public FileIO {
 public:
-    using DataLoader::DataLoader;
+    using FileIO::FileIO;
 public:
     MOCK_METHOD(cv::Mat, readImage, (const std::string&), (override));
     MOCK_METHOD(void, resizeImage, (cv::Mat, cv::Mat, unsigned int, unsigned ing, int), (override));

@@ -1,13 +1,13 @@
-#include <DataLoader/DataLoader.hpp>
+#include <FileIO/FileIO.hpp>
 #include <fstream>
 #include <iostream>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <fmt/format.h>
 
-DataLoader::DataLoader(InputParams inputParams) : params(inputParams), cube(std::make_unique<CubeLUT>()) {}
+FileIO::FileIO(InputParams inputParams) : params(inputParams), cube(std::make_unique<CubeLUT>()) {}
 
-bool DataLoader::loadImg()
+bool FileIO::loadImg()
 {
 	std::cout << "[INFO] Importing image...\n";
 	const auto inputPath = params.getInputImgPath();
@@ -31,17 +31,17 @@ bool DataLoader::loadImg()
 	return true;
 }
 
-cv::Mat DataLoader::readImage(const std::string &inputPath)
+cv::Mat FileIO::readImage(const std::string &inputPath)
 {
 	return cv::imread(inputPath);
 }
 
-void DataLoader::resizeImage(cv::Mat inputImg, cv::Mat outputImg, unsigned int width, unsigned int height, int interpolationMode)
+void FileIO::resizeImage(cv::Mat inputImg, cv::Mat outputImg, unsigned int width, unsigned int height, int interpolationMode)
 {
 	cv::resize(inputImg, img, cv::Size(width, height), 0, 0, interpolationMode);
 }
 
-bool DataLoader::loadLut()
+bool FileIO::loadLut()
 {
 	bool success = true;
 	std::cout << "[INFO] Importing LUT...\n";
@@ -63,27 +63,27 @@ bool DataLoader::loadLut()
 	return success;
 }
 
-bool DataLoader::load()
+bool FileIO::load()
 {
 	return loadImg() && loadLut();
 }
 
-const cv::Mat_<cv::Vec3b>& DataLoader::getImg() const
+const cv::Mat_<cv::Vec3b>& FileIO::getImg() const
 {
 	return this->img;
 }
 
-const CubeLUT& DataLoader::getCube() const
+const CubeLUT& FileIO::getCube() const
 {
 	return *cube;
 }
 
-const InputParams& DataLoader::getInputParams() const
+const InputParams& FileIO::getInputParams() const
 {
 	return params;
 }
 
-uint DataLoader::getThreads() const
+uint FileIO::getThreads() const
 {
 	return params.getThreads();
 }

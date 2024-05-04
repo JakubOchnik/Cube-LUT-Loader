@@ -16,7 +16,7 @@ add_executable(lut_loader_test
     LUTParserTest.cpp
     InputParamsTest.cpp
     InputArgsParserTest.cpp
-    DataLoaderTest.cpp
+    FileIOTest.cpp
 )
 
 target_link_libraries(

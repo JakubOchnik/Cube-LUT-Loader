@@ -1,11 +1,11 @@
 #pragma once
-#include <DataLoader/DataLoader.hpp>
+#include <FileIO/FileIO.hpp>
 #include <opencv2/core.hpp>
 #include <ImageProcessing/ImageProcessor.hpp>
 
 class CPUProcessor : public ImageProcessor
 {
 public:
-	explicit CPUProcessor(const DataLoader& ld);
+	explicit CPUProcessor(const FileIO& ld);
 	cv::Mat process() override;
 };

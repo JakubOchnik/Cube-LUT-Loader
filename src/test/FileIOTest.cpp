@@ -1,33 +1,33 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <DataLoaderMock.hpp>
+#include <FileIOMock.hpp>
 #include <CubeLUTMock.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
 using namespace ::testing;
 
-class DataLoaderTest : public ::testing::Test {
+class FileIOTest : public ::testing::Test {
 protected:
     unsigned int defaultWidth = 2;
     unsigned int defaultHeight = 2;
     cv::Mat testMat = cv::Mat(defaultWidth, defaultHeight, CV_8UC3);
 };
 
-TEST_F(DataLoaderTest, testLoadImage) {
-    DataLoaderMock loader(InputParams{});
+TEST_F(FileIOTest, testLoadImage) {
+    FileIOMock loader(InputParams{});
 
     EXPECT_CALL(loader, readImage).WillOnce(Return(testMat));
     EXPECT_TRUE(loader.loadImg());
 }
 
-TEST_F(DataLoaderTest, testLoadImageIncorrectPath) {
-    DataLoaderMock loader(InputParams{});
+TEST_F(FileIOTest, testLoadImageIncorrectPath) {
+    FileIOMock loader(InputParams{});
 
     EXPECT_CALL(loader, readImage).WillOnce(Return(cv::Mat()));
     EXPECT_FALSE(loader.loadImg());
 }
 
-struct ImageResizeTest : public ::testing::WithParamInterface<std::pair<int, int>>, public DataLoaderTest {};
+struct ImageResizeTest : public ::testing::WithParamInterface<std::pair<int, int>>, public FileIOTest {};
 
 TEST_P(ImageResizeTest, clippingTest) {
     const auto [width, height] =  GetParam();
@@ -42,7 +42,7 @@ TEST_P(ImageResizeTest, clippingTest) {
         params.setOutputImageHeight(height);
         expectedHeight = height;
     }
-    DataLoaderMock loader(params);
+    FileIOMock loader(params);
 
     EXPECT_CALL(loader, readImage).WillOnce(Return(testMat));
     EXPECT_CALL(loader, resizeImage(_, _, expectedWidth, expectedHeight, cv::InterpolationFlags::INTER_CUBIC));
@@ -50,7 +50,7 @@ TEST_P(ImageResizeTest, clippingTest) {
 }
 
 INSTANTIATE_TEST_SUITE_P(
-        DataLoaderTest,
+        FileIOTest,
         ImageResizeTest,
         ::testing::Values(
             std::make_pair(10,0),
@@ -59,30 +59,30 @@ INSTANTIATE_TEST_SUITE_P(
         )
 );
 
-TEST_F(DataLoaderTest, testLoadLutIncorrectPath) {
-    DataLoaderMock loader(InputParams{});
+TEST_F(FileIOTest, testLoadLutIncorrectPath) {
+    FileIOMock loader(InputParams{});
     BasicCubeLUTMock* lutMock = new BasicCubeLUTMock;
     EXPECT_CALL(*lutMock, loadCubeFile).Times(0);
     loader.setCube(lutMock);
     EXPECT_FALSE(loader.loadLut());
 }
 
-TEST_F(DataLoaderTest, testLoadLut) {
+TEST_F(FileIOTest, testLoadLut) {
     constexpr auto lutPath = "resources/alog.cube";
     InputParams params;
     params.setInputLutPath(lutPath);
-    DataLoaderMock loader(params);
+    FileIOMock loader(params);
     BasicCubeLUTMock* lutMock = new BasicCubeLUTMock;
     EXPECT_CALL(*lutMock, loadCubeFile).Times(1);
     loader.setCube(lutMock);
     EXPECT_TRUE(loader.loadLut());
 }
 
-TEST_F(DataLoaderTest, testLoadLutFailed) {
+TEST_F(FileIOTest, testLoadLutFailed) {
     constexpr auto lutPath = "resources/alog.cube";
     InputParams params;
     params.setInputLutPath(lutPath);
-    DataLoaderMock loader(params);
+    FileIOMock loader(params);
     BasicCubeLUTMock* lutMock = new BasicCubeLUTMock;
     EXPECT_CALL(*lutMock, loadCubeFile).WillOnce(Throw(std::runtime_error("TEST")));
     loader.setCube(lutMock);

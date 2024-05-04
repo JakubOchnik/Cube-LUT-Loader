@@ -1,16 +1,16 @@
 #pragma once
-#include <DataLoader/CubeLUT.hpp>
+#include <FileIO/CubeLUT.hpp>
 #include <boost/program_options.hpp>
 #include <opencv2/core.hpp>
 #include <TaskDispatcher/InputParams.h>
 
-class DataLoader
+class FileIO
 {
 	cv::Mat_<cv::Vec3b> img;
 	InputParams params;
 
 public:
-	explicit DataLoader(InputParams inputParams);
+	explicit FileIO(InputParams inputParams);
 	bool loadImg();
 	bool loadLut();
 	bool load();

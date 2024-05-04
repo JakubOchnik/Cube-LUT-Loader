@@ -1,5 +1,5 @@
 #pragma once
-#include <DataLoader/CubeLUT.hpp>
+#include <FileIO/CubeLUT.hpp>
 #include <opencv2/core.hpp>
 
 namespace Basic1D

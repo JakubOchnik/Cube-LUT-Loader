@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <DataLoader/CubeLUT.hpp>
+#include <FileIO/CubeLUT.hpp>
 #include <fstream>
 #include <filesystem>
 #include <variant>

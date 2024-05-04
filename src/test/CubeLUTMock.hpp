@@ -1,6 +1,6 @@
 #pragma once
 #include <gmock/gmock.h>
-#include <DataLoader/CubeLUT.hpp>
+#include <FileIO/CubeLUT.hpp>
 #include <string>
 #include <array>
 

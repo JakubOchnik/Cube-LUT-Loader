@@ -1,6 +1,6 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
-#include <DataLoader/CubeLUT.hpp>
+#include <FileIO/CubeLUT.hpp>
 #include <ImageProcessing/GPUImageProcess/LUT3D/applyNearestValueGpu.cuh>
 #include <ImageProcessing/GPUImageProcess/LUT3D/applyNearestValueHost.hpp>
 #include <ImageProcessing/GPUImageProcess/Utils/CudaUtils.hpp>

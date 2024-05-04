@@ -1,5 +1,5 @@
 #pragma once
-#include <DataLoader/DataLoader.hpp>
+#include <FileIO/FileIO.hpp>
 #include <opencv2/core.hpp>
 #include <ImageProcessing/ImageProcessor.hpp>
 
@@ -8,7 +8,7 @@ class GpuProcessor : public ImageProcessor
 	static constexpr int threadsPerBlock{16};
 
 public:
-	GpuProcessor(const DataLoader &ld);
+	GpuProcessor(const FileIO &ld);
 	~GpuProcessor();
 	void execute() override;
 
