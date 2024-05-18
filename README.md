@@ -21,6 +21,7 @@ See [performance tests](PERFORMANCE.md) for a performance comparison between the
   -i [ --input ] arg             Input file path
   -l [ --lut ] arg               LUT file path
   -o [ --output ] arg (=out.png) Output file path [= out.png]
+  -f [ --force ]                 Force overwrite file
   -s [ --strength ] arg (=1)     Strength of the effect [= 1.0]
   -t [ --trilinear ]             Trilinear interpolation of 3D LUT
   -n [ --nearest_value ]         No interpolation of 3D LUT
@@ -39,4 +40,3 @@ However, if you don't have one, you can still build and use the program in CPU m
 - GPU acceleration for 1D LUTs
 - Support of color depths other than 8-bit
 - Batch processing
-- Increasing unit test coverage

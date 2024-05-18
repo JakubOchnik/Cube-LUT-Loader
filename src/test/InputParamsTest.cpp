@@ -11,6 +11,7 @@ void testDefaultValues(const InputParams& params) {
     EXPECT_EQ(params.getThreads(), 1u);
     EXPECT_EQ(params.getProcessingMode(), ProcessingMode::CPU);
     EXPECT_EQ(params.getShowHelp(), false);
+    EXPECT_EQ(params.getForceOverwrite(), false);
     EXPECT_EQ(params.getOutputImageWidth(), 0);
     EXPECT_EQ(params.getOutputImageHeight(), 0);
 }
@@ -33,6 +34,7 @@ TEST_F(InputParamsTest, testParsingValues)
     boost::program_options::variables_map vm;
     vm.emplace("gpu", boost::program_options::variable_value(true, false));
     vm.emplace("help", boost::program_options::variable_value(true, false));
+    vm.emplace("force", boost::program_options::variable_value(true, false));
     vm.emplace("input", boost::program_options::variable_value(std::string{"test_input"}, false));
     vm.emplace("output", boost::program_options::variable_value(std::string{"test_output"}, false));
     vm.emplace("lut", boost::program_options::variable_value(std::string{"test_lut"}, false));
@@ -45,6 +47,7 @@ TEST_F(InputParamsTest, testParsingValues)
     InputParams params(std::move(vm));
     EXPECT_EQ(params.getProcessingMode(), ProcessingMode::GPU);
     EXPECT_EQ(params.getShowHelp(), true);
+    EXPECT_EQ(params.getForceOverwrite(), true);
     EXPECT_EQ(params.getInputImgPath(), "test_input");
     EXPECT_EQ(params.getOutputImgPath(), "test_output");
     EXPECT_EQ(params.getInputLutPath(), "test_lut");
