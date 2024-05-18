@@ -4,7 +4,7 @@
 ![Workflow](https://github.com/JakubOchnik/Cube-LUT-Loader/actions/workflows/build-and-test.yml/badge.svg)  
 A simple command-line C++ tool that allows you to apply a Cube format LUT to an image.
 It offers high-performance multi-threaded and GPU-accelerated modes, various interpolation methods, and support for 1D and 3D LUTs.  
-To see the performance comparison between the offered modes, see [performance tests](PERFORMANCE.md).
+See [performance tests](PERFORMANCE.md) for a performance comparison between the offered modes.
 
 ## Features
 - Simple CLI

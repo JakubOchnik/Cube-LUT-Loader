@@ -43,4 +43,8 @@ cmake . -B build/
 cmake --build build/ --target lut_loader -j
 ```
 
+## Tests
 To build tests, enable `BUILD_TESTS` variable and build target `lut_loader_test`. Make sure to run the test executable from the proper working directory (`REPO_ROOT/src/test`).
+
+## Performance note
+Make sure to build the final executable in `release` preset (with compiler optimizations), since it may provide a major performance boost.
