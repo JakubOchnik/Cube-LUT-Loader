@@ -17,6 +17,7 @@ void InputParams::parseInputParams(boost::program_options::variables_map&& vm) {
 	}
 
 	setParam("help", showHelp, vm);
+	setParam("force", forceOverwrite, vm);
 	setParam("input", inputImgPath, vm);
 	setParam("output", outputImgPath, vm);
 	setParam("lut", inputLutPath, vm);
@@ -41,6 +42,14 @@ bool InputParams::getShowHelp() const {
 
 void InputParams::setShowHelp(bool value) {
 	showHelp = value;
+}
+
+bool InputParams::getForceOverwrite() const {
+	return forceOverwrite;
+}
+
+void InputParams::setForceOverwrite(bool value) {
+	forceOverwrite = value;
 }
 
 std::string InputParams::getInputImgPath() const {

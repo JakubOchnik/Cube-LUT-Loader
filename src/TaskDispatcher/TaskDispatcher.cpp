@@ -99,6 +99,7 @@ InputParams TaskDispatcher::parseInputArgs(std::string& helpText) const
 	("input,i", boost::program_options::value<std::string>(), "Input file path")
 	("lut,l", boost::program_options::value<std::string>(), "LUT file path")
 	("output,o", boost::program_options::value<std::string>()->default_value("out.png"), "Output file path [= out.png]")
+	("force,f", "Force overwrite file")
 	("strength,s", boost::program_options::value<float>()->default_value(1.0f), "Strength of the effect [= 1.0]")
 	("trilinear,t", "Trilinear interpolation of 3D LUT")
 	("nearest_value,n", "No interpolation of 3D LUT")

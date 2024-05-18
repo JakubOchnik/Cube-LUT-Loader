@@ -18,6 +18,7 @@ class InputParams {
 private:
 	ProcessingMode processingMode{};
 	bool showHelp{};
+	bool forceOverwrite{};
 	std::string inputImgPath;
 	std::string outputImgPath;
 	std::string inputLutPath;
@@ -54,6 +55,8 @@ public:
 	ProcessingMode getProcessingMode() const;
 	bool getShowHelp() const;
 	void setShowHelp(bool value);
+	bool getForceOverwrite() const;
+	void setForceOverwrite(bool value);
 	std::string getInputImgPath() const;
 	void setInputImgPath(const std::string& inputPath);
 	std::string getOutputImgPath() const;
@@ -67,3 +70,11 @@ public:
 	int getOutputImageHeight() const;
 	void setOutputImageHeight(unsigned int height);
 };
+
+// Value for booleans is based on the param existence
+template<>
+inline void InputParams::setParam<bool>(const std::string& key, bool& field, const boost::program_options::variables_map& vm) {
+	if (vm.count(key)) {
+		field = true;
+	}
+}
