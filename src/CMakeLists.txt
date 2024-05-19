@@ -43,6 +43,7 @@ add_subdirectory(${SOURCE_DIR}/TaskDispatcher)
 add_subdirectory(${SOURCE_DIR}/FileIO)
 
 add_executable(${PROJECT_NAME} ${SOURCE_DIR}/main.cpp)
+set_property(TARGET ${PROJECT_NAME} PROPERTY XCODE_ATTRIBUTE_ENABLE_HARDENED_RUNTIME YES)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${MAIN_LIB_NAME})
 
 # Configure test target
