@@ -13,18 +13,25 @@ env:
 
 jobs:
   build_linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v4
 
+    - name: Setup cmake
+      uses: lukka/get-cmake@v3.30.5
+
     - name: Install CUDA
       if: env.INSTALL_CUDA == 'ON'
-      uses: Jimver/cuda-toolkit@v0.2.15
+      uses: Jimver/cuda-toolkit@v0.2.18
       with:
-        cuda: '12.4.1'
         method: 'network'
         sub-packages: '["nvcc", "cudart"]'
+
+    - name: Setup Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
 
     - name: Install Conan
       id: conan
@@ -34,7 +41,7 @@ jobs:
       run: conan profile detect
 
     - name: Install dependencies
-      run: conan install . --build=missing -s build_type=${{env.BUILD_TYPE}}
+      run: conan install . -s build_type=${{env.BUILD_TYPE}} -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True --build=missing
 
     - name: Configure
       run: cmake --preset ${{env.CONAN_PRESET}} -DBUILD_TESTS=ON -DBUILD_CUDA=${{env.INSTALL_CUDA}}
@@ -47,16 +54,18 @@ jobs:
       run: ${{github.workspace}}/build/${{env.BUILD_TYPE}}/src/test/lut_loader_test
 
   build_windows:
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
     - uses: actions/checkout@v4
 
+    - name: Setup cmake
+      uses: lukka/get-cmake@v3.30.5
+
     - name: Install CUDA
       if: env.INSTALL_CUDA == 'ON'
-      uses: Jimver/cuda-toolkit@v0.2.15
+      uses: Jimver/cuda-toolkit@v0.2.18
       with:
-        cuda: '12.4.1'
         method: 'network'
         sub-packages: '["nvcc", "cudart", "visual_studio_integration"]'
 
@@ -68,7 +77,7 @@ jobs:
       run: conan profile detect
 
     - name: Install dependencies
-      run: conan install . --build=missing -s build_type=${{env.BUILD_TYPE}}
+      run: conan install . -s build_type=${{env.BUILD_TYPE}} --build=missing
 
     - name: Configure
       run: cmake --preset conan-default -DBUILD_TESTS=ON -DBUILD_CUDA=${{env.INSTALL_CUDA}}
@@ -81,16 +90,18 @@ jobs:
       run: ${{github.workspace}}\\build\\src\\test\\${{env.BUILD_TYPE}}\\lut_loader_test
 
   build_macos:
-    runs-on: macos-latest
+    runs-on: macos-14
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup Python 3.10
-      # Make sure get-conan doesn't fail on macOS workflow
-      uses: actions/setup-python@v4
+    - name: Setup cmake
+      uses: lukka/get-cmake@v3.30.5
+
+    - name: Setup Python 3.12
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.12'
 
     - name: Install Conan
       id: conan
@@ -100,7 +111,7 @@ jobs:
       run: conan profile detect
 
     - name: Install dependencies
-      run: conan install . --build=missing -s build_type=${{env.BUILD_TYPE}}
+      run: conan install . -s build_type=${{env.BUILD_TYPE}} --build=missing
 
     - name: Configure
       run: cmake --preset ${{env.CONAN_PRESET}} -DBUILD_TESTS=ON
