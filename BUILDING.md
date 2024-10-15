@@ -10,17 +10,38 @@ Newer versions of the above libraries should work too.
 
 ## Build instructions
 ### Conan (preferred)
+0. Install conan and detect profile
+```
+pip install conan
+conan profile detect
+```
+1. Install / build dependencies
+
+Debug:
+```
+conan install . -s build_type=Release -s "&:build_type=Debug" --build=missing
+```
+Release:
+```
+conan install . -s build_type=Release -s "&:build_type=Release" --build=missing
+```
+Additional notes:
+- The first `-s` applies to the dependencies and the second one to the application itself (consumer).
+- External libraries will be built from sources if they don't match the compiler version specified in the remote recipe (in [Conan Center](https://conan.io/center)). You can override it by fetching dependencies for a version matching the remote recipe, using the same syntax as the build type (e.g. `-s compiler.version=13 -s &:compiler.version=14`).
+- If you encounter issues on Ubuntu, you might need to add `-c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True` to enable properly installing packages from apt.
+
+2. Configure the project
+
 Windows:
 ```
-conan install . --build=missing # -s build_type=Debug
 cmake --preset conan-default
-cmake --build --preset conan-release # conan-debug for Debug build
+cmake --build --preset conan-release # or conan-debug
 ```
 Linux:
 ```
 conan install . --build=missing # -s build_type=Debug
-cmake --preset conan-release # conan-debug for Debug build
-cmake --build --preset conan-release # conan-debug for Debug build
+cmake --preset conan-release # or conan-debug
+cmake --build --preset conan-release # or conan-debug
 ```
 ### Manual
 1. Install all of the required dependencies

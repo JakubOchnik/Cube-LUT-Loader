@@ -9,22 +9,31 @@ on:
 env:
   BUILD_TYPE: Release
   CONAN_PRESET: conan-release
-  INSTALL_CUDA: ON
+  INSTALL_CUDA_WIN: OFF # Temporarily disabled due to a latest MSBuild bug that fails the configure stage
+  INSTALL_CUDA_LINUX: ON
 
 jobs:
   build_linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v4
 
+    - name: Setup cmake
+      uses: lukka/get-cmake@v3.30.5
+
     - name: Install CUDA
-      if: env.INSTALL_CUDA == 'ON'
-      uses: Jimver/cuda-toolkit@v0.2.15
+      if: env.INSTALL_CUDA_LINUX == 'ON'
+      uses: Jimver/cuda-toolkit@v0.2.18
       with:
-        cuda: '12.4.1'
         method: 'network'
         sub-packages: '["nvcc", "cudart"]'
+        cuda: '12.6.2'
+
+    - name: Setup Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
 
     - name: Install Conan
       id: conan
@@ -34,10 +43,10 @@ jobs:
       run: conan profile detect
 
     - name: Install dependencies
-      run: conan install . --build=missing -s build_type=${{env.BUILD_TYPE}}
+      run: conan install . -s build_type=${{env.BUILD_TYPE}} -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True --build=missing
 
     - name: Configure
-      run: cmake --preset ${{env.CONAN_PRESET}} -DBUILD_TESTS=ON -DBUILD_CUDA=${{env.INSTALL_CUDA}}
+      run: cmake --preset ${{env.CONAN_PRESET}} -DBUILD_TESTS=ON -DBUILD_CUDA=${{env.INSTALL_CUDA_LINUX}}
 
     - name: Build
       run: cmake --build --preset ${{env.CONAN_PRESET}} --target lut_loader_test -j
@@ -47,18 +56,21 @@ jobs:
       run: ${{github.workspace}}/build/${{env.BUILD_TYPE}}/src/test/lut_loader_test
 
   build_windows:
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
     - uses: actions/checkout@v4
 
+    - name: Setup cmake
+      uses: lukka/get-cmake@v3.30.5
+
     - name: Install CUDA
-      if: env.INSTALL_CUDA == 'ON'
-      uses: Jimver/cuda-toolkit@v0.2.15
+      if: env.INSTALL_CUDA_WIN == 'ON'
+      uses: Jimver/cuda-toolkit@v0.2.18
       with:
-        cuda: '12.4.1'
         method: 'network'
         sub-packages: '["nvcc", "cudart", "visual_studio_integration"]'
+        cuda: '12.6.2'
 
     - name: Install Conan
       id: conan
@@ -68,10 +80,10 @@ jobs:
       run: conan profile detect
 
     - name: Install dependencies
-      run: conan install . --build=missing -s build_type=${{env.BUILD_TYPE}}
+      run: conan install . -s build_type=${{env.BUILD_TYPE}} --build=missing
 
     - name: Configure
-      run: cmake --preset conan-default -DBUILD_TESTS=ON -DBUILD_CUDA=${{env.INSTALL_CUDA}}
+      run: cmake --preset conan-default -DBUILD_TESTS=ON -DBUILD_CUDA=${{env.INSTALL_CUDA_WIN}}
 
     - name: Build
       run: cmake --build --preset ${{env.CONAN_PRESET}} --target lut_loader_test -j
@@ -81,16 +93,18 @@ jobs:
       run: ${{github.workspace}}\\build\\src\\test\\${{env.BUILD_TYPE}}\\lut_loader_test
 
   build_macos:
-    runs-on: macos-latest
+    runs-on: macos-14
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup Python 3.10
-      # Make sure get-conan doesn't fail on macOS workflow
-      uses: actions/setup-python@v4
+    - name: Setup cmake
+      uses: lukka/get-cmake@v3.30.5
+
+    - name: Setup Python 3.12
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.12'
 
     - name: Install Conan
       id: conan
@@ -100,7 +114,7 @@ jobs:
       run: conan profile detect
 
     - name: Install dependencies
-      run: conan install . --build=missing -s build_type=${{env.BUILD_TYPE}}
+      run: conan install . -s build_type=${{env.BUILD_TYPE}} --build=missing
 
     - name: Configure
       run: cmake --preset ${{env.CONAN_PRESET}} -DBUILD_TESTS=ON
