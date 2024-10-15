@@ -25,7 +25,10 @@ Release:
 ```
 conan install . -s build_type=Release -s "&:build_type=Release"
 ```
-Note: The first `-s` applies to the dependencies and the second one to the application itself. If you prefer the debug libraries, you need to add the additional `--build=missing` argument to build them from source.
+Additional notes:
+- The first `-s` applies to the dependencies and the second one to the application itself. 
+- If you prefer the debug libraries, you need to add the additional `--build=missing` argument to build them from source.
+- If you encounter issues on Ubuntu, you might need to add `-c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True` to enable properly installing packages from apt.
 
 2. Configure the project
 
