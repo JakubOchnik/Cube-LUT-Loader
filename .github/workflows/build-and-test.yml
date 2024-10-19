@@ -13,18 +13,22 @@ env:
 
 jobs:
   build_linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04 # gcc 13 used in GH actions runner is too new (conan has packages for 11)
 
     steps:
     - uses: actions/checkout@v4
 
     - name: Install CUDA
       if: env.INSTALL_CUDA == 'ON'
-      uses: Jimver/cuda-toolkit@v0.2.15
+      uses: Jimver/cuda-toolkit@v0.2.18
       with:
-        cuda: '12.4.1'
         method: 'network'
         sub-packages: '["nvcc", "cudart"]'
+
+    - name: Setup Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
 
     - name: Install Conan
       id: conan
@@ -34,7 +38,7 @@ jobs:
       run: conan profile detect
 
     - name: Install dependencies
-      run: conan install . --build=missing -s build_type=${{env.BUILD_TYPE}}
+      run: conan install . -s build_type=${{env.BUILD_TYPE}} -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True --build=missing
 
     - name: Configure
       run: cmake --preset ${{env.CONAN_PRESET}} -DBUILD_TESTS=ON -DBUILD_CUDA=${{env.INSTALL_CUDA}}
@@ -68,7 +72,7 @@ jobs:
       run: conan profile detect
 
     - name: Install dependencies
-      run: conan install . --build=missing -s build_type=${{env.BUILD_TYPE}}
+      run: conan install . -s build_type=${{env.BUILD_TYPE}} --build=missing
 
     - name: Configure
       run: cmake --preset conan-default -DBUILD_TESTS=ON -DBUILD_CUDA=${{env.INSTALL_CUDA}}
@@ -86,11 +90,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup Python 3.10
-      # Make sure get-conan doesn't fail on macOS workflow
-      uses: actions/setup-python@v4
+    - name: Setup Python 3.12
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.12'
 
     - name: Install Conan
       id: conan
@@ -100,7 +103,7 @@ jobs:
       run: conan profile detect
 
     - name: Install dependencies
-      run: conan install . --build=missing -s build_type=${{env.BUILD_TYPE}}
+      run: conan install . -s build_type=${{env.BUILD_TYPE}} --build=missing # Clang 15 used in GH actions runner is too new (conan has packages for 13)
 
     - name: Configure
       run: cmake --preset ${{env.CONAN_PRESET}} -DBUILD_TESTS=ON
