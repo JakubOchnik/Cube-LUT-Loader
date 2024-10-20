@@ -1,47 +1,17 @@
 #include "TaskDispatcher/InputParams.h"
+#include <string>
 
-InputParams::InputParams(boost::program_options::variables_map&& vm) {
-	parseInputParams(std::move(vm));
-}
-
-void InputParams::parseInputParams(boost::program_options::variables_map&& vm) {
-	if (vm.count("gpu")) {
-		processingMode = ProcessingMode::GPU;
-	}
-
-	if (vm.count("trilinear")) {
-		interpolationMethod = InterpolationMethod::Trilinear;
-	}
-	else if (vm.count("nearest_value")) {
-		interpolationMethod = InterpolationMethod::NearestValue;
-	}
-
-	setParam("help", showHelp, vm);
-	setParam("force", forceOverwrite, vm);
-	setParam("input", inputImgPath, vm);
-	setParam("output", outputImgPath, vm);
-	setParam("lut", inputLutPath, vm);
-	setParam("strength", effectStrength, vm);
-	setParam("threads", threads, vm);
-
-	const auto verifyUnsignedInt = [](int value) {
-		return value > 0;
-	};
-
-	setParam<int>("width", outputImageWidth, vm, verifyUnsignedInt);
-	setParam<int>("height", outputImageHeight, vm, verifyUnsignedInt);
+InputParams::InputParams(ProcessingMode processMode, unsigned int threadsNum, InterpolationMethod interpolation,
+						 const std::string& inputPath, const std::string& outputPath, bool force,
+						 const std::string& lut, float strength, int width, int height)
+	: processingMode(processMode), threads(threadsNum), interpolationMethod(interpolation), inputImgPath(inputPath),
+	  outputImgPath(outputPath), forceOverwrite(force), inputLutPath(lut), outputImageWidth(width),
+	  outputImageHeight(height) {
+	effectStrength = strength / 100.0f;
 }
 
 ProcessingMode InputParams::getProcessingMode() const {
 	return processingMode;
-}
-
-bool InputParams::getShowHelp() const {
-	return showHelp;
-}
-
-void InputParams::setShowHelp(bool value) {
-	showHelp = value;
 }
 
 bool InputParams::getForceOverwrite() const {
@@ -88,7 +58,7 @@ int InputParams::getOutputImageWidth() const {
 	return outputImageWidth;
 }
 
-void InputParams::setOutputImageWidth(unsigned int width) {
+void InputParams::setOutputImageWidth(int width) {
 	outputImageWidth = width;
 }
 
@@ -96,6 +66,17 @@ int InputParams::getOutputImageHeight() const {
 	return outputImageHeight;
 }
 
-void InputParams::setOutputImageHeight(unsigned int height) {
+void InputParams::setOutputImageHeight(int height) {
 	outputImageHeight = height;
+}
+
+ProcessingMode flagsToProcessingMode(bool gpu) {
+	return gpu ? ProcessingMode::GPU : ProcessingMode::CPU;
+}
+
+InterpolationMethod flagsToInterpolationMethod(bool trilinear, bool nearestValue) {
+	if (!trilinear && nearestValue) {
+		return InterpolationMethod::NearestValue;
+	}
+	return InterpolationMethod::Trilinear;
 }

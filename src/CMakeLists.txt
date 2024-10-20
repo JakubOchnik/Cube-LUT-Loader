@@ -6,8 +6,7 @@ endif()
 find_package(OpenCV REQUIRED)
 message(STATUS "OpenCV include dir: ${OpenCV_INCLUDE_DIRS}")
 
-find_package(Boost REQUIRED COMPONENTS program_options)
-message(STATUS "Boost include dir: ${Boost_INCLUDE_DIRS}")
+find_package(args REQUIRED CONFIG)
 
 find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 find_package(fmt REQUIRED)
@@ -18,7 +17,7 @@ add_library(${MAIN_LIB_NAME} STATIC)
 # Detect include directories for the external libraries
 if (BUILD_CUDA)
     message(STATUS "CUDA include dir: ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}")
-    set(INCLUDE_DIRS ${OpenCV_INCLUDE_DIRS} ${INCLUDE_DIR} ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES} ${Boost_INCLUDE_DIRS})
+    set(INCLUDE_DIRS ${OpenCV_INCLUDE_DIRS} ${INCLUDE_DIR} ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
 
     # Silence irrelevant Eigen3 warnings
     if (MSVC)
@@ -32,7 +31,7 @@ if (BUILD_CUDA)
     )
 
 else()
-    set(INCLUDE_DIRS ${OpenCV_INCLUDE_DIRS} ${INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
+    set(INCLUDE_DIRS ${OpenCV_INCLUDE_DIRS} ${INCLUDE_DIR})
 endif()
 
 target_include_directories(${MAIN_LIB_NAME} PUBLIC ${INCLUDE_DIRS})
