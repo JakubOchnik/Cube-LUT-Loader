@@ -1,16 +1,16 @@
 #pragma once
 #include <FileIO/FileIO.hpp>
-#include <boost/program_options.hpp>
+#include <args.hxx>
 #include <TaskDispatcher/InputParams.h>
 
 class TaskDispatcher
 {
 	int argCount;
-	char** args;
+	char** argv;
 
 public:
 	TaskDispatcher(int aCnt, char** aVal);
 
 	int start();
-	InputParams parseInputArgs(std::string& helpText) const;
+	InputParams parseInputArgs() const;
 };

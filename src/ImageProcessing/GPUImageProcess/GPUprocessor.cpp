@@ -3,7 +3,6 @@
 #include <ImageProcessing/GPUImageProcess/LUT3D/applyNearestValueHost.hpp>
 #include <ImageProcessing/GPUImageProcess/LUT3D/applyTrilinearHost.hpp>
 #include <ImageProcessing/GPUImageProcess/Utils/CudaUtils.hpp>
-#include <boost/program_options.hpp>
 #include <iostream>
 
 GpuProcessor::GpuProcessor(FileIO& fileIfc) : ImageProcessor(fileIfc) {}

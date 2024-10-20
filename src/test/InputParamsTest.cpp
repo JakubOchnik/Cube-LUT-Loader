@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <TaskDispatcher/InputParams.h>
-#include <boost/program_options.hpp>
+#include <args.hxx>
 
 using namespace ::testing;
 
@@ -10,7 +10,6 @@ void testDefaultValues(const InputParams& params) {
     EXPECT_EQ(params.getEffectStrength(), 1u);
     EXPECT_EQ(params.getThreads(), 1u);
     EXPECT_EQ(params.getProcessingMode(), ProcessingMode::CPU);
-    EXPECT_EQ(params.getShowHelp(), false);
     EXPECT_EQ(params.getForceOverwrite(), false);
     EXPECT_EQ(params.getOutputImageWidth(), 0);
     EXPECT_EQ(params.getOutputImageHeight(), 0);
@@ -22,31 +21,34 @@ TEST_F(InputParamsTest, testDefaultValues)
     testDefaultValues(params);
 }
 
-TEST_F(InputParamsTest, doNothingWhenNoValue)
-{
-    boost::program_options::variables_map vm;
-    InputParams params(std::move(vm));
-    testDefaultValues(params);
+TEST_F(InputParamsTest, mapFlagsToProcessingmode) {
+    EXPECT_EQ(flagsToProcessingMode(true), ProcessingMode::GPU);
+    EXPECT_EQ(flagsToProcessingMode(false), ProcessingMode::CPU);
+}
+
+TEST_F(InputParamsTest, mapFlagsToInterpolationMethod) {
+    EXPECT_EQ(flagsToInterpolationMethod(true, true), InterpolationMethod::Trilinear);
+    EXPECT_EQ(flagsToInterpolationMethod(true, false), InterpolationMethod::Trilinear);
+    EXPECT_EQ(flagsToInterpolationMethod(false, false), InterpolationMethod::Trilinear);
+    EXPECT_EQ(flagsToInterpolationMethod(false, true), InterpolationMethod::NearestValue);
 }
 
 TEST_F(InputParamsTest, testParsingValues)
 {
-    boost::program_options::variables_map vm;
-    vm.emplace("gpu", boost::program_options::variable_value(true, false));
-    vm.emplace("help", boost::program_options::variable_value(true, false));
-    vm.emplace("force", boost::program_options::variable_value(true, false));
-    vm.emplace("input", boost::program_options::variable_value(std::string{"test_input"}, false));
-    vm.emplace("output", boost::program_options::variable_value(std::string{"test_output"}, false));
-    vm.emplace("lut", boost::program_options::variable_value(std::string{"test_lut"}, false));
-    vm.emplace("strength", boost::program_options::variable_value(.5f, false));
-    vm.emplace("threads", boost::program_options::variable_value(16u, false));
-    vm.emplace("nearest_value", boost::program_options::variable_value(true, false));
-    vm.emplace("width", boost::program_options::variable_value(1337, false));
-    vm.emplace("height", boost::program_options::variable_value(420, false));
+    InputParams params {
+        ProcessingMode::GPU,
+        16u,
+        InterpolationMethod::NearestValue,
+        "test_input",
+        "test_output",
+        true,
+        "test_lut",
+        50.0f,
+        1337,
+        420
+    };
 
-    InputParams params(std::move(vm));
     EXPECT_EQ(params.getProcessingMode(), ProcessingMode::GPU);
-    EXPECT_EQ(params.getShowHelp(), true);
     EXPECT_EQ(params.getForceOverwrite(), true);
     EXPECT_EQ(params.getInputImgPath(), "test_input");
     EXPECT_EQ(params.getOutputImgPath(), "test_output");
@@ -56,25 +58,4 @@ TEST_F(InputParamsTest, testParsingValues)
     EXPECT_EQ(params.getInterpolationMethod(), InterpolationMethod::NearestValue);
     EXPECT_EQ(params.getOutputImageWidth(), 1337);
     EXPECT_EQ(params.getOutputImageHeight(), 420);
-}
-
-TEST_F(InputParamsTest, testAmbiguousInterpolationInput)
-{
-    boost::program_options::variables_map vm;
-    vm.emplace("nearest_value", boost::program_options::variable_value(true, false));
-    vm.emplace("trilinear", boost::program_options::variable_value(true, false));
-
-    InputParams params(std::move(vm));
-    EXPECT_EQ(params.getInterpolationMethod(), InterpolationMethod::Trilinear);
-}
-
-TEST_F(InputParamsTest, testIncorrectImageOutputSize)
-{
-    boost::program_options::variables_map vm;
-    vm.emplace("width", boost::program_options::variable_value(-10, false));
-    EXPECT_THROW(InputParams(std::move(vm)), std::runtime_error);
-
-    vm.clear();
-    vm.emplace("height", boost::program_options::variable_value(0, false));
-    EXPECT_THROW(InputParams(std::move(vm)), std::runtime_error);
 }

@@ -1,6 +1,5 @@
 #pragma once
 #include <FileIO/CubeLUT.hpp>
-#include <boost/program_options.hpp>
 #include <opencv2/core.hpp>
 #include <TaskDispatcher/InputParams.h>
 

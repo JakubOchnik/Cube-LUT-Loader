@@ -6,7 +6,7 @@
 #include <TaskDispatcher/TaskDispatcher.hpp>
 #include <iostream>
 #include <thread>
-#include <iostream>
+#include <args.hxx>
 
 enum {
 	FAIL_EXIT = -1,
@@ -14,7 +14,7 @@ enum {
 };
 
 TaskDispatcher::TaskDispatcher(const int aCnt, char *aVal[])
-	: argCount(aCnt), args(aVal)
+	: argCount(aCnt), argv(aVal)
 {
 }
 
@@ -23,16 +23,12 @@ int TaskDispatcher::start()
 	InputParams parameters;
 	try
 	{
-		std::string helpText;
-		parameters = parseInputArgs(helpText);
-		if (parameters.getShowHelp()) {
-			std::cout << "--HELP--\n" << helpText;
-			return SUCCESS_EXIT;
-		}
+		parameters = parseInputArgs();
 	}
-	catch (const std::exception &ex)
-	{
-		std::cerr << "[ERROR] " << ex.what() << '\n';
+	catch (const args::Help&) {
+		return SUCCESS_EXIT;
+	}
+	catch (const std::runtime_error&) {
 		return FAIL_EXIT;
 	}
 	FileIO fileIO{ parameters };
@@ -91,48 +87,77 @@ int TaskDispatcher::start()
 	return SUCCESS_EXIT;
 }
 
-InputParams TaskDispatcher::parseInputArgs(std::string& helpText) const
+namespace {
+	float clipStrength(float strength) {
+		if (strength <= .0f) {
+			std::cout << fmt::format("[WARNING] Incorrect strength ({}) - clipping to 0 %.\n", strength);
+			return .0f;
+		}
+		if (strength > 100.0f) {
+			std::cout << fmt::format("[WARNING] Incorrect strength ({}) - clipping to 100 %.\n", strength);
+			return 100.0f;
+		}
+
+		return strength;
+	}
+
+	int clipDimension(int imageDimension, std::string_view name) {
+		if (imageDimension <= 0) {
+			std::cout << fmt::format("[WARNING] Incorrect image {} ({}) - ignoring.\n", name, imageDimension);
+			return 0;
+		}
+
+		return imageDimension;
+	}
+}
+
+InputParams TaskDispatcher::parseInputArgs() const
 {
-	boost::program_options::options_description desc{"Options"};
-	desc.add_options()
-	("help,h", "Help screen")
-	("input,i", boost::program_options::value<std::string>(), "Input file path")
-	("lut,l", boost::program_options::value<std::string>(), "LUT file path")
-	("output,o", boost::program_options::value<std::string>()->default_value("out.png"), "Output file path [= out.png]")
-	("force,f", "Force overwrite file")
-	("strength,s", boost::program_options::value<float>()->default_value(1.0f), "Strength of the effect [= 1.0]")
-	("trilinear,t", "Trilinear interpolation of 3D LUT")
-	("nearest_value,n", "No interpolation of 3D LUT")
-	("threads,j", boost::program_options::value<unsigned int>()->default_value(std::thread::hardware_concurrency()),"Number of threads [= Number of physical threads]")
-	("gpu", "Use GPU acceleration")
-	("width", boost::program_options::value<int>(), "Output image width")
-	("height", boost::program_options::value<int>(), "Output image height");
+	args::ArgumentParser parser("Cube LUT Loader");
+	args::HelpFlag help(parser, "help", "Display this help menu", {'h', "help"});
+	parser.Prog("Cube LUT Loader");
+	parser.SetArgumentSeparations(false, true, true, true);
+	args::ValueFlag<std::string> input(parser, "input", "Input file path", {'i', "input"}, args::Options::Required);
+	args::ValueFlag<std::string> lut(parser, "lut", "LUT file path", {'l', "lut"}, args::Options::Required);
+	args::ValueFlag<std::string> output(parser, "output", "Output file path", {'o', "output"});
+	args::ValueFlag<float> strength(parser, "strength", "Strength of the effect (0-100)", {'s', "strength"}, 100.0f);
+	args::Flag trilinear(parser, "trilinear", "Use trilinear interpolation", {'t', "trilinear"});
+	args::Flag nearestValue(parser, "nearest_value", "Use nearest-value interpolation", {'n', "nearest_value"});
+	args::Flag forceOverwrite(parser, "force", "Force overwrite file", {'f', "force"});
+	const unsigned int defaultNumberOfThreads = std::thread::hardware_concurrency();
+	args::ValueFlag<unsigned int> threads(parser, "threads", "Number of threads", {'j', "threads"}, defaultNumberOfThreads);
+	args::Flag gpu(parser, "gpu", "Use GPU acceleration", {"gpu"});
+	args::ValueFlag<int> width(parser, "width", "Output image width", {"width"});
+	args::ValueFlag<int> height(parser, "height", "Output image height", {"height"});
 
-	boost::program_options::variables_map vm;
-	store(parse_command_line(argCount, args, desc), vm);
-
-	if (vm.count("help"))
-	{
-		std::stringstream ss;
-		ss << desc;
-		helpText = ss.str();
-		InputParams params;
-		params.setShowHelp(true);
-		return params;
+	try {
+		parser.ParseCLI(argCount, argv);
+	} catch(const args::Help& helpEx) {
+		std::cout << parser;
+		throw helpEx;
+	} catch (const args::Error& ex) {
+		std::cerr << fmt::format("[ERROR] {}\n", ex.what());
+		throw ex;
 	}
 
-	if (!vm.count("input") || !vm.count("lut"))
-	{
-		throw boost::program_options::error("No input image/LUT specified!");
-	}
-
-	if (vm.count("trilinear") && vm.count("nearest_value")) {
+	if (trilinear && nearestValue) {
 		std::cout << "[WARNING] Ambiguous input: multiple interpolation methods specified. Using trilinear.\n";
 	}
 
-	if ((vm.count("width") || vm.count("height")) && !(vm.count("width") && vm.count("height"))) {
+	if ((width || height) && !(width && height)) {
 		std::cout << "[WARNING] Not all output image dimensions have been specified.\n";
 	}
 
-	return InputParams{ std::move(vm) };
+	return InputParams {
+		flagsToProcessingMode(gpu),
+		*threads,
+		flagsToInterpolationMethod(trilinear, nearestValue),
+		*input,
+		output ? *output : std::string{},
+		forceOverwrite,
+		*lut,
+		clipStrength(*strength),
+		width ? clipDimension(*width, "width") : 0,
+		height ? clipDimension(*height, "height") : 0
+	};
 }
