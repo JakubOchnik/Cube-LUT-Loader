@@ -7,7 +7,7 @@ InputParams::InputParams(ProcessingMode processMode, unsigned int threadsNum, In
 	: processingMode(processMode), threads(threadsNum), interpolationMethod(interpolation), inputImgPath(inputPath),
 	  outputImgPath(outputPath), forceOverwrite(force), inputLutPath(lut), outputImageWidth(width),
 	  outputImageHeight(height) {
-	effectStrength = strength / 100.0f;
+	effectIntensity = strength / 100.0f;
 }
 
 ProcessingMode InputParams::getProcessingMode() const {
@@ -42,8 +42,8 @@ void InputParams::setInputLutPath(const std::string& lutPath) {
 	inputLutPath = lutPath;
 }
 
-float InputParams::getEffectStrength() const {
-	return effectStrength;
+float InputParams::getEffectIntensity() const {
+	return effectIntensity;
 }
 
 unsigned int InputParams::getThreads() const {

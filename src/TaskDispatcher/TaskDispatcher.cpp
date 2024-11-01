@@ -49,7 +49,7 @@ int TaskDispatcher::start()
 		GpuProcessor processor(fileIO);
 		try
 		{
-			finalImage = processor.execute(parameters.getEffectStrength(),
+			finalImage = processor.execute(parameters.getEffectIntensity(),
 										   {parameters.getOutputImageWidth(), parameters.getOutputImageHeight()},
 										   parameters.getInterpolationMethod());
 		} catch (const std::exception& e) {
@@ -71,7 +71,7 @@ int TaskDispatcher::start()
 		CPUProcessor processor(fileIO, parameters.getThreads());
 		try
 		{
-			finalImage = processor.execute(parameters.getEffectStrength(),
+			finalImage = processor.execute(parameters.getEffectIntensity(),
 										   {parameters.getOutputImageWidth(), parameters.getOutputImageHeight()},
 										   parameters.getInterpolationMethod());
 		} catch (const std::exception& e) {
@@ -120,7 +120,7 @@ InputParams TaskDispatcher::parseInputArgs() const
 	args::ValueFlag<std::string> input(parser, "input", "Input file path", {'i', "input"}, args::Options::Required);
 	args::ValueFlag<std::string> lut(parser, "lut", "LUT file path", {'l', "lut"}, args::Options::Required);
 	args::ValueFlag<std::string> output(parser, "output", "Output file path", {'o', "output"});
-	args::ValueFlag<float> strength(parser, "strength", "Strength of the effect (0-100)", {'s', "strength"}, 100.0f);
+	args::ValueFlag<float> strength(parser, "intensity", "Intensity of the applied LUT (0-100%)", {'s', "strength"}, 100.0f);
 	args::Flag trilinear(parser, "trilinear", "Use trilinear interpolation", {'t', "trilinear"});
 	args::Flag nearestValue(parser, "nearest_value", "Use nearest-value interpolation", {'n', "nearest_value"});
 	args::Flag forceOverwrite(parser, "force", "Force overwrite file", {'f', "force"});

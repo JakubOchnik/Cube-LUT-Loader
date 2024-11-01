@@ -19,7 +19,7 @@ private:
 	std::string inputImgPath;
 	std::string outputImgPath;
 	std::string inputLutPath;
-	float effectStrength{ 1.0f };
+	float effectIntensity{ 1.0f };
 	unsigned int threads{ 1 };
 	InterpolationMethod interpolationMethod{};
 	int outputImageWidth{};
@@ -47,7 +47,7 @@ public:
 	std::string getOutputImgPath() const;
 	std::string getInputLutPath() const;
 	void setInputLutPath(const std::string& lutPath);
-	float getEffectStrength() const;
+	float getEffectIntensity() const;
 	unsigned int getThreads() const;
 	InterpolationMethod getInterpolationMethod() const;
 	int getOutputImageWidth() const;

@@ -7,7 +7,7 @@ using namespace ::testing;
 class InputParamsTest : public ::testing::Test {};
 
 void testDefaultValues(const InputParams& params) {
-    EXPECT_EQ(params.getEffectStrength(), 1u);
+    EXPECT_EQ(params.getEffectIntensity(), 1u);
     EXPECT_EQ(params.getThreads(), 1u);
     EXPECT_EQ(params.getProcessingMode(), ProcessingMode::CPU);
     EXPECT_EQ(params.getForceOverwrite(), false);
@@ -53,7 +53,7 @@ TEST_F(InputParamsTest, testParsingValues)
     EXPECT_EQ(params.getInputImgPath(), "test_input");
     EXPECT_EQ(params.getOutputImgPath(), "test_output");
     EXPECT_EQ(params.getInputLutPath(), "test_lut");
-    EXPECT_EQ(params.getEffectStrength(), .5f);
+    EXPECT_EQ(params.getEffectIntensity(), .5f);
     EXPECT_EQ(params.getThreads(), 16u);
     EXPECT_EQ(params.getInterpolationMethod(), InterpolationMethod::NearestValue);
     EXPECT_EQ(params.getOutputImageWidth(), 1337);

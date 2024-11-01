@@ -71,7 +71,7 @@ TEST_F(InputArgsParserTest, strength)
     auto rawArgumentsArray = initialize2DArray(arrayWithStrength);
     TaskDispatcher dispatcher(arrayWithStrength.size(), rawArgumentsArray);
     auto params = dispatcher.parseInputArgs();
-    EXPECT_EQ(params.getEffectStrength(), .42f);
+    EXPECT_EQ(params.getEffectIntensity(), .42f);
     free2Darray();
     arrayWithStrength.pop_back();
 
@@ -79,7 +79,7 @@ TEST_F(InputArgsParserTest, strength)
     rawArgumentsArray = initialize2DArray(arrayWithStrength);
     dispatcher = TaskDispatcher(arrayWithStrength.size(), rawArgumentsArray);
     params = dispatcher.parseInputArgs();
-    EXPECT_EQ(params.getEffectStrength(), 1.0f);
+    EXPECT_EQ(params.getEffectIntensity(), 1.0f);
     free2Darray();
     arrayWithStrength.pop_back();
 
@@ -87,7 +87,7 @@ TEST_F(InputArgsParserTest, strength)
     rawArgumentsArray = initialize2DArray(arrayWithStrength);
     dispatcher = TaskDispatcher(arrayWithStrength.size(), rawArgumentsArray);
     params = dispatcher.parseInputArgs();
-    EXPECT_EQ(params.getEffectStrength(), .0f);
+    EXPECT_EQ(params.getEffectIntensity(), .0f);
 }
 
 TEST_F(InputArgsParserTest, multipleInterpolationMethods)
