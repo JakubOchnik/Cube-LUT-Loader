@@ -9,7 +9,7 @@ on:
 env:
   BUILD_TYPE: Release
   CONAN_PRESET: conan-release
-  INSTALL_CUDA_WIN: OFF # Temporarily disabled due to a latest MSBuild bug that fails the configure stage
+  INSTALL_CUDA_WIN: ON
   INSTALL_CUDA_LINUX: ON
 
 jobs:
