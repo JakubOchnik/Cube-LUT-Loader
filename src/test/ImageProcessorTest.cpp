@@ -8,7 +8,7 @@ class ImageProcessorTest : public ::testing::Test {
 protected:    
     const int DEFAULT_WIDTH = 2;
     const int DEFAULT_HEIGHT = 2;
-    cv::Mat_<cv::Vec3b> mockImage{cv::Size(DEFAULT_WIDTH, DEFAULT_HEIGHT), CV_8UC3};
+    cv::Mat3b mockImage{cv::Size(DEFAULT_WIDTH, DEFAULT_HEIGHT), CV_8UC3};
 };
 
 struct ImageResizeTest : public ::testing::WithParamInterface<std::pair<int, int>>, public ImageProcessorTest {};

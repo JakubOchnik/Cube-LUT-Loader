@@ -8,9 +8,22 @@ using namespace ::testing;
 
 class FileIOTest : public ::testing::Test {
 protected:
-    unsigned int defaultWidth = 2;
-    unsigned int defaultHeight = 2;
+    int defaultWidth = 2;
+    int defaultHeight = 2;
     cv::Mat testMat = cv::Mat(defaultWidth, defaultHeight, CV_8UC3);
+
+    cv::Mat getInitializedMatWithAlpha() {
+        std::vector<cv::Mat1b> channels;
+        channels.reserve(4);
+        channels.emplace_back(defaultWidth, defaultHeight, 0); // b
+        channels.emplace_back(defaultWidth, defaultHeight, 1); // g
+        channels.emplace_back(defaultWidth, defaultHeight, 2); // r
+        channels.emplace_back(defaultWidth, defaultHeight, 3); // a
+        cv::Mat dstMat;
+        cv::merge(channels, dstMat);
+        return dstMat;
+    }
+
     InputParams params;
 };
 
@@ -19,6 +32,55 @@ TEST_F(FileIOTest, testLoadImage) {
 
     EXPECT_CALL(loader, readImage).WillOnce(Return(testMat));
     EXPECT_TRUE(loader.loadImg());
+    EXPECT_TRUE(loader.getAlphaChannel().empty());
+}
+
+namespace {
+    void compareChannel(cv::Mat mat, int channelNumber, const std::vector<uchar>& values) {
+        cv::Mat1b channel;
+        cv::extractChannel(mat, channel, channelNumber);
+        ASSERT_EQ(channel.rows * channel.cols, values.size());
+        const auto* matData = channel.data;
+        for (int i{}; i < values.size(); ++i) {
+            EXPECT_EQ(values[i], matData[i]);
+        }
+    }
+}
+
+TEST_F(FileIOTest, loadImageWithAlpha) {
+    FileIOMock loader(InputParams{});
+
+    const auto exampleAlphaMat = getInitializedMatWithAlpha();
+    EXPECT_CALL(loader, readImage).WillOnce(Return(exampleAlphaMat));
+    ASSERT_TRUE(loader.loadImg());
+
+    const auto& alphaChannel = loader.getAlphaChannel();
+    EXPECT_FALSE(alphaChannel.empty());
+    compareChannel(alphaChannel, 0, { 3, 3, 3, 3 });
+
+    const auto& img = loader.getImg();
+    EXPECT_EQ(img.channels(), 3);
+    compareChannel(img, 0, { 0, 0, 0, 0 });
+    compareChannel(img, 1, { 1, 1, 1, 1 });
+    compareChannel(img, 2, { 2, 2, 2, 2 });
+}
+
+TEST_F(FileIOTest, writeImageWithAlpha) {
+    FileIOMock loader(InputParams{});
+
+    const auto exampleAlphaMat = getInitializedMatWithAlpha();
+    EXPECT_CALL(loader, readImage).WillOnce(Return(exampleAlphaMat));
+    ASSERT_TRUE(loader.loadImg());
+
+    const auto& alphaChannel = loader.getAlphaChannel();
+    EXPECT_FALSE(alphaChannel.empty());
+    compareChannel(alphaChannel, 0, { 3, 3, 3, 3 });
+
+    const auto& img = loader.getImg();
+    EXPECT_EQ(img.channels(), 3);
+    compareChannel(img, 0, { 0, 0, 0, 0 });
+    compareChannel(img, 1, { 1, 1, 1, 1 });
+    compareChannel(img, 2, { 2, 2, 2, 2 });
 }
 
 TEST_F(FileIOTest, testLoadImageIncorrectPath) {
