@@ -12,12 +12,24 @@ FileIO::FileIO(const InputParams& params)
 
 bool FileIO::loadImg() {
 	std::cout << "[INFO] Importing image...\n";
-	const auto sourceImg = readImage(inputPath);
+	auto sourceImg = readImage(inputPath);
 	if (sourceImg.empty()) {
 		std::cerr << fmt::format("[ERROR] Could not open input image file: {}\n", inputPath);
 		return false;
 	}
-	img = sourceImg;
+
+	if (const auto channels = sourceImg.channels(); channels < 3 || channels > 4) {
+		std::cerr << fmt::format("[ERROR] Unsupported number of channels: {}\n", channels);
+		return false;
+	} else if (channels == 4) {
+		// RGBA
+		cv::extractChannel(sourceImg, alphaChannel, 3);
+		cv::cvtColor(sourceImg, img, cv::COLOR_BGRA2BGR);
+	} else {
+		// RGB
+		img = std::move(sourceImg);
+	}
+
 	return true;
 }
 
@@ -26,7 +38,7 @@ void FileIO::setImg(cv::Mat newImage) {
 }
 
 cv::Mat FileIO::readImage(const std::string& inputPath) const {
-	return cv::imread(inputPath);
+	return cv::imread(inputPath, cv::IMREAD_UNCHANGED);
 }
 
 bool FileIO::writeImage(const std::string& outputPath, cv::Mat newImg) const {
@@ -59,7 +71,7 @@ bool FileIO::load()
 	return loadImg() && loadLut();
 }
 
-const cv::Mat_<cv::Vec3b>& FileIO::getImg() const
+const cv::Mat3b& FileIO::getImg() const
 {
 	return this->img;
 }
@@ -89,6 +101,11 @@ bool FileIO::saveImg(cv::Mat newImg) const {
 
 	bool success = false;
 	try {
+		if (!alphaChannel.empty()) {
+			// Restore the original alpha channel
+			cv::cvtColor(newImg, newImg, cv::COLOR_BGR2BGRA);
+			cv::insertChannel(alphaChannel, newImg, 3);
+		}
 		success = writeImage(outputPath, newImg);
 	} catch (cv::Exception& ex) {
 		std::cerr << fmt::format("[ERROR] {}\n", ex.what());
