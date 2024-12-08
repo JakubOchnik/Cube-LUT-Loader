@@ -153,7 +153,7 @@ InputParams TaskDispatcher::parseInputArgs() const
 		*threads,
 		flagsToInterpolationMethod(trilinear, nearestValue),
 		*input,
-		output ? *output : std::string{},
+		*output,
 		forceOverwrite,
 		*lut,
 		clipStrength(*strength),

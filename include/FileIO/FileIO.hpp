@@ -4,7 +4,7 @@
 #include <TaskDispatcher/InputParams.h>
 
 class FileIO {
-	cv::Mat_<cv::Vec3b> img;
+	cv::Mat3b img;
 	std::string inputPath;
 	std::string outputPath;
 	std::string lutPath;
@@ -24,6 +24,7 @@ class FileIO {
 
 protected:
 	std::unique_ptr<CubeLUT> cube;
+	cv::Mat1b alphaChannel; // Used only for RGBA input images
 	bool loadImg();
 	bool loadLut();
 

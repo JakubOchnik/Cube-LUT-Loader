@@ -66,12 +66,12 @@ void Basic1D::calculateArea(const int x,
 	}
 }
 
-cv::Mat_<cv::Vec3b> Basic1D::applyBasic1D(const cv::Mat &img,
+cv::Mat3b Basic1D::applyBasic1D(const cv::Mat &img,
 										  const Table1D &lut,
 										  const float opacity,
 										  const uint threadPool)
 {
-	cv::Mat_<cv::Vec3b> tmp = img.clone();
+	cv::Mat3b tmp = img.clone();
 	uchar *image{img.data}, *newImage{tmp.data};
 
 	const int lutSize{static_cast<int>(lut.dimension(0) / 3)};

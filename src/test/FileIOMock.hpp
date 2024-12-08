@@ -17,4 +17,8 @@ public:
     void setCube(std::unique_ptr<BasicCubeLUTMock>&& newCube) {
         cube = std::move(newCube);
     }
+
+    cv::Mat1b getAlphaChannel() {
+        return alphaChannel;
+    }
 };
