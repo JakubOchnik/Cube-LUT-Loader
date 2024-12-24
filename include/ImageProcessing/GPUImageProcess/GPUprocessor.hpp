@@ -1,9 +1,9 @@
 #pragma once
 #include <FileIO/FileIO.hpp>
 #include <opencv2/core.hpp>
-#include <ImageProcessing/ImageProcessor.hpp>
+#include <ImageProcessing/ImageProcessExecutor.hpp>
 
-class GpuProcessor : public ImageProcessor
+class GpuProcessor : public ImageProcessExecutor
 {
 	static constexpr int threadsPerBlock{16};
 

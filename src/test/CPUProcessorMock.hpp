@@ -1,9 +1,9 @@
 #pragma once
 #include <gmock/gmock.h>
-#include <ImageProcessing/CPUImageProcess/CPUProcessor.hpp>
+#include <ImageProcessing/CPU/CPUModeExecutor.hpp>
 
-class CPUProcessorMock: public CPUProcessor {
+class CPUProcessorMock: public CPUModeExecutor {
 public:
-    using CPUProcessor::CPUProcessor;
+    using CPUModeExecutor::CPUModeExecutor;
     MOCK_METHOD(cv::Mat, process, (float strength, InterpolationMethod method), (override));
 };
