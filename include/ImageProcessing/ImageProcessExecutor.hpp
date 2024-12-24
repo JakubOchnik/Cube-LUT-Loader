@@ -2,16 +2,16 @@
 #include <FileIO/FileIO.hpp>
 #include <opencv2/core.hpp>
 
-class ImageProcessor
+class ImageProcessExecutor
 {
 protected:
     cv::Mat_<cv::Vec3b> newImg;
     FileIO& fileInterface;
 
 public:
-    ImageProcessor(FileIO &fileIfc);
-    ImageProcessor() = delete;
-    virtual ~ImageProcessor() = default;
+    ImageProcessExecutor(FileIO &fileIfc);
+    ImageProcessExecutor() = delete;
+    virtual ~ImageProcessExecutor() = default;
 
     virtual cv::Mat process(float strength, InterpolationMethod method) = 0;
     virtual cv::Mat execute(float strength, cv::Size dstImageSize, InterpolationMethod method);

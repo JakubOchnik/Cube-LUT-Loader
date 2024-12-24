@@ -5,7 +5,7 @@
 #include <ImageProcessing/GPUImageProcess/Utils/CudaUtils.hpp>
 #include <iostream>
 
-GpuProcessor::GpuProcessor(FileIO& fileIfc) : ImageProcessor(fileIfc) {}
+GpuProcessor::GpuProcessor(FileIO& fileIfc) : ImageProcessExecutor(fileIfc) {}
 
 cv::Mat GpuProcessor::process(float strength, InterpolationMethod method)
 {

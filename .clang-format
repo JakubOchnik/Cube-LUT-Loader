@@ -1,6 +1,5 @@
 ---
 BasedOnStyle: LLVM
-AccessModifierOffset: -2
 AlignAfterOpenBracket: Align
 AlignArrayOfStructures: None
 AlignConsecutiveAssignments:
@@ -126,6 +125,7 @@ IncludeCategories:
     CaseSensitive: false
 IncludeIsMainRegex: (Test)?$
 IncludeIsMainSourceRegex: ""
+AccessModifierOffset: -4
 IndentAccessModifiers: false
 IndentCaseBlocks: false
 IndentCaseLabels: false

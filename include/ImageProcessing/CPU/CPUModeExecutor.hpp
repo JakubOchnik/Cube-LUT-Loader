@@ -1,12 +1,12 @@
 #pragma once
 #include <FileIO/FileIO.hpp>
+#include <ImageProcessing/ImageProcessExecutor.hpp>
 #include <opencv2/core.hpp>
-#include <ImageProcessing/ImageProcessor.hpp>
 
-class CPUProcessor : public ImageProcessor
-{
+class CPUModeExecutor : public ImageProcessExecutor {
 	uint numberOfThreads{1};
+
 public:
-	explicit CPUProcessor(FileIO& fileIfc, uint threads);
+	explicit CPUModeExecutor(FileIO& fileIfc, uint threads);
 	cv::Mat process(float strength, InterpolationMethod method) override;
 };

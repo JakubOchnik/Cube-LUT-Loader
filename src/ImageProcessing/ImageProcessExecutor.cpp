@@ -1,18 +1,18 @@
-#include <ImageProcessing/ImageProcessor.hpp>
+#include <ImageProcessing/ImageProcessExecutor.hpp>
 #include <fmt/format.h>
 #include <iostream>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
-ImageProcessor::ImageProcessor(FileIO& fileIfc) : fileInterface(fileIfc) {}
+ImageProcessExecutor::ImageProcessExecutor(FileIO& fileIfc) : fileInterface(fileIfc) {}
 
-cv::Mat ImageProcessor::execute(float strength, cv::Size dstImageSize, InterpolationMethod method) {
+cv::Mat ImageProcessExecutor::execute(float strength, cv::Size dstImageSize, InterpolationMethod method) {
 	// Swap original image with the resized one to avoid storing two images simultaneously in memory
 	fileInterface.setImg(resizeImage(fileInterface.getImg(), dstImageSize));
 	return process(strength, method);
 }
 
-cv::Mat ImageProcessor::resizeImage(cv::Mat inputImg, cv::Size size, int interpolationMode) {
+cv::Mat ImageProcessExecutor::resizeImage(cv::Mat inputImg, cv::Size size, int interpolationMode) {
 	const auto [width, height] = size;
 	if (!width && !height) {
 		return inputImg;

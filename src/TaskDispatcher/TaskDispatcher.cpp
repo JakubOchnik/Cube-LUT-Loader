@@ -2,7 +2,7 @@
 #include <ImageProcessing/GPUImageProcess/GPUprocessor.hpp>
 #include <ImageProcessing/GPUImageProcess/Utils/CudaUtils.hpp>
 #endif
-#include <ImageProcessing/CPUImageProcess/CPUProcessor.hpp>
+#include <ImageProcessing/CPU/CPUModeExecutor.hpp>
 #include <TaskDispatcher/TaskDispatcher.hpp>
 #include <iostream>
 #include <thread>
@@ -68,7 +68,7 @@ int TaskDispatcher::start()
 #endif
 	} else {
 		std::cout << "[INFO] Using " << parameters.getThreads() << " CPU thread(s)\n";
-		CPUProcessor processor(fileIO, parameters.getThreads());
+		CPUModeExecutor processor(fileIO, parameters.getThreads());
 		try
 		{
 			finalImage = processor.execute(parameters.getEffectIntensity(),
