@@ -1,4 +1,4 @@
-#include <ImageProcessing/GPUImageProcess/Utils/CudaUtils.hpp>
+#include <ImageProcessing/GPU/Utils/CudaUtils.hpp>
 #include <sstream>
 #include <iostream>
 
