@@ -2,8 +2,7 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 #include <tuple>
-
-#include <ImageProcessing/GPUImageProcess/Utils/CudaUtils.hpp>
+#include <ImageProcessing/GPU/Utils/CudaUtils.hpp>
 
 namespace GpuNearestValDevice
 {

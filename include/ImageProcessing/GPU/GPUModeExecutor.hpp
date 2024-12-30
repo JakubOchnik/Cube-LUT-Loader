@@ -3,13 +3,13 @@
 #include <opencv2/core.hpp>
 #include <ImageProcessing/ImageProcessExecutor.hpp>
 
-class GpuProcessor : public ImageProcessExecutor
+class GPUModeExecutor : public ImageProcessExecutor
 {
 	static constexpr int threadsPerBlock{16};
 
 public:
-	GpuProcessor(FileIO& fileIfc);
-	~GpuProcessor();
+	GPUModeExecutor(FileIO& fileIfc);
+	~GPUModeExecutor();
 
 private:
 	cv::Mat process(float strength, InterpolationMethod method) override;

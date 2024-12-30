@@ -1,4 +1,4 @@
-#include <ImageProcessing/GPUImageProcess/LUT3D/applyNearestValueGpu.cuh>
+#include <ImageProcessing/GPU/kernels/nearestValue.cuh>
 
 namespace GpuNearestValDevice
 {

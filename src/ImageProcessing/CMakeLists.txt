@@ -6,5 +6,5 @@ target_sources(${MAIN_LIB_NAME} PRIVATE
 
 add_subdirectory(${SOURCE_DIR}/ImageProcessing/CPU)
 if (BUILD_CUDA)
-    add_subdirectory(${SOURCE_DIR}/ImageProcessing/GPUImageProcess)
+    add_subdirectory(${SOURCE_DIR}/ImageProcessing/GPU)
 endif()

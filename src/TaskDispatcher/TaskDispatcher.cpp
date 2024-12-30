@@ -1,6 +1,6 @@
 #ifdef BUILD_CUDA
-#include <ImageProcessing/GPUImageProcess/GPUprocessor.hpp>
-#include <ImageProcessing/GPUImageProcess/Utils/CudaUtils.hpp>
+#include <ImageProcessing/GPU/GPUModeExecutor.hpp>
+#include <ImageProcessing/GPU/Utils/CudaUtils.hpp>
 #endif
 #include <ImageProcessing/CPU/CPUModeExecutor.hpp>
 #include <TaskDispatcher/TaskDispatcher.hpp>
@@ -46,7 +46,7 @@ int TaskDispatcher::start()
 			return FAIL_EXIT;
 		}
 		std::cout << "[INFO] GPU acceleration enabled\n";
-		GpuProcessor processor(fileIO);
+		GPUModeExecutor processor(fileIO);
 		try
 		{
 			finalImage = processor.execute(parameters.getEffectIntensity(),
@@ -57,8 +57,8 @@ int TaskDispatcher::start()
 			return FAIL_EXIT;
 		}
 
-		// Currently needs to be done here - unified memory is freed in the destructor of GpuProcessor
-		// TODO: Separate output mat lifetime from GpuProcessor and don't use the default cv::Mat deallocator (bug-prone and unsafe)
+		// Currently needs to be done here - unified memory is freed in the destructor of GPUModeExecutor
+		// TODO: Separate output mat lifetime from GPUModeExecutor and don't use the default cv::Mat deallocator (bug-prone and unsafe)
 		if (!fileIO.saveImg(finalImage)) {
 			return FAIL_EXIT;
 		}
