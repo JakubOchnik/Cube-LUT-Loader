@@ -17,7 +17,8 @@ add_executable(lut_loader_test
     InputParamsTest.cpp
     InputArgsParserTest.cpp
     FileIOTest.cpp
-    ImageProcessorTest.cpp
+    ImageProcessExecutorTest.cpp
+    LUTProcessorTest.cpp
 )
 
 target_link_libraries(

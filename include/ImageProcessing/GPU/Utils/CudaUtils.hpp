@@ -7,6 +7,7 @@
 #else
 #include <dlfcn.h>
 #endif
+#include <ImageProcessing/GPU/Utils/CudaCalls.hpp>
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 #include <map>
@@ -31,9 +32,9 @@ inline void gpuAssert(const cudaError_t code, const char* file, const int line)
 namespace CudaUtils
 {
 template <typename T>
-static void freeUnifiedPtr(T* ptr)
+static void freeUnifiedPtr(T* ptr, const CudaCalls& calls)
 {
-	cudaErrorChk(cudaFree(ptr));
+	cudaErrorChk(calls.cudaFree(ptr));
 };
 
 [[nodiscard]] bool								 isCudaDriverAvailable();

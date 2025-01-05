@@ -2,6 +2,7 @@
 #include <FileIO/FileIO.hpp>
 #include <opencv2/core.hpp>
 #include <ImageProcessing/ImageProcessExecutor.hpp>
+#include <ImageProcessing/GPU/Utils/CudaCalls.hpp>
 
 class GPUModeExecutor : public ImageProcessExecutor
 {
@@ -13,4 +14,6 @@ public:
 
 private:
 	cv::Mat process(float strength, InterpolationMethod method) override;
+
+	CudaCalls calls;
 };

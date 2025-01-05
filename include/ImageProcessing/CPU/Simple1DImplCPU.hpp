@@ -7,7 +7,7 @@
 
 class Simple1DImplCPU : public LUTProcessor {
 public:
-	using LUTProcessor::LUTProcessor;
+	Simple1DImplCPU(Table1D* lut);
 	virtual cv::Mat execute(cv::Mat img, const float opacity, const uint threadPool) override;
 
 private:
