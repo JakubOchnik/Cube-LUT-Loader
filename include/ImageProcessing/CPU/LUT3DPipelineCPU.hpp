@@ -4,7 +4,7 @@
 
 class LUT3DPipelineCPU : public LUTProcessor {
 public:
-	using LUTProcessor::LUTProcessor;
+	LUT3DPipelineCPU(Table3D* lut);
 	virtual cv::Mat execute(cv::Mat img, const float opacity, const uint threadPool) override;
 
 protected:

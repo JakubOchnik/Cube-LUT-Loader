@@ -4,14 +4,14 @@
 
 using namespace ::testing;
 
-class ImageProcessorTest : public ::testing::Test {
-protected:    
+class ImageProcessExecutorTest : public ::testing::Test {
+protected:
     const int DEFAULT_WIDTH = 2;
     const int DEFAULT_HEIGHT = 2;
     cv::Mat3b mockImage{cv::Size(DEFAULT_WIDTH, DEFAULT_HEIGHT), CV_8UC3};
 };
 
-struct ImageResizeTest : public ::testing::WithParamInterface<std::pair<int, int>>, public ImageProcessorTest {};
+struct ImageResizeTest : public ::testing::WithParamInterface<std::pair<int, int>>, public ImageProcessExecutorTest {};
 
 TEST_P(ImageResizeTest, clippingTest) {
     const auto [width, height] =  GetParam();
@@ -36,7 +36,7 @@ TEST_P(ImageResizeTest, clippingTest) {
 }
 
 INSTANTIATE_TEST_SUITE_P(
-        ImageProcessorTest,
+        ImageProcessExecutorTest,
         ImageResizeTest,
         ::testing::Values(
             std::make_pair(0,0),

@@ -1,6 +1,8 @@
 #include <ImageProcessing/CPU/LUT3DPipelineCPU.hpp>
 #include <ImageProcessing/CPU/WorkerData.hpp>
 
+LUT3DPipelineCPU::LUT3DPipelineCPU(Table3D* lut): lut3d(lut) {}
+
 cv::Mat LUT3DPipelineCPU::execute(cv::Mat img, const float opacity, const uint threadPool) {
 	if (!lut3d) {
 		throw std::runtime_error("3D LUT is unavailable");

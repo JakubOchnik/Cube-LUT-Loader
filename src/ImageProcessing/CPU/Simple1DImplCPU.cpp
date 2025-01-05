@@ -3,6 +3,8 @@
 #include <thread>
 #include <vector>
 
+Simple1DImplCPU::Simple1DImplCPU(Table1D* lut) : lut1d(lut) {}
+
 namespace {
 float getAvgVal(const Table1D& lut, const uint nValues, const uchar value, const uchar channel) {
 	// Cast to avoid potential index overflow
