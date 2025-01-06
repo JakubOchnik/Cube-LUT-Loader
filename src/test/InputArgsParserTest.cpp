@@ -5,60 +5,76 @@
 
 using namespace ::testing;
 
-class InputArgsParserTest : public ::testing::Test {
-protected:
-    char** arguments;
-    size_t argCount = 0;
+class Array2D {
+public:
+	Array2D() = default;
 
-    char** initialize2DArray(const std::vector<std::string>& args) {
-        argCount = args.size() + 1;
-        arguments = new char*[argCount];
-        for (int i{}; i < argCount - 1; ++i) {
-            const auto& argument = args[i];
-            arguments[i] = new char[argument.size() + 1];
-            strncpy(arguments[i], argument.c_str(), argument.size() + 1);
-        }
-        // Final argument has to be nullptr
-        arguments[argCount - 1] = nullptr;
-        return arguments;
+	Array2D(const std::vector<std::string>& args) {
+        initializeArray(args);
     }
 
-    void free2Darray() {
-        if (!arguments) {
-            return;
-        }
+	void reset(const std::vector<std::string>& args) {
+		free2Darray();
+		initializeArray(args);
+	}
 
-        if (argCount <= 0) {
-            return;
-        }
-
-        for (int i{}; i < argCount - 1; ++i) {
-            delete arguments[i];
-        }
-        delete arguments;
-        arguments = nullptr;
-    }
-
-    void TearDown() override {
+	~Array2D() {
         free2Darray();
     }
+
+	char** arguments = nullptr;
+	size_t argCount = 0;
+
+private:
+	void initializeArray(const std::vector<std::string>& args) {
+		argCount = args.size() + 1;
+		arguments = new char*[argCount];
+		for (int i{}; i < argCount - 1; ++i) {
+			const auto& argument = args[i];
+			arguments[i] = new char[argument.size() + 1];
+			strncpy(arguments[i], argument.c_str(), argument.size() + 1);
+		}
+		// Final argument has to be nullptr
+		arguments[argCount - 1] = nullptr;
+	}
+
+	void free2Darray() {
+		if (!arguments) {
+			return;
+		}
+
+		if (argCount <= 0) {
+			return;
+		}
+
+		for (int i{}; i < argCount - 1; ++i) {
+			delete arguments[i];
+		}
+		delete arguments;
+		arguments = nullptr;
+		argCount = 0;
+	}
 };
+
+class InputArgsParserTest : public ::testing::Test {};
 
 TEST_F(InputArgsParserTest, testHelp)
 {
     const std::vector<std::string> sourceArgs{"program", "-h"};
-    const auto arguments = initialize2DArray(sourceArgs);
+    Array2D argsArr(sourceArgs);
+    const auto rawArgs = argsArr.arguments;
 
-    TaskDispatcher dispatcher(sourceArgs.size(), arguments);
+    TaskDispatcher dispatcher(sourceArgs.size(), rawArgs);
     EXPECT_THROW(dispatcher.parseInputArgs(), args::Help);
 }
 
 TEST_F(InputArgsParserTest, emptyArgs)
 {
     const std::vector<std::string> sourceArgs{"program"};
-    const auto arguments = initialize2DArray(sourceArgs);
+    Array2D argsArr(sourceArgs);
+    const auto rawArgs = argsArr.arguments;
 
-    TaskDispatcher dispatcher(sourceArgs.size(), arguments);
+    TaskDispatcher dispatcher(sourceArgs.size(), rawArgs);
     EXPECT_THROW(dispatcher.parseInputArgs(), args::Error);
 }
 
@@ -68,36 +84,27 @@ TEST_F(InputArgsParserTest, strength)
     std::vector<std::string> arrayWithStrength = baseArray;
 
     arrayWithStrength.push_back("--strength=42");
-    auto rawArgumentsArray = initialize2DArray(arrayWithStrength);
+    Array2D argsArr(arrayWithStrength);
+    auto rawArgumentsArray = argsArr.arguments;
     TaskDispatcher dispatcher(arrayWithStrength.size(), rawArgumentsArray);
     auto params = dispatcher.parseInputArgs();
     EXPECT_EQ(params.getEffectIntensity(), .42f);
-    free2Darray();
     arrayWithStrength.pop_back();
 
     arrayWithStrength.push_back("--strength=101");
-    rawArgumentsArray = initialize2DArray(arrayWithStrength);
+    argsArr.reset(arrayWithStrength);
+    rawArgumentsArray = argsArr.arguments;
     dispatcher = TaskDispatcher(arrayWithStrength.size(), rawArgumentsArray);
     params = dispatcher.parseInputArgs();
     EXPECT_EQ(params.getEffectIntensity(), 1.0f);
-    free2Darray();
     arrayWithStrength.pop_back();
 
     arrayWithStrength.push_back("--strength=-2");
-    rawArgumentsArray = initialize2DArray(arrayWithStrength);
+    argsArr.reset(arrayWithStrength);
+    rawArgumentsArray = argsArr.arguments;
     dispatcher = TaskDispatcher(arrayWithStrength.size(), rawArgumentsArray);
     params = dispatcher.parseInputArgs();
     EXPECT_EQ(params.getEffectIntensity(), .0f);
-}
-
-TEST_F(InputArgsParserTest, multipleInterpolationMethods)
-{
-    const std::vector<std::string> sourceArgs{"program", "-i", "abc.png", "-l", "test.cube", "-t", "-n"};
-    const auto arguments = initialize2DArray(sourceArgs);
-
-    TaskDispatcher dispatcher(sourceArgs.size(), arguments);
-    const auto params = dispatcher.parseInputArgs();
-    EXPECT_EQ(params.getInterpolationMethod(), InterpolationMethod::Trilinear);
 }
 
 struct IncorrectDimensionsTest : public InputArgsParserTest, public ::testing::WithParamInterface<std::tuple<std::vector<std::string>, int, int, bool>> {};
@@ -106,7 +113,8 @@ TEST_P(IncorrectDimensionsTest, incorrectDimensions) {
     const auto&[additionalArgs, expectedWidth, expectedHeight, shouldFail] = GetParam();
     std::vector<std::string> arguments{"program", "-i", "abc.png", "-l", "test.cube"};
     arguments.insert(arguments.end(), additionalArgs.begin(), additionalArgs.end());
-    auto rawArgumentsArray = initialize2DArray(arguments);
+    Array2D argsArr(arguments);
+    auto rawArgumentsArray = argsArr.arguments;
     TaskDispatcher dispatcher(arguments.size(), rawArgumentsArray);
     if (shouldFail) {
         EXPECT_THROW(dispatcher.parseInputArgs(), args::Error);
@@ -135,7 +143,8 @@ TEST_P(IncorrectInputTest, incorrectParam) {
     std::vector<std::string> sourceArgs{"program"};
     const auto& testArgs = GetParam();
     sourceArgs.insert(sourceArgs.end(), testArgs.begin(), testArgs.end());
-    const auto arguments = initialize2DArray(sourceArgs);
+    Array2D argsArr(sourceArgs);
+    const auto arguments = argsArr.arguments;
 
     TaskDispatcher dispatcher(sourceArgs.size(), arguments);
     EXPECT_THROW(dispatcher.parseInputArgs(), args::Error);
@@ -148,11 +157,50 @@ INSTANTIATE_TEST_SUITE_P(
             std::vector<std::string>{},
             std::vector<std::string>{"-l", "abcd.cube"},
             std::vector<std::string>{"-i", "abcd.png"},
-            std::vector<std::string>{"-t"},
-            std::vector<std::string>{"-l", "-t", "-i"},
+            std::vector<std::string>{"-m", "trilinear"},
+            std::vector<std::string>{"-l", "-m", "-i"},
             std::vector<std::string>{"-l", "abcd.cube", "-i", "abcd.png", "--abc"},
             std::vector<std::string>{"-l", "abcd.cube", "-i", "abcd.png", "--strength"},
             std::vector<std::string>{"-l", "abcd.cube", "-i", "abcd.png", "--strength="},
             std::vector<std::string>{"-l", "abcd.cube", "-i", "abcd.png", "--strength", "-t"}
+        )
+);
+
+struct ModesTest : public InputArgsParserTest, public ::testing::WithParamInterface<std::tuple<std::vector<std::string>, ProcessingMode, InterpolationMethod, bool>> {};
+
+TEST_P(ModesTest, processingModes) {
+   std::vector<std::string> sourceArgs{"program", "-l", "abcd.cube", "-i", "abcd.png"};
+    const auto& [testArgs, expectedMode, expectedMethod, shouldFail] = GetParam();
+    sourceArgs.insert(sourceArgs.end(), testArgs.begin(), testArgs.end());
+    Array2D argsArr(sourceArgs);
+    const auto arguments = argsArr.arguments;
+
+    TaskDispatcher dispatcher(sourceArgs.size(), arguments);
+    if (shouldFail) {
+        EXPECT_THROW(dispatcher.parseInputArgs(), args::Error);
+    } else {
+        const auto params = dispatcher.parseInputArgs();
+        EXPECT_EQ(params.getProcessingMode(), expectedMode);
+        EXPECT_EQ(params.getInterpolationMethod(), expectedMethod);
+    }
+}
+
+INSTANTIATE_TEST_SUITE_P(
+        InputArgsParserTest,
+        ModesTest,
+        ::testing::Values(
+            std::make_tuple(std::vector<std::string>{}, ProcessingMode::CPU, InterpolationMethod::Trilinear, false),
+            std::make_tuple(std::vector<std::string>{"-m", "trilinear"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, false),
+            std::make_tuple(std::vector<std::string>{"-m", "Trilinear"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, false),
+            std::make_tuple(std::vector<std::string>{"-m", "nearest-value"}, ProcessingMode::CPU, InterpolationMethod::NearestValue, false),
+            std::make_tuple(std::vector<std::string>{"-m", "Nearest-value"}, ProcessingMode::CPU, InterpolationMethod::NearestValue, false),
+            std::make_tuple(std::vector<std::string>{"-m", "blabla"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, true),
+            std::make_tuple(std::vector<std::string>{"-m", "trilinear", "-m", "nearest-value"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, true),
+            std::make_tuple(std::vector<std::string>{"-p", "cpu"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, false),
+            std::make_tuple(std::vector<std::string>{"-p", "CPU"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, false),
+            std::make_tuple(std::vector<std::string>{"-p", "gpu"}, ProcessingMode::GPU, InterpolationMethod::Trilinear, false),
+            std::make_tuple(std::vector<std::string>{"-p", "GPU"}, ProcessingMode::GPU, InterpolationMethod::Trilinear, false),
+            std::make_tuple(std::vector<std::string>{"-p", "blabla"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, true),
+            std::make_tuple(std::vector<std::string>{"-p", "cpu", "-p", "gpu"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, true)
         )
 );

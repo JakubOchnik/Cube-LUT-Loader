@@ -21,18 +21,6 @@ TEST_F(InputParamsTest, testDefaultValues)
     testDefaultValues(params);
 }
 
-TEST_F(InputParamsTest, mapFlagsToProcessingmode) {
-    EXPECT_EQ(flagsToProcessingMode(true), ProcessingMode::GPU);
-    EXPECT_EQ(flagsToProcessingMode(false), ProcessingMode::CPU);
-}
-
-TEST_F(InputParamsTest, mapFlagsToInterpolationMethod) {
-    EXPECT_EQ(flagsToInterpolationMethod(true, true), InterpolationMethod::Trilinear);
-    EXPECT_EQ(flagsToInterpolationMethod(true, false), InterpolationMethod::Trilinear);
-    EXPECT_EQ(flagsToInterpolationMethod(false, false), InterpolationMethod::Trilinear);
-    EXPECT_EQ(flagsToInterpolationMethod(false, true), InterpolationMethod::NearestValue);
-}
-
 TEST_F(InputParamsTest, testParsingValues)
 {
     InputParams params {
