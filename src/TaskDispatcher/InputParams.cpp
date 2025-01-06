@@ -69,14 +69,3 @@ int InputParams::getOutputImageHeight() const {
 void InputParams::setOutputImageHeight(int height) {
 	outputImageHeight = height;
 }
-
-ProcessingMode flagsToProcessingMode(bool gpu) {
-	return gpu ? ProcessingMode::GPU : ProcessingMode::CPU;
-}
-
-InterpolationMethod flagsToInterpolationMethod(bool trilinear, bool nearestValue) {
-	if (!trilinear && nearestValue) {
-		return InterpolationMethod::NearestValue;
-	}
-	return InterpolationMethod::Trilinear;
-}

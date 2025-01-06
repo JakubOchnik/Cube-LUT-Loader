@@ -109,6 +109,25 @@ namespace {
 
 		return imageDimension;
 	}
+
+	const std::unordered_map<std::string, InterpolationMethod> interpolationMethodMapping {
+		{"trilinear", InterpolationMethod::Trilinear},
+		{"nearest-value", InterpolationMethod::NearestValue}
+	};
+
+	const std::unordered_map<std::string, ProcessingMode> processingModeMapping {
+		{"cpu", ProcessingMode::CPU},
+		{"gpu", ProcessingMode::GPU}
+	};
+
+	struct ToLowerReader {
+	bool operator()(const std::string &name, const std::string &value, std::string &destination)
+	{
+		destination = value;
+		std::transform(destination.begin(), destination.end(), destination.begin(), ::tolower);
+		return true;
+	}
+};
 }
 
 InputParams TaskDispatcher::parseInputArgs() const
@@ -120,13 +139,14 @@ InputParams TaskDispatcher::parseInputArgs() const
 	args::ValueFlag<std::string> input(parser, "input", "Input file path", {'i', "input"}, args::Options::Required);
 	args::ValueFlag<std::string> lut(parser, "lut", "LUT file path", {'l', "lut"}, args::Options::Required);
 	args::ValueFlag<std::string> output(parser, "output", "Output file path", {'o', "output"});
-	args::ValueFlag<float> strength(parser, "intensity", "Intensity of the applied LUT (0-100%)", {'s', "strength"}, 100.0f);
-	args::Flag trilinear(parser, "trilinear", "Use trilinear interpolation", {'t', "trilinear"});
-	args::Flag nearestValue(parser, "nearest_value", "Use nearest-value interpolation", {'n', "nearest_value"});
+	args::ValueFlag<float> strength(parser, "intensity", "Intensity of the applied LUT (0-100)", {'s', "strength"}, 100.0f);
+	args::MapFlag<std::string, InterpolationMethod, ToLowerReader> method(parser, "method", "Interpolation method (allowed values: 'trilinear', 'nearest-value')", {'m', "method"},
+														   interpolationMethodMapping, InterpolationMethod::Trilinear, args::Options::Single);
 	args::Flag forceOverwrite(parser, "force", "Force overwrite file", {'f', "force"});
 	const unsigned int defaultNumberOfThreads = std::thread::hardware_concurrency();
 	args::ValueFlag<unsigned int> threads(parser, "threads", "Number of threads", {'j', "threads"}, defaultNumberOfThreads);
-	args::Flag gpu(parser, "gpu", "Use GPU acceleration", {"gpu"});
+	args::MapFlag<std::string, ProcessingMode, ToLowerReader> processingMode(parser, "processor", "Processing mode (allowed values: 'cpu', 'gpu')", {'p', "processor"},
+														processingModeMapping, ProcessingMode::CPU, args::Options::Single);
 	args::ValueFlag<int> width(parser, "width", "Output image width", {"width"});
 	args::ValueFlag<int> height(parser, "height", "Output image height", {"height"});
 
@@ -140,18 +160,14 @@ InputParams TaskDispatcher::parseInputArgs() const
 		throw ex;
 	}
 
-	if (trilinear && nearestValue) {
-		std::cout << "[WARNING] Ambiguous input: multiple interpolation methods specified. Using trilinear.\n";
-	}
-
 	if ((width || height) && !(width && height)) {
 		std::cout << "[WARNING] Not all output image dimensions have been specified.\n";
 	}
 
 	return InputParams {
-		flagsToProcessingMode(gpu),
+		*processingMode,
 		*threads,
-		flagsToInterpolationMethod(trilinear, nearestValue),
+		*method,
 		*input,
 		*output,
 		forceOverwrite,

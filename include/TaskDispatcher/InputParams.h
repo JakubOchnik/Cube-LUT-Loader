@@ -55,6 +55,3 @@ public:
 	int getOutputImageHeight() const;
 	void setOutputImageHeight(int height);
 };
-
-ProcessingMode flagsToProcessingMode(bool gpu);
-InterpolationMethod flagsToInterpolationMethod(bool trilinear, bool nearestValue);
