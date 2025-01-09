@@ -25,7 +25,8 @@ See [performance tests](PERFORMANCE.md) for a performance comparison between the
   -s [ --strength ] arg (=100)     Strength of the effect
   -m [ --method ] arg (=trilinear) 3D LUT interpolation method (trilinear, nearest-value)
   -p [ --processor ] arg (=CPU)    Processor type (CPU, GPU)
-  -j [ --threads ] arg (=threads)  Number of threads
+  -j [ --threads ] arg (=threads)  Number of threads to use. Defaults to the number 
+                                   of logical CPU cores available on the system.
   --width arg                      Output image width
   --height arg                     Output image height
 ```
