@@ -17,17 +17,21 @@ See [performance tests](PERFORMANCE.md) for a performance comparison between the
 
 ## Program options
 ```
-  -h [ --help ]                    Help screen
-  -i [ --input ] arg               Input file path
-  -l [ --lut ] arg                 LUT file path
-  -o [ --output ] arg (=out.png)   Output file path
-  -f [ --force ]                   Force overwrite file
-  -s [ --strength ] arg (=100)     Strength of the effect
-  -m [ --method ] arg (=trilinear) 3D LUT interpolation method (trilinear, nearest-value)
-  -p [ --processor ] arg (=CPU)    Processor type (CPU, GPU)
-  -j [ --threads ] arg (=threads)  Number of threads
-  --width arg                      Output image width
-  --height arg                     Output image height
+      -h, --help                        Display this help menu
+      -i [input], --input=[input]       Input file path
+      -l [lut], --lut=[lut]             LUT file path
+      -o [output], --output=[output]    Output file path
+      -s [intensity],
+      --strength=[intensity]            Intensity of the applied LUT (0-100)
+      -m [method], --method=[method]    Interpolation method (allowed values:
+                                        'trilinear', 'nearest-value')
+      -f, --force                       Force overwrite file
+      -j [threads], --threads=[threads] Number of threads
+      -p [processor],
+      --processor=[processor]           Processing mode (allowed values: 'cpu',
+                                        'gpu')
+      --width=[width]                   Output image width
+      --height=[height]                 Output image height
 ```
 
 ## Hardware requirements
