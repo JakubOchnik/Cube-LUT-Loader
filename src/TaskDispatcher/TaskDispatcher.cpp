@@ -95,17 +95,17 @@ int TaskDispatcher::start()
 }
 
 namespace {
-	float clipStrength(float strength) {
-		if (strength <= .0f) {
-			std::cout << fmt::format("[WARNING] Incorrect strength ({}) - clipping to 0 %.\n", strength);
+	float clipIntensity(float intensity) {
+		if (intensity <= .0f) {
+			std::cout << fmt::format("[WARNING] Incorrect intensity ({}) - clipping to 0 %.\n", intensity);
 			return .0f;
 		}
-		if (strength > 100.0f) {
-			std::cout << fmt::format("[WARNING] Incorrect strength ({}) - clipping to 100 %.\n", strength);
+		if (intensity > 100.0f) {
+			std::cout << fmt::format("[WARNING] Incorrect intensity ({}) - clipping to 100 %.\n", intensity);
 			return 100.0f;
 		}
 
-		return strength;
+		return intensity;
 	}
 
 	int clipDimension(int imageDimension, std::string_view name) {
@@ -146,7 +146,7 @@ InputParams TaskDispatcher::parseInputArgs() const
 	args::ValueFlag<std::string> input(parser, "input_path", "Input image path", {'i', "input"}, args::Options::Required);
 	args::ValueFlag<std::string> lut(parser, "lut_path", "LUT path", {'l', "lut"}, args::Options::Required);
 	args::ValueFlag<std::string> output(parser, "output_path", "Output image path", {'o', "output"});
-	args::ValueFlag<float> strength(parser, "intensity", "Intensity of the applied LUT (0-100)", {'s', "strength"}, 100.0f);
+	args::ValueFlag<float> intensity(parser, "intensity", "Intensity of the applied LUT (0-100 [%]). Defaults to 100%.", {"intensity"}, 100.0f);
 	args::MapFlag<std::string, InterpolationMethod, ToLowerReader> interpolationMethod(parser, "method", "Interpolation method (allowed values: 'trilinear', 'nearest-value')", {"interpolation"},
 														   interpolationMethodMapping, InterpolationMethod::Trilinear, args::Options::Single);
 	args::Flag forceOverwrite(parser, "force", "Force overwrite the output file", {'f', "force"});
@@ -179,7 +179,7 @@ InputParams TaskDispatcher::parseInputArgs() const
 		*output,
 		forceOverwrite,
 		*lut,
-		clipStrength(*strength),
+		clipIntensity(*intensity),
 		width ? clipDimension(*width, "width") : 0,
 		height ? clipDimension(*height, "height") : 0
 	};

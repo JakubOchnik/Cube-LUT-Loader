@@ -3,11 +3,11 @@
 
 InputParams::InputParams(ProcessingMode processMode, unsigned int threadsNum, InterpolationMethod interpolation,
 						 const std::string& inputPath, const std::string& outputPath, bool force,
-						 const std::string& lut, float strength, int width, int height)
+						 const std::string& lut, float intensity, int width, int height)
 	: processingMode(processMode), threads(threadsNum), interpolationMethod(interpolation), inputImgPath(inputPath),
 	  outputImgPath(outputPath), forceOverwrite(force), inputLutPath(lut), outputImageWidth(width),
 	  outputImageHeight(height) {
-	effectIntensity = strength / 100.0f;
+	effectIntensity = intensity / 100.0f;
 }
 
 ProcessingMode InputParams::getProcessingMode() const {

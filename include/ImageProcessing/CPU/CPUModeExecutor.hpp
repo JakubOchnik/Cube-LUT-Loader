@@ -8,5 +8,5 @@ class CPUModeExecutor : public ImageProcessExecutor {
 
 public:
 	explicit CPUModeExecutor(FileIO& fileIfc, uint threads);
-	cv::Mat process(float strength, InterpolationMethod method) override;
+	cv::Mat process(float intensity, InterpolationMethod method) override;
 };
