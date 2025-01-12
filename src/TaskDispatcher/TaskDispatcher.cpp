@@ -143,15 +143,15 @@ InputParams TaskDispatcher::parseInputArgs() const
 	args::HelpFlag help(parser, "help", "Display this help menu", {'h', "help"});
 	parser.Prog("Cube LUT Loader");
 	parser.SetArgumentSeparations(false, true, true, true);
-	args::ValueFlag<std::string> input(parser, "input", "Input file path", {'i', "input"}, args::Options::Required);
-	args::ValueFlag<std::string> lut(parser, "lut", "LUT file path", {'l', "lut"}, args::Options::Required);
-	args::ValueFlag<std::string> output(parser, "output", "Output file path", {'o', "output"});
+	args::ValueFlag<std::string> input(parser, "input_path", "Input image path", {'i', "input"}, args::Options::Required);
+	args::ValueFlag<std::string> lut(parser, "lut_path", "LUT path", {'l', "lut"}, args::Options::Required);
+	args::ValueFlag<std::string> output(parser, "output_path", "Output image path", {'o', "output"});
 	args::ValueFlag<float> strength(parser, "intensity", "Intensity of the applied LUT (0-100)", {'s', "strength"}, 100.0f);
-	args::MapFlag<std::string, InterpolationMethod, ToLowerReader> method(parser, "method", "Interpolation method (allowed values: 'trilinear', 'nearest-value')", {'m', "method"},
+	args::MapFlag<std::string, InterpolationMethod, ToLowerReader> interpolationMethod(parser, "method", "Interpolation method (allowed values: 'trilinear', 'nearest-value')", {"interpolation"},
 														   interpolationMethodMapping, InterpolationMethod::Trilinear, args::Options::Single);
-	args::Flag forceOverwrite(parser, "force", "Force overwrite file", {'f', "force"});
+	args::Flag forceOverwrite(parser, "force", "Force overwrite the output file", {'f', "force"});
 	const unsigned int defaultNumberOfThreads = std::thread::hardware_concurrency();
-	args::ValueFlag<unsigned int> threads(parser, "threads", "Number of threads", {'j', "threads"}, defaultNumberOfThreads);
+	args::ValueFlag<unsigned int> threads(parser, "threads", "Size of a thread pool used to process the image. Defaults to the number of logical CPU cores available on the system.", {'j', "threads"}, defaultNumberOfThreads);
 	args::MapFlag<std::string, ProcessingMode, ToLowerReader> processingMode(parser, "processor", "Processing mode (allowed values: 'cpu', 'gpu')", {'p', "processor"},
 														processingModeMapping, ProcessingMode::CPU, args::Options::Single);
 	args::ValueFlag<int> width(parser, "width", "Output image width", {"width"});
@@ -174,7 +174,7 @@ InputParams TaskDispatcher::parseInputArgs() const
 	return InputParams {
 		*processingMode,
 		*threads,
-		*method,
+		*interpolationMethod,
 		*input,
 		*output,
 		forceOverwrite,
