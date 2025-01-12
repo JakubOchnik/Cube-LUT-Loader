@@ -97,11 +97,6 @@ bool FileIO::loadLut()
 	return success;
 }
 
-bool FileIO::load()
-{
-	return loadImg() && loadLut();
-}
-
 const cv::Mat3b& FileIO::getImg() const
 {
 	return this->img;
