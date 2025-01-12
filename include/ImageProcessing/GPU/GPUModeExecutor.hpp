@@ -13,7 +13,7 @@ public:
 	~GPUModeExecutor();
 
 private:
-	cv::Mat process(float strength, InterpolationMethod method) override;
+	cv::Mat process(float intensity, InterpolationMethod method) override;
 
 	CudaCalls calls;
 };

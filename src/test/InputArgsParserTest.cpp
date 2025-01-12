@@ -81,28 +81,28 @@ TEST_F(InputArgsParserTest, emptyArgs)
 TEST_F(InputArgsParserTest, strength)
 {
     const std::vector<std::string> baseArray{"program", "-i", "abc.png", "-l", "test.cube"};
-    std::vector<std::string> arrayWithStrength = baseArray;
+    std::vector<std::string> arrayWithIntensity = baseArray;
 
-    arrayWithStrength.push_back("--strength=42");
-    Array2D argsArr(arrayWithStrength);
+    arrayWithIntensity.push_back("--intensity=42");
+    Array2D argsArr(arrayWithIntensity);
     auto rawArgumentsArray = argsArr.arguments;
-    TaskDispatcher dispatcher(arrayWithStrength.size(), rawArgumentsArray);
+    TaskDispatcher dispatcher(arrayWithIntensity.size(), rawArgumentsArray);
     auto params = dispatcher.parseInputArgs();
     EXPECT_EQ(params.getEffectIntensity(), .42f);
-    arrayWithStrength.pop_back();
+    arrayWithIntensity.pop_back();
 
-    arrayWithStrength.push_back("--strength=101");
-    argsArr.reset(arrayWithStrength);
+    arrayWithIntensity.push_back("--intensity=101");
+    argsArr.reset(arrayWithIntensity);
     rawArgumentsArray = argsArr.arguments;
-    dispatcher = TaskDispatcher(arrayWithStrength.size(), rawArgumentsArray);
+    dispatcher = TaskDispatcher(arrayWithIntensity.size(), rawArgumentsArray);
     params = dispatcher.parseInputArgs();
     EXPECT_EQ(params.getEffectIntensity(), 1.0f);
-    arrayWithStrength.pop_back();
+    arrayWithIntensity.pop_back();
 
-    arrayWithStrength.push_back("--strength=-2");
-    argsArr.reset(arrayWithStrength);
+    arrayWithIntensity.push_back("--intensity=-2");
+    argsArr.reset(arrayWithIntensity);
     rawArgumentsArray = argsArr.arguments;
-    dispatcher = TaskDispatcher(arrayWithStrength.size(), rawArgumentsArray);
+    dispatcher = TaskDispatcher(arrayWithIntensity.size(), rawArgumentsArray);
     params = dispatcher.parseInputArgs();
     EXPECT_EQ(params.getEffectIntensity(), .0f);
 }
@@ -157,12 +157,12 @@ INSTANTIATE_TEST_SUITE_P(
             std::vector<std::string>{},
             std::vector<std::string>{"-l", "abcd.cube"},
             std::vector<std::string>{"-i", "abcd.png"},
-            std::vector<std::string>{"-m", "trilinear"},
-            std::vector<std::string>{"-l", "-m", "-i"},
+            std::vector<std::string>{"--interpolation", "trilinear"},
+            std::vector<std::string>{"-l", "--interpolation", "-i"},
             std::vector<std::string>{"-l", "abcd.cube", "-i", "abcd.png", "--abc"},
-            std::vector<std::string>{"-l", "abcd.cube", "-i", "abcd.png", "--strength"},
-            std::vector<std::string>{"-l", "abcd.cube", "-i", "abcd.png", "--strength="},
-            std::vector<std::string>{"-l", "abcd.cube", "-i", "abcd.png", "--strength", "-t"}
+            std::vector<std::string>{"-l", "abcd.cube", "-i", "abcd.png", "--intensity"},
+            std::vector<std::string>{"-l", "abcd.cube", "-i", "abcd.png", "--intensity="},
+            std::vector<std::string>{"-l", "abcd.cube", "-i", "abcd.png", "--intensity", "-t"}
         )
 );
 
@@ -190,12 +190,12 @@ INSTANTIATE_TEST_SUITE_P(
         ModesTest,
         ::testing::Values(
             std::make_tuple(std::vector<std::string>{}, ProcessingMode::CPU, InterpolationMethod::Trilinear, false),
-            std::make_tuple(std::vector<std::string>{"-m", "trilinear"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, false),
-            std::make_tuple(std::vector<std::string>{"-m", "Trilinear"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, false),
-            std::make_tuple(std::vector<std::string>{"-m", "nearest-value"}, ProcessingMode::CPU, InterpolationMethod::NearestValue, false),
-            std::make_tuple(std::vector<std::string>{"-m", "Nearest-value"}, ProcessingMode::CPU, InterpolationMethod::NearestValue, false),
-            std::make_tuple(std::vector<std::string>{"-m", "blabla"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, true),
-            std::make_tuple(std::vector<std::string>{"-m", "trilinear", "-m", "nearest-value"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, true),
+            std::make_tuple(std::vector<std::string>{"--interpolation", "trilinear"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, false),
+            std::make_tuple(std::vector<std::string>{"--interpolation", "Trilinear"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, false),
+            std::make_tuple(std::vector<std::string>{"--interpolation", "nearest-value"}, ProcessingMode::CPU, InterpolationMethod::NearestValue, false),
+            std::make_tuple(std::vector<std::string>{"--interpolation", "Nearest-value"}, ProcessingMode::CPU, InterpolationMethod::NearestValue, false),
+            std::make_tuple(std::vector<std::string>{"--interpolation", "blabla"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, true),
+            std::make_tuple(std::vector<std::string>{"--interpolation", "trilinear", "--interpolation", "nearest-value"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, true),
             std::make_tuple(std::vector<std::string>{"-p", "cpu"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, false),
             std::make_tuple(std::vector<std::string>{"-p", "CPU"}, ProcessingMode::CPU, InterpolationMethod::Trilinear, false),
             std::make_tuple(std::vector<std::string>{"-p", "gpu"}, ProcessingMode::GPU, InterpolationMethod::Trilinear, false),

@@ -6,10 +6,10 @@
 
 ImageProcessExecutor::ImageProcessExecutor(FileIO& fileIfc) : fileInterface(fileIfc) {}
 
-cv::Mat ImageProcessExecutor::execute(float strength, cv::Size dstImageSize, InterpolationMethod method) {
+cv::Mat ImageProcessExecutor::execute(float intensity, cv::Size dstImageSize, InterpolationMethod method) {
 	// Swap original image with the resized one to avoid storing two images simultaneously in memory
 	fileInterface.setImg(resizeImage(fileInterface.getImg(), dstImageSize));
-	return process(strength, method);
+	return process(intensity, method);
 }
 
 cv::Mat ImageProcessExecutor::resizeImage(cv::Mat inputImg, cv::Size size, int interpolationMode) {

@@ -13,7 +13,7 @@ public:
     ImageProcessExecutor() = delete;
     virtual ~ImageProcessExecutor() = default;
 
-    virtual cv::Mat process(float strength, InterpolationMethod method) = 0;
-    virtual cv::Mat execute(float strength, cv::Size dstImageSize, InterpolationMethod method);
+    virtual cv::Mat process(float intensity, InterpolationMethod method) = 0;
+    virtual cv::Mat execute(float intensity, cv::Size dstImageSize, InterpolationMethod method);
     virtual cv::Mat resizeImage(cv::Mat inputImg, cv::Size size, int interpolationMode = 2);
 };

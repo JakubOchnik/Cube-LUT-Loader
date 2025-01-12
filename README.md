@@ -23,8 +23,8 @@ See [performance tests](PERFORMANCE.md) for a performance comparison between the
   -l [lut_path], --lut=[lut_path]   LUT path
   -o [output_path],
   --output=[output_path]            Output image path
-  -s [intensity],
-  --strength=[intensity]            Intensity of the applied LUT (0-100)
+  --intensity=[intensity]           Intensity of the applied LUT (0-100
+                                    [%]). Defaults to 100%.
   --interpolation=[method]          Interpolation method (allowed values:
                                     'trilinear', 'nearest-value')
   -f, --force                       Force overwrite the output file

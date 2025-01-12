@@ -35,7 +35,7 @@ public:
 		const std::string& outputPath,
 		bool force,
 		const std::string& lut,
-		float strength,
+		float intensity,
 		int width,
 		int height);
 
