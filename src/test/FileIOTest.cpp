@@ -151,3 +151,23 @@ TEST_F(FileIOTest, saveWithoutForceOverwrite) {
     EXPECT_CALL(loader, writeImage).WillOnce(Return(true));
     EXPECT_TRUE(loader.saveImg({}));
 }
+
+TEST_F(FileIOTest, readHighBitDepth) {
+    FileIOMock loader(params);
+    cv::Mat mat16(cv::Size(10, 10), CV_16UC3);
+    EXPECT_CALL(loader, readImage).WillOnce(Return(mat16));
+    EXPECT_TRUE(loader.loadImg());
+    const auto parsedMat16 = loader.getImg();
+    EXPECT_EQ(parsedMat16.depth(), CV_8U);
+    EXPECT_EQ(parsedMat16.channels(), 3);
+    EXPECT_EQ(parsedMat16.type(), CV_8UC3);
+
+    cv::Mat mat16alpha(cv::Size(10, 10), CV_16UC4);
+    EXPECT_CALL(loader, readImage).WillOnce(Return(mat16alpha));
+    EXPECT_TRUE(loader.loadImg());
+    const auto parsedMat16alpha = loader.getImg();
+    EXPECT_EQ(parsedMat16alpha.depth(), CV_8U);
+    EXPECT_EQ(parsedMat16alpha.channels(), 3);
+    EXPECT_EQ(parsedMat16alpha.type(), CV_8UC3);
+    EXPECT_FALSE(loader.getAlphaChannel().empty());
+}

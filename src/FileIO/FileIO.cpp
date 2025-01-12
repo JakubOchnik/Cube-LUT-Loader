@@ -10,12 +10,43 @@ FileIO::FileIO(const InputParams& params)
 	: inputPath(params.getInputImgPath()), outputPath(params.getOutputImgPath()), lutPath(params.getInputLutPath()),
 	  forceOverwrite(params.getForceOverwrite()), cube(std::make_unique<CubeLUT>()) {}
 
+namespace {
+uint cvDepthToInt(int depthCode) {
+	switch(depthCode) {
+		case CV_8U:
+		case CV_8S:
+			return 8;
+		case CV_16U:
+		case CV_16S:
+		case CV_16F:
+			return 16;
+		case CV_32S:
+		case CV_32F:
+			return 32;
+		case CV_64F:
+			return 64;
+	}
+	return 0;
+}
+
+cv::Mat normalizeImage(cv::Mat img) {
+	cv::Mat convertedMat;
+	cv::normalize(img, convertedMat, 0, 255, cv::NORM_MINMAX, CV_8U);
+	return convertedMat;
+}
+}
+
 bool FileIO::loadImg() {
 	std::cout << "[INFO] Importing image...\n";
 	auto sourceImg = readImage(inputPath);
 	if (sourceImg.empty()) {
 		std::cerr << fmt::format("[ERROR] Could not open input image file: {}\n", inputPath);
 		return false;
+	}
+
+	if (const auto depth = sourceImg.depth(); depth != CV_8U) {
+		std::cout << fmt::format("[WARN] Unsupported bit depth ({}) - output image will be converted to 8\n", cvDepthToInt(depth));
+		sourceImg = normalizeImage(sourceImg);
 	}
 
 	if (const auto channels = sourceImg.channels(); channels < 3 || channels > 4) {
