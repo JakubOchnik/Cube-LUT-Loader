@@ -15,8 +15,9 @@ class FileIO {
 	virtual ~FileIO() = default;
 
 	void setImg(cv::Mat newImage);
-	bool load();
 
+	bool loadImg();
+	bool loadLut();
 	bool saveImg(cv::Mat newImg) const;
 
 	[[nodiscard]] const cv::Mat_<cv::Vec3b>& getImg() const;
@@ -25,8 +26,6 @@ class FileIO {
 protected:
 	std::unique_ptr<CubeLUT> cube;
 	cv::Mat1b alphaChannel; // Used only for RGBA input images
-	bool loadImg();
-	bool loadLut();
 
 	virtual cv::Mat readImage(const std::string& inputPath) const;
 	virtual bool writeImage(const std::string &outputPath, cv::Mat newImg) const;

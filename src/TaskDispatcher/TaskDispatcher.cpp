@@ -33,7 +33,14 @@ int TaskDispatcher::start()
 	}
 	FileIO fileIO{ parameters };
 
-	bool loadSuccessful = fileIO.load();
+	bool loadSuccessful{false};
+	try {
+		loadSuccessful = fileIO.loadImg() && fileIO.loadLut();
+	} catch (const std::exception& ex) {
+		std::cerr << fmt::format("[ERROR] Fatal exception: {}", ex.what());
+		return FAIL_EXIT;
+	}
+
 	if (!loadSuccessful) {
 		return FAIL_EXIT;
 	}
