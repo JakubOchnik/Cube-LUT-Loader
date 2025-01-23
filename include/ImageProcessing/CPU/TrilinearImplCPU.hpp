@@ -11,5 +11,4 @@ public:
 
 private:
 	void calculatePixel(const int x, const int y, const Table3D& lut, const WorkerData& data) override;
-	void calculateArea(const int x, const Table3D& lut, const WorkerData& data, const int segWidth) override;
 };

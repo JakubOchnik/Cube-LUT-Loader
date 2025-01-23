@@ -4,15 +4,6 @@
 #include <thread>
 #include <vector>
 
-void TrilinearImplCPU::calculateArea(const int x, const Table3D& lut, const WorkerData& data,
-									 const int segWidth) {
-	for (int localX{x}; localX < x + segWidth; ++localX) {
-		for (int y{0}; y < data.height; ++y) {
-			calculatePixel(localX, y, lut, data);
-		}
-	}
-}
-
 namespace {
 float getSafeDelta(int boundingBoxA, int boundingBoxB, float floatCoordinate) {
 	const int boundingBoxWidth = boundingBoxB - boundingBoxA;
