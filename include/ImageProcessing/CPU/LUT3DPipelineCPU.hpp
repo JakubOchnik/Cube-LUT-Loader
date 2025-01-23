@@ -11,5 +11,5 @@ protected:
 	Table3D* lut3d{nullptr};
 
 	virtual void calculatePixel(const int x, const int y, const Table3D& lut, const WorkerData& data) {}
-	virtual void calculateArea(const int x, const Table3D& lut, const WorkerData& data, const int segWidth) {}
+	virtual void calculateArea(const int x, const Table3D& lut, const WorkerData& data, const int segWidth);
 };
