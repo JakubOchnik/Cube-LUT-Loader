@@ -37,3 +37,12 @@ cv::Mat LUT3DPipelineCPU::execute(cv::Mat img, const float opacity, const uint t
 	}
 	return output;
 }
+
+void LUT3DPipelineCPU::calculateArea(const int x, const Table3D& lut, const WorkerData& data,
+									 const int segWidth) {
+	for (int localX{x}; localX < x + segWidth; ++localX) {
+		for (int y{0}; y < data.height; ++y) {
+			calculatePixel(localX, y, lut, data);
+		}
+	}
+}

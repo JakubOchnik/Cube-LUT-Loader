@@ -24,12 +24,3 @@ void NearestValImplCPU::calculatePixel(const int x, const int y, const Table3D& 
 	data.newImage[pixelIndex + 1] = static_cast<uchar>(g + (newG - g) * data.opacity);
 	data.newImage[pixelIndex + 2] = static_cast<uchar>(r + (newR - r) * data.opacity);
 }
-
-void NearestValImplCPU::calculateArea(const int x, const Table3D& lut, const WorkerData& data, const int segWidth) {
-	// Iterate over the area of width range: <x, x + segWidth>
-	for (int localX{x}; localX < x + segWidth; ++localX) {
-		for (int y{0}; y < data.height; ++y) {
-			calculatePixel(localX, y, lut, data);
-		}
-	}
-}
