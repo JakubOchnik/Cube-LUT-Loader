@@ -101,19 +101,16 @@ TetrahedralImplCPU::TetrahedralImplCPU(Table3D* lut) : LUT3DPipelineCPU(lut) {
 }
 
 void TetrahedralImplCPU::calculatePixel(const int x, const int y, const Table3D& lut, const WorkerData& data) {
-	const int b = data.image[(x + y * data.width) * data.channels + 0];
-	const int g = data.image[(x + y * data.width) * data.channels + 1];
-	const int r = data.image[(x + y * data.width) * data.channels + 2];
+	const size_t triplet_idx = (x + y * data.width) * data.channels;
 
-	// Implementation of a formula from the "Method" section:
-	// https://en.wikipedia.org/wiki/Trilinear_interpolation
-
-	const int maxLUTIndex = data.lutSize - 1;
+	const int b = data.image[triplet_idx + 0];
+	const int g = data.image[triplet_idx + 1];
+	const int r = data.image[triplet_idx + 2];
     
     // Get the real float 3D index to be interpolated (located inside the 'bounding cube')
-	const float scaled_r = r * (maxLUTIndex) / 255.0f;
-	const float scaled_g = g * (maxLUTIndex) / 255.0f;
-	const float scaled_b = b * (maxLUTIndex) / 255.0f;
+	const float scaled_r = r * lutScale;
+	const float scaled_g = g * lutScale;
+	const float scaled_b = b * lutScale;
 
 	// Map real RGB coordinates to an integral 'bounding cube' on a lower-accuracy LUT plane
 	// (map RGB point from a 256^3 color cube to e.g. a 33^3 cube)
@@ -150,7 +147,7 @@ void TetrahedralImplCPU::calculatePixel(const int x, const int y, const Table3D&
 	const auto newR = domainScale(v(0));
 
 	// Assign final pixel values to the output image
-	data.newImage[(x + y * data.width) * data.channels + 0] = static_cast<uchar>(b + (newB - b) * data.opacity);
-	data.newImage[(x + y * data.width) * data.channels + 1] = static_cast<uchar>(g + (newG - g) * data.opacity);
-	data.newImage[(x + y * data.width) * data.channels + 2] = static_cast<uchar>(r + (newR - r) * data.opacity);
+	data.newImage[triplet_idx + 0] = static_cast<uchar>(b + (newB - b) * data.opacity);
+	data.newImage[triplet_idx + 1] = static_cast<uchar>(g + (newG - g) * data.opacity);
+	data.newImage[triplet_idx + 2] = static_cast<uchar>(r + (newR - r) * data.opacity);
 }
