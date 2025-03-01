@@ -119,6 +119,7 @@ namespace {
 
 	const std::unordered_map<std::string, InterpolationMethod> interpolationMethodMapping {
 		{"trilinear", InterpolationMethod::Trilinear},
+		{"tetrahedral", InterpolationMethod::Tetrahedral},
 		{"nearest-value", InterpolationMethod::NearestValue}
 	};
 
@@ -147,7 +148,7 @@ InputParams TaskDispatcher::parseInputArgs() const
 	args::ValueFlag<std::string> lut(parser, "lut_path", "LUT path", {'l', "lut"}, args::Options::Required);
 	args::ValueFlag<std::string> output(parser, "output_path", "Output image path", {'o', "output"});
 	args::ValueFlag<float> intensity(parser, "intensity", "Intensity of the applied LUT (0-100 [%]). Defaults to 100%.", {"intensity"}, 100.0f);
-	args::MapFlag<std::string, InterpolationMethod, ToLowerReader> interpolationMethod(parser, "method", "Interpolation method (allowed values: 'trilinear', 'nearest-value')", {"interpolation"},
+	args::MapFlag<std::string, InterpolationMethod, ToLowerReader> interpolationMethod(parser, "method", "Interpolation method (allowed values: 'trilinear', 'tetrahedral', 'nearest-value')", {"interpolation"},
 														   interpolationMethodMapping, InterpolationMethod::Trilinear, args::Options::Single);
 	args::Flag forceOverwrite(parser, "force", "Force overwrite the output file", {'f', "force"});
 	const unsigned int defaultNumberOfThreads = std::thread::hardware_concurrency();

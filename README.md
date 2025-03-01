@@ -11,9 +11,18 @@ See [performance tests](PERFORMANCE.md) for a performance comparison between the
 - 1D LUT support
 - 3D LUT support
     - Nearest value mode (faster, low quality of tonal transitions)
-    - Trilinear interpolation (slower, high quality)
+    - Trilinear interpolation (slower, better quality)
+    - Tetrahedral interpolation (slowest, best quality)
 - Multi-threaded implementation (the number of physical CPU threads is used by default)
 - CUDA GPU implementation (highly effective with larger images)
+
+## Interpolation modes
+|                  | CPU | CUDA |
+|------------------|-----|------|
+| 1D Nearest-value | ✔️   |      |
+| 3D Nearest-value | ✔️   | ✔️    |
+| 3D Trilinear     | ✔️   | ✔️    |
+| 3D Tetrahedral   | ✔️   |      |
 
 ## Program options
 ```
@@ -26,7 +35,8 @@ See [performance tests](PERFORMANCE.md) for a performance comparison between the
   --intensity=[intensity]           Intensity of the applied LUT (0-100
                                     [%]). Defaults to 100%.
   --interpolation=[method]          Interpolation method (allowed values:
-                                    'trilinear', 'nearest-value')
+                                    'trilinear', 'tetrahedral',
+                                    'nearest-value')
   -f, --force                       Force overwrite the output file
   -j [threads], --threads=[threads] Size of a thread pool used to process
                                     the image. Defaults to the number of
@@ -44,7 +54,7 @@ A suitable NVIDIA GPU is required for the GPU mode to work (preferably with comp
 However, if you don't have one, you can still build and use the program in CPU mode!
 
 ## In progress
-- Tetrahedral interpolation
-- GPU acceleration for 1D LUTs
+- GPU acceleration for the remaining modes
+- Further performance optimizations
 - Support of color depths other than 8-bit
 - Batch processing

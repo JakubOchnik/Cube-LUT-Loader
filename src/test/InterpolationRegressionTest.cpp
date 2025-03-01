@@ -1,6 +1,8 @@
 #include <FileIO/CubeLUT.hpp>
 #include <ImageProcessing/CPU/LUT3DPipelineCPU.hpp>
+#include <ImageProcessing/CPU/TetrahedralImplCPU.hpp>
 #include <ImageProcessing/CPU/TrilinearImplCPU.hpp>
+#include <TaskDispatcher/InputParams.h>
 #include <color/deltaE.hpp>
 #include <fmt/format.h>
 #include <fstream>
@@ -15,32 +17,81 @@ using namespace ::testing;
 class InterpolationRegressionTest : public ::testing::Test {
 public:
 	const std::string lutPath = "resources/17p_cmp.cube";
+	const std::string originalImagePath = "resources/orig_cmp.png";
 };
 
-TEST_F(InterpolationRegressionTest, SLOW_trilinear) {
+struct ReferenceTestParams {
+	std::string referencePath;
+	InterpolationMethod type;
+	double maxSum;
+	double maxAvg;
+	bool compareMultiThreaded;
+};
+
+struct ReferenceDistance : public InterpolationRegressionTest,
+						   public ::testing::WithParamInterface<ReferenceTestParams> {
+public:
+	cv::Mat getResultWithInterpolator(InterpolationMethod type, Table3D& lut3d, cv::Mat source, bool threads = 1) {
+		cv::Mat result;
+		if (type == InterpolationMethod::Tetrahedral) {
+			TetrahedralImplCPU interpolator(&lut3d);
+			result = interpolator.execute(source, 1.0f, threads);
+		} else {
+			TrilinearImplCPU interpolator(&lut3d);
+			result = interpolator.execute(source, 1.0f, threads);
+		}
+		return result;
+	}
+};
+
+TEST_P(ReferenceDistance, SLOW_referenceComparison) {
 	CubeLUT lut;
 	std::ifstream lutStream(lutPath);
 	ASSERT_NO_THROW(lut.loadCubeFile(lutStream));
 
-	auto source = cv::imread("resources/orig_cmp.png");
-	auto reference = cv::imread("resources/cmp_tri.png");
+	const auto params = GetParam();
+	const auto source = cv::imread(originalImagePath);
+	auto reference = cv::imread(params.referencePath);
 
 	auto lut3d = std::get<Table3D>(lut.getTable());
-	TrilinearImplCPU interpolator(&lut3d);
-	auto result = interpolator.execute(source, 1.0f, 1);
+	cv::Mat result = getResultWithInterpolator(params.type, lut3d, source);
 
 	const auto sumDiff = color::getTotalDifferenceCIEDE2000(result, reference);
 	const auto avgDiff = sumDiff / source.total();
-	std::cout << fmt::format("CIEDE2000 Color difference sum: {} Avg color difference per pixel: {}\n", sumDiff, avgDiff);
+	std::cout << fmt::format("CIEDE2000 Color difference sum: {} Avg color difference per pixel: {}\n", sumDiff,
+							 avgDiff);
 
-	EXPECT_LT(sumDiff, 217500.0);
-	EXPECT_LT(avgDiff, 0.21);
+	EXPECT_LT(sumDiff, params.maxSum);
+	EXPECT_LT(avgDiff, params.maxAvg);
 
-	const auto physicalThreads = std::thread::hardware_concurrency();
-	const auto threadsToUse = physicalThreads != 0 ? physicalThreads : 8;
-	result = interpolator.execute(source, 1.0f, threadsToUse);
-	const auto sumDiffMultiThread = color::getTotalDifferenceCIEDE2000(result, reference);
-	const auto avgDiffMultiThread = sumDiffMultiThread / source.total();
-	EXPECT_EQ(sumDiff, sumDiffMultiThread) << "Multi-threading influenced the sum of the color difference";
-	EXPECT_EQ(avgDiff, avgDiffMultiThread) << "Multi-threading influenced the average color difference";
+	if (params.compareMultiThreaded) {
+		const auto physicalThreads = std::thread::hardware_concurrency();
+		const auto threadsToUse = physicalThreads != 0 ? physicalThreads : 8;
+		result = getResultWithInterpolator(params.type, lut3d, source, threadsToUse);
+		const auto sumDiffMultiThread = color::getTotalDifferenceCIEDE2000(result, reference);
+		const auto avgDiffMultiThread = sumDiffMultiThread / source.total();
+		EXPECT_EQ(sumDiff, sumDiffMultiThread) << "Multi-threading influenced the sum of the color difference";
+		EXPECT_EQ(avgDiff, avgDiffMultiThread) << "Multi-threading influenced the average color difference";
+	}
 }
+
+INSTANTIATE_TEST_SUITE_P(
+	InterpolationRegressionTest,
+	ReferenceDistance,
+	::testing::Values(
+		ReferenceTestParams{"resources/cmp_tri.png", InterpolationMethod::Trilinear, 217'500.0, 0.21, true},
+		ReferenceTestParams{"resources/cmp_tet.png", InterpolationMethod::Tetrahedral, 181'500.0, 0.18, true}
+	),
+	[](const testing::TestParamInfo<ReferenceTestParams>& info) {
+		switch (info.param.type) {
+			case InterpolationMethod::Trilinear:
+				return "Trilinear";
+				break;
+			case InterpolationMethod::Tetrahedral:
+				return "Tetrahedral";
+				break;
+			default:
+				return "Other";
+		}
+	}
+);
