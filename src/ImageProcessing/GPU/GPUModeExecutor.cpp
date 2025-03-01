@@ -16,6 +16,8 @@ cv::Mat GPUModeExecutor::process(float intensity, InterpolationMethod method)
 		std::cout << "[INFO] Applying trilinear interpolation...\n";
 		auto lut = std::get<Table3D>(fileInterface.getCube().getTable());
 		newImg = TrilinearImplGPU(&lut, &calls).execute(fileInterface.getImg(), intensity, threadsPerBlock);
+	} else if (method == InterpolationMethod::Tetrahedral) {
+		throw std::runtime_error("GPU-accelerated tetrahedral interpolation is not implemented yet");
 	} else {
 		std::cout << "[INFO] Applying nearest-value interpolation...\n";
 		auto lut = std::get<Table3D>(fileInterface.getCube().getTable());

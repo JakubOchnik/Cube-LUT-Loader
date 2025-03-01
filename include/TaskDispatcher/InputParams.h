@@ -4,6 +4,7 @@
 
 enum class InterpolationMethod {
 	Trilinear,
+	Tetrahedral,
 	NearestValue
 };
 
