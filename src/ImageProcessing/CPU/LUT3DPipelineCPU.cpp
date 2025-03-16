@@ -1,7 +1,9 @@
 #include <ImageProcessing/CPU/LUT3DPipelineCPU.hpp>
 #include <ImageProcessing/CPU/WorkerData.hpp>
 
-LUT3DPipelineCPU::LUT3DPipelineCPU(Table3D* lut): lut3d(lut) {}
+LUT3DPipelineCPU::LUT3DPipelineCPU(Table3D* lut): lut3d(lut) {
+	lutScale = static_cast<float>(lut3d->dimension(0)) / 255.0f;
+}
 
 cv::Mat LUT3DPipelineCPU::execute(cv::Mat img, const float opacity, const uint threadPool) {
 	if (!lut3d) {
@@ -36,4 +38,13 @@ cv::Mat LUT3DPipelineCPU::execute(cv::Mat img, const float opacity, const uint t
 		thread.join();
 	}
 	return output;
+}
+
+void LUT3DPipelineCPU::calculateArea(const int x, const Table3D& lut, const WorkerData& data,
+									 const int segWidth) {
+	for (int localX{x}; localX < x + segWidth; ++localX) {
+		for (int y{0}; y < data.height; ++y) {
+			calculatePixel(localX, y, lut, data);
+		}
+	}
 }
