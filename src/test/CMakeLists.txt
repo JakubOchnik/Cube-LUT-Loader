@@ -19,6 +19,7 @@ add_executable(lut_loader_test
     FileIOTest.cpp
     ImageProcessExecutorTest.cpp
     LUTProcessorTest.cpp
+    InterpolationRegressionTest.cpp
 )
 
 target_link_libraries(
@@ -30,6 +31,8 @@ target_link_libraries(
 )
 
 target_include_directories(lut_loader_test PUBLIC ${SOURCE_DIR} ${INCLUDE_DIR} ${TEST_DIR})
+
+add_subdirectory(${TEST_DIR}/color)
 
 include(GoogleTest)
 gtest_discover_tests(lut_loader_test)
