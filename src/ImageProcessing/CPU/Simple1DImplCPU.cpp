@@ -67,7 +67,7 @@ cv::Mat Simple1DImplCPU::execute(cv::Mat img, const float opacity, const uint th
 	std::vector<std::thread> threads;
 	threads.reserve(threadPool);
 
-	const WorkerData commonData{image, newImage, tmp.cols, tmp.rows, img.channels(), lutSize, opacity, nValues};
+	const WorkerData commonData{image, newImage, tmp.cols, tmp.rows, img.channels(), 0, opacity, nValues};
 	int x{0};
 	for (size_t tNum{0}; tNum < threadPool - 1; x += threadWidth, ++tNum) {
 		threads.emplace_back([this, x, &commonData, threadWidth]() { calculateArea(x, *lut1d, commonData, threadWidth); });

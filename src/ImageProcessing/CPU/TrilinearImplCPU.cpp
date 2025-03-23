@@ -25,12 +25,10 @@ void TrilinearImplCPU::calculatePixel(const int x, const int y, const Table3D& l
 	// Implementation of a formula from the "Method" section:
 	// https://en.wikipedia.org/wiki/Trilinear_interpolation
 
-	const int maxLUTIndex = data.lutSize - 1;
-
 	// Get the real float 3D index to be interpolated (located inside the 'bounding cube')
-	const float real_r = r * (maxLUTIndex) / 255.0f;
-	const float real_g = g * (maxLUTIndex) / 255.0f;
-	const float real_b = b * (maxLUTIndex) / 255.0f;
+	const float real_r = r * data.lutScale;
+	const float real_g = g * data.lutScale;
+	const float real_b = b * data.lutScale;
 
 	// Map real RGB coordinates to an integral 'bounding cube' on a lower-accuracy LUT plane
 	// (map RGB point from a 256^3 color cube to e.g. a 33^3 cube)

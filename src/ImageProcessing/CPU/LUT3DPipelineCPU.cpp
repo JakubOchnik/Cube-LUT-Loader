@@ -23,8 +23,9 @@ cv::Mat LUT3DPipelineCPU::execute(cv::Mat img, const float opacity, const uint t
 	threads.reserve(threadPool);
 
 	// Launch threads
+	const auto lutSize = static_cast<int>(lut3d->dimension(0));
 	const WorkerData commonData{
-		image, newImagePtr, output.cols, output.rows, img.channels(), static_cast<int>(lut3d->dimension(0)), opacity};
+		image, newImagePtr, output.cols, output.rows, img.channels(), (lutSize - 1) / 255.0f, opacity};
 	int x{0};
 	for (size_t tNum{0}; tNum < threadPool - 1; x += threadWidth, ++tNum) {
 		threads.emplace_back([this, x, &commonData, threadWidth]() { calculateArea(x, *lut3d, commonData, threadWidth); });
