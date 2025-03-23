@@ -27,17 +27,18 @@ uchar getClippedVal(const float value) {
 } // namespace
 
 void Simple1DImplCPU::calculatePixel(const int x, const int y, const Table1D& lut, const WorkerData& data) {
-	const uchar b = data.image[(x + y * data.width) * data.channels + 0]; // b
-	const uchar g = data.image[(x + y * data.width) * data.channels + 1]; // g
-	const uchar r = data.image[(x + y * data.width) * data.channels + 2]; // r
+	const size_t pixelIndex = (x + y * data.width) * data.channels;
+	const uchar b = data.image[pixelIndex + 0]; // b
+	const uchar g = data.image[pixelIndex + 1]; // g
+	const uchar r = data.image[pixelIndex + 2]; // r
 
 	const uchar newB = getClippedVal(getAvgVal(lut, data.nValues, b, 2)); // b
 	const uchar newG = getClippedVal(getAvgVal(lut, data.nValues, g, 1)); // g
 	const uchar newR = getClippedVal(getAvgVal(lut, data.nValues, r, 0)); // r
 
-	data.newImage[(x + y * data.width) * data.channels + 0] = b + static_cast<uchar>((newB - b) * data.opacity);
-	data.newImage[(x + y * data.width) * data.channels + 1] = g + static_cast<uchar>((newG - g) * data.opacity);
-	data.newImage[(x + y * data.width) * data.channels + 2] = r + static_cast<uchar>((newR - r) * data.opacity);
+	data.newImage[pixelIndex + 0] = b + static_cast<uchar>((newB - b) * data.opacity);
+	data.newImage[pixelIndex + 1] = g + static_cast<uchar>((newG - g) * data.opacity);
+	data.newImage[pixelIndex + 2] = r + static_cast<uchar>((newR - r) * data.opacity);
 }
 
 void Simple1DImplCPU::calculateArea(const int x, const Table1D& lut, const WorkerData& data, const int segWidth) {

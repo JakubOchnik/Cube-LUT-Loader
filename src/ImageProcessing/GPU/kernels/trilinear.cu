@@ -50,19 +50,20 @@ __global__ void applyTrilinear(unsigned char *image, const char channels, const 
 	// https://en.wikipedia.org/wiki/Trilinear_interpolation
 
 	const int maxLUTIndex = LUTsize - 1;
-	// Map real RGB coordinates to an integral 'bounding cube' on a lower-accuracy LUT plane
-	// (map RGB point from a 256^3 color cube to e.g. a 33^3 cube)
-	const int r1 = static_cast<int>(ceilf(r / 255.0f * static_cast<float>(maxLUTIndex)));
-	const int r0 = static_cast<int>(floorf(r / 255.0f * static_cast<float>(maxLUTIndex)));
-	const int g1 = static_cast<int>(ceilf(g / 255.0f * static_cast<float>(maxLUTIndex)));
-	const int g0 = static_cast<int>(floorf(g / 255.0f * static_cast<float>(maxLUTIndex)));
-	const int b1 = static_cast<int>(ceilf(b / 255.0f * static_cast<float>(maxLUTIndex)));
-	const int b0 = static_cast<int>(floorf(b / 255.0f * static_cast<float>(maxLUTIndex)));
 
 	// Get the real 3D index to be interpolated
 	const float real_r = r * (maxLUTIndex) / 255.0f;
 	const float real_g = g * (maxLUTIndex) / 255.0f;
 	const float real_b = b * (maxLUTIndex) / 255.0f;
+
+	// Map real RGB coordinates to an integral 'bounding cube' on a lower-accuracy LUT plane
+	// (map RGB point from a 256^3 color cube to e.g. a 33^3 cube)
+	const int r1 = static_cast<int>(ceilf(real_r));
+	const int r0 = static_cast<int>(floorf(real_r));
+	const int g1 = static_cast<int>(ceilf(real_g));
+	const int g0 = static_cast<int>(floorf(real_g));
+	const int b1 = static_cast<int>(ceilf(real_b));
+	const int b0 = static_cast<int>(floorf(real_b));
 
 	const float delta_r = getSafeDelta(r0, r1, real_r);
 	const float delta_g = getSafeDelta(g0, g1, real_g);

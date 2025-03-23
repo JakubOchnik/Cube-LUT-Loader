@@ -16,27 +16,30 @@ float getSafeDelta(int boundingBoxA, int boundingBoxB, float floatCoordinate) {
 } // namespace
 
 void TrilinearImplCPU::calculatePixel(const int x, const int y, const Table3D& lut, const WorkerData& data) {
-	const int b = data.image[(x + y * data.width) * data.channels + 0];
-	const int g = data.image[(x + y * data.width) * data.channels + 1];
-	const int r = data.image[(x + y * data.width) * data.channels + 2];
+	const size_t pixelIndex = (x + y * data.width) * data.channels;
+
+	const int b = data.image[pixelIndex + 0];
+	const int g = data.image[pixelIndex + 1];
+	const int r = data.image[pixelIndex + 2];
 
 	// Implementation of a formula from the "Method" section:
 	// https://en.wikipedia.org/wiki/Trilinear_interpolation
 
 	const int maxLUTIndex = data.lutSize - 1;
-	// Map real RGB coordinates to an integral 'bounding cube' on a lower-accuracy LUT plane
-	// (map RGB point from a 256^3 color cube to e.g. a 33^3 cube)
-	const int r1 = static_cast<int>(ceil(r / 255.0f * static_cast<float>(maxLUTIndex)));
-	const int r0 = static_cast<int>(floor(r / 255.0f * static_cast<float>(maxLUTIndex)));
-	const int g1 = static_cast<int>(ceil(g / 255.0f * static_cast<float>(maxLUTIndex)));
-	const int g0 = static_cast<int>(floor(g / 255.0f * static_cast<float>(maxLUTIndex)));
-	const int b1 = static_cast<int>(ceil(b / 255.0f * static_cast<float>(maxLUTIndex)));
-	const int b0 = static_cast<int>(floor(b / 255.0f * static_cast<float>(maxLUTIndex)));
 
 	// Get the real float 3D index to be interpolated (located inside the 'bounding cube')
 	const float real_r = r * (maxLUTIndex) / 255.0f;
 	const float real_g = g * (maxLUTIndex) / 255.0f;
 	const float real_b = b * (maxLUTIndex) / 255.0f;
+
+	// Map real RGB coordinates to an integral 'bounding cube' on a lower-accuracy LUT plane
+	// (map RGB point from a 256^3 color cube to e.g. a 33^3 cube)
+	const int r1 = static_cast<int>(ceil(real_r));
+	const int r0 = static_cast<int>(floor(real_r));
+	const int g1 = static_cast<int>(ceil(real_g));
+	const int g0 = static_cast<int>(floor(real_g));
+	const int b1 = static_cast<int>(ceil(real_b));
+	const int b0 = static_cast<int>(floor(real_b));
 
 	// get distance from the real point to the 'left' coordinate of the bounding cube
 	const float delta_r = getSafeDelta(r0, r1, real_r);
@@ -77,7 +80,7 @@ void TrilinearImplCPU::calculatePixel(const int x, const int y, const Table3D& l
 	const auto newR = static_cast<uchar>(round(v1(0) * 255));
 
 	// Assign final pixel values to the output image
-	data.newImage[(x + y * data.width) * data.channels + 0] = static_cast<uchar>(b + (newB - b) * data.opacity);
-	data.newImage[(x + y * data.width) * data.channels + 1] = static_cast<uchar>(g + (newG - g) * data.opacity);
-	data.newImage[(x + y * data.width) * data.channels + 2] = static_cast<uchar>(r + (newR - r) * data.opacity);
+	data.newImage[pixelIndex + 0] = static_cast<uchar>(b + (newB - b) * data.opacity);
+	data.newImage[pixelIndex + 1] = static_cast<uchar>(g + (newG - g) * data.opacity);
+	data.newImage[pixelIndex + 2] = static_cast<uchar>(r + (newR - r) * data.opacity);
 }
