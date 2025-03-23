@@ -33,10 +33,11 @@ __global__ void applyNearestKernel(unsigned char *image, char channels, const fl
 	const int g = image[pixelIndex + 1];
 	const int r = image[pixelIndex + 2];
 
+	const int lutScale = (LUTsize - 1) / 255.0f;
 	// get estimated indices of LUT table corresponding to original colors
-	const uint bIdx = static_cast<uint>(roundf(b * (LUTsize - 1) / 255.0f));
-	const uint gIdx = static_cast<uint>(roundf(g * (LUTsize - 1) / 255.0f));
-	const uint rIdx = static_cast<uint>(roundf(r * (LUTsize - 1) / 255.0f));
+	const uint bIdx = static_cast<uint>(roundf(b * lutScale));
+	const uint gIdx = static_cast<uint>(roundf(g * lutScale));
+	const uint rIdx = static_cast<uint>(roundf(r * lutScale));
 
 	// Full formula for getting the index in a flattened 4D (2x2x2x3) RowMajor tensor:
 	// idx = LUTsize * LUTsize * LUTsize * ch + LUTsize * LUTsize * b + LUTsize * g + r;

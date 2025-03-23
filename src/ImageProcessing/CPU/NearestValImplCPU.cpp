@@ -8,13 +8,13 @@ void NearestValImplCPU::calculatePixel(const int x, const int y, const Table3D& 
 	const int pixelIndex = (x + y * data.width) * data.channels;
 
 	const int b = data.image[pixelIndex]; // b
-	const auto bIdx = static_cast<uint>(round(b * (data.lutSize - 1) / 255.0f));
+	const auto bIdx = static_cast<uint>(round(b * data.lutScale));
 
 	const int g = data.image[pixelIndex + 1]; // g
-	const auto gIdx = static_cast<uint>(round(g * (data.lutSize - 1) / 255.0f));
+	const auto gIdx = static_cast<uint>(round(g * data.lutScale));
 
 	const int r = data.image[pixelIndex + 2]; // r
-	const auto rIdx = static_cast<uint>(round(r * (data.lutSize - 1) / 255.0f));
+	const auto rIdx = static_cast<uint>(round(r * data.lutScale));
 
 	const auto newB = static_cast<int>(lut(rIdx, gIdx, bIdx, 2) * 255);
 	const auto newG = static_cast<int>(lut(rIdx, gIdx, bIdx, 1) * 255);

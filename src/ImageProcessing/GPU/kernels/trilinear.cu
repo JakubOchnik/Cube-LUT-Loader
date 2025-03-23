@@ -49,12 +49,12 @@ __global__ void applyTrilinear(unsigned char *image, const char channels, const 
 	// Implementation of a formula in the "Method" section
 	// https://en.wikipedia.org/wiki/Trilinear_interpolation
 
-	const int maxLUTIndex = LUTsize - 1;
+	const int lutScale = (LUTsize - 1) / 255.0f;
 
 	// Get the real 3D index to be interpolated
-	const float real_r = r * (maxLUTIndex) / 255.0f;
-	const float real_g = g * (maxLUTIndex) / 255.0f;
-	const float real_b = b * (maxLUTIndex) / 255.0f;
+	const float real_r = r * lutScale;
+	const float real_g = g * lutScale;
+	const float real_b = b * lutScale;
 
 	// Map real RGB coordinates to an integral 'bounding cube' on a lower-accuracy LUT plane
 	// (map RGB point from a 256^3 color cube to e.g. a 33^3 cube)
