@@ -38,9 +38,10 @@ std::string CubeLUT::readLine(std::istream& infile)
 		{
 			throw std::runtime_error{"Read error"};
 		}
-		if (!textLine.empty() && textLine.back() == '\r') {
+		if (!textLine.empty()) {
 			// Strip \r from line endings (relevant for files with CRLF line endings)
-			textLine.pop_back();
+			// (Trim right)
+			textLine.erase(textLine.find_last_not_of(" \n\r\t") + 1);
 		}
 	}
 	return textLine;

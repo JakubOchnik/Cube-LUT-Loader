@@ -80,6 +80,21 @@ TEST_F(LUTParserTest, testCRLF)
     EXPECT_NEAR(table(1, 2), 0.6f, ERROR_DELTA);
 }
 
+TEST_F(LUTParserTest, trailingWhitespaceInHeader) {
+    std::istringstream lutStream;
+    CubeLUTMock lut;
+    EXPECT_CALL(lut, parseLUTTable);
+    constexpr auto headerWithUnknownTags = \
+        "#Some Sample Comment \n"
+        "LUT_3D_SIZE 2 \n"
+        " \n"
+        "\t\r\n"
+        "1.0 2.0 3.0\n";
+    lutStream = std::istringstream(headerWithUnknownTags);
+    EXPECT_NO_THROW(lut.loadCubeFile(lutStream));
+    EXPECT_EQ(lut.getType(), LUTType::LUT3D);
+}
+
 namespace ValueClippingTestData {
     constexpr uint32_t VALUES_OUTSIDE_OF_RANGE_1D_LUT = 2u;
     constexpr auto minimal1DLUT = \
