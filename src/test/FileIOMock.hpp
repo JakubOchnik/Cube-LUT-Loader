@@ -18,7 +18,7 @@ public:
         cube = std::move(newCube);
     }
 
-    cv::Mat1b getAlphaChannel() {
-        return alphaChannel;
+    void setAlpha(cv::Mat1b alphaImg) {
+        alphaChannel = alphaImg;
     }
 };

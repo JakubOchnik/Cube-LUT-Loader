@@ -1,26 +1,28 @@
 #include <ImageProcessing/ImageProcessExecutor.hpp>
 #include <fmt/format.h>
 #include <iostream>
+#include <functional>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
 ImageProcessExecutor::ImageProcessExecutor(FileIO& fileIfc) : fileInterface(fileIfc) {}
 
 cv::Mat ImageProcessExecutor::execute(float intensity, cv::Size dstImageSize, InterpolationMethod method) {
-	// Swap original image with the resized one to avoid storing two images simultaneously in memory
-	fileInterface.setImg(resizeImage(fileInterface.getImg(), dstImageSize));
+
+	resizeImage(fileInterface.getImg(), dstImageSize, fileInterface.getAlpha());
 	return process(intensity, method);
 }
 
-cv::Mat ImageProcessExecutor::resizeImage(cv::Mat inputImg, cv::Size size, int interpolationMode) {
+void ImageProcessExecutor::resizeImage(cv::Mat3b& inputImg, cv::Size size, cv::Mat1b& inputAlpha, int interpolationMode) {
 	const auto [width, height] = size;
 	if (!width && !height) {
-		return inputImg;
+		return;
 	}
 	size.width = width ? width : inputImg.size().width;
 	size.height = height ? height : inputImg.size().height;
 	std::cout << fmt::format("[INFO] Scaling image to {}x{}\n", size.width, size.height);
-	cv::Mat newImage;
-	cv::resize(inputImg, newImage, size, 0, 0, interpolationMode);
-	return newImage;
+	cv::resize(inputImg, inputImg, size, 0, 0, interpolationMode);
+	if (!inputAlpha.empty()) {
+		cv::resize(inputAlpha, inputAlpha, size, 0, 0, interpolationMode);
+	}
 }

@@ -97,9 +97,13 @@ bool FileIO::loadLut()
 	return success;
 }
 
-const cv::Mat3b& FileIO::getImg() const
+cv::Mat3b& FileIO::getImg()
 {
-	return this->img;
+	return img;
+}
+
+cv::Mat1b& FileIO::getAlpha() {
+	return alphaChannel;
 }
 
 const CubeLUT& FileIO::getCube() const
