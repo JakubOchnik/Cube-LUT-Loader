@@ -1,7 +1,6 @@
 #pragma once
 #include <FileIO/FileIO.hpp>
 #include <opencv2/core.hpp>
-#include <functional>
 
 class ImageProcessExecutor
 {
@@ -16,5 +15,5 @@ public:
 
     virtual cv::Mat process(float intensity, InterpolationMethod method) = 0;
     cv::Mat execute(float intensity, cv::Size dstImageSize, InterpolationMethod method);
-	void resizeImage(cv::Mat3b& inputImg, cv::Size size, cv::Mat1b& inputAlpha, int interpolationMode = 2);
+    void resizeImage(cv::Mat3b& inputImg, cv::Size size, cv::Mat1b& inputAlpha, int interpolationMode = 2);
 };

@@ -1,7 +1,6 @@
 #include <ImageProcessing/ImageProcessExecutor.hpp>
 #include <fmt/format.h>
 #include <iostream>
-#include <functional>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
