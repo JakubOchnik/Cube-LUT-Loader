@@ -9,7 +9,23 @@ protected:
     const int DEFAULT_WIDTH = 2;
     const int DEFAULT_HEIGHT = 2;
     cv::Mat3b mockImage{cv::Size(DEFAULT_WIDTH, DEFAULT_HEIGHT), CV_8UC3};
+    cv::Mat1b mockAlpha{cv::Size(DEFAULT_WIDTH, DEFAULT_HEIGHT)};
 };
+
+TEST_F(ImageProcessExecutorTest, scaleAlpha) {
+    constexpr const int dstWidth = 42;
+    constexpr const int dstHeight = 10;
+    FileIOMock fileIO(InputParams{});
+    fileIO.setImg(mockImage);
+    fileIO.setAlpha(mockAlpha);
+    CPUProcessorMock imProc(fileIO, 1);
+    EXPECT_CALL(imProc, process).Times(1);
+    imProc.execute(1.0f, {dstWidth, dstHeight}, InterpolationMethod::NearestValue);
+    EXPECT_EQ(fileIO.getImg().cols, dstWidth);
+    EXPECT_EQ(fileIO.getImg().rows, dstHeight);
+    EXPECT_EQ(fileIO.getAlpha().cols, dstWidth);
+    EXPECT_EQ(fileIO.getAlpha().rows, dstHeight);
+}
 
 struct ImageResizeTest : public ::testing::WithParamInterface<std::pair<int, int>>, public ImageProcessExecutorTest {};
 

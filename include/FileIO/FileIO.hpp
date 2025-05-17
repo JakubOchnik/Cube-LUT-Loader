@@ -20,7 +20,8 @@ class FileIO {
 	bool loadLut();
 	bool saveImg(cv::Mat newImg) const;
 
-	[[nodiscard]] const cv::Mat_<cv::Vec3b>& getImg() const;
+	[[nodiscard]] cv::Mat3b& getImg();
+	[[nodiscard]] cv::Mat1b& getAlpha();
 	[[nodiscard]] const CubeLUT& getCube() const;
 
 protected:

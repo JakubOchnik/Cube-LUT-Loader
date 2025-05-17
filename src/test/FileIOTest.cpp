@@ -32,7 +32,7 @@ TEST_F(FileIOTest, testLoadImage) {
 
     EXPECT_CALL(loader, readImage).WillOnce(Return(testMat));
     EXPECT_TRUE(loader.loadImg());
-    EXPECT_TRUE(loader.getAlphaChannel().empty());
+    EXPECT_TRUE(loader.getAlpha().empty());
 }
 
 namespace {
@@ -54,7 +54,7 @@ TEST_F(FileIOTest, loadImageWithAlpha) {
     EXPECT_CALL(loader, readImage).WillOnce(Return(exampleAlphaMat));
     ASSERT_TRUE(loader.loadImg());
 
-    const auto& alphaChannel = loader.getAlphaChannel();
+    const auto& alphaChannel = loader.getAlpha();
     EXPECT_FALSE(alphaChannel.empty());
     compareChannel(alphaChannel, 0, { 3, 3, 3, 3 });
 
@@ -72,7 +72,7 @@ TEST_F(FileIOTest, writeImageWithAlpha) {
     EXPECT_CALL(loader, readImage).WillOnce(Return(exampleAlphaMat));
     ASSERT_TRUE(loader.loadImg());
 
-    const auto& alphaChannel = loader.getAlphaChannel();
+    const auto& alphaChannel = loader.getAlpha();
     EXPECT_FALSE(alphaChannel.empty());
     compareChannel(alphaChannel, 0, { 3, 3, 3, 3 });
 
@@ -169,5 +169,5 @@ TEST_F(FileIOTest, readHighBitDepth) {
     EXPECT_EQ(parsedMat16alpha.depth(), CV_8U);
     EXPECT_EQ(parsedMat16alpha.channels(), 3);
     EXPECT_EQ(parsedMat16alpha.type(), CV_8UC3);
-    EXPECT_FALSE(loader.getAlphaChannel().empty());
+    EXPECT_FALSE(loader.getAlpha().empty());
 }

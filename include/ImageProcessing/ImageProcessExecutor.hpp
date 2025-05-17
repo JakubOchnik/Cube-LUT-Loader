@@ -5,7 +5,7 @@
 class ImageProcessExecutor
 {
 protected:
-    cv::Mat_<cv::Vec3b> newImg;
+    cv::Mat3b newImg;
     FileIO& fileInterface;
 
 public:
@@ -14,6 +14,6 @@ public:
     virtual ~ImageProcessExecutor() = default;
 
     virtual cv::Mat process(float intensity, InterpolationMethod method) = 0;
-    virtual cv::Mat execute(float intensity, cv::Size dstImageSize, InterpolationMethod method);
-    virtual cv::Mat resizeImage(cv::Mat inputImg, cv::Size size, int interpolationMode = 2);
+    cv::Mat execute(float intensity, cv::Size dstImageSize, InterpolationMethod method);
+    void resizeImage(cv::Mat3b& inputImg, cv::Size size, cv::Mat1b& inputAlpha, int interpolationMode = 2);
 };
