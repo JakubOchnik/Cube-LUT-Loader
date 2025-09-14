@@ -1,18 +1,25 @@
 from conan import ConanFile
+from conan.tools.apple import is_apple_os
 from conan.tools.cmake import cmake_layout, CMakeToolchain, CMakeDeps
 from conan.tools.microsoft import is_msvc
 
 class CubeLUTLoader(ConanFile):
     name = "Cube LUT Loader"
-    requires = "taywee-args/6.4.6", "opencv/4.9.0", "eigen/3.4.0", "fmt/10.2.1"
+    requires = "taywee-args/6.4.6", "opencv/4.12.0", "eigen/3.4.0", "fmt/10.2.1"
     settings = "os", "build_type", "compiler", "arch"
     build_policy = "missing"
     options = {
-        "shared": [True, False]
+        "shared": [True, False],
+        "with_metal": [True, False]
     }
     default_options = {
-        "shared": False
+        "shared": False,
+        "with_metal": False
     }
+
+    def requirements(self):
+        if self.options.with_metal:
+            self.requires("metal-cpp/15.2")
 
     def layout(self):
         cmake_layout(self)

@@ -3,6 +3,10 @@ if (BUILD_CUDA)
     find_package(CUDAToolkit)
 endif()
 
+if (BUILD_METAL)
+    find_package(metal-cpp REQUIRED)
+endif()
+
 find_package(OpenCV REQUIRED)
 message(STATUS "OpenCV include dir: ${OpenCV_INCLUDE_DIRS}")
 
@@ -14,10 +18,12 @@ find_package(fmt REQUIRED)
 # Configure the main program library
 add_library(${MAIN_LIB_NAME} STATIC)
 
+set(INCLUDE_DIRS ${OpenCV_INCLUDE_DIRS} ${INCLUDE_DIR})
+
 # Detect include directories for the external libraries
 if (BUILD_CUDA)
     message(STATUS "CUDA include dir: ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}")
-    set(INCLUDE_DIRS ${OpenCV_INCLUDE_DIRS} ${INCLUDE_DIR} ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
+    set(INCLUDE_DIRS ${INCLUDE_DIRS} ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
 
     # Silence irrelevant Eigen3 warnings
     if (MSVC)
@@ -29,9 +35,10 @@ if (BUILD_CUDA)
         --expt-relaxed-constexpr 
         ${MSVC_UNKNOWN_PRAGMA}>
     )
+endif()
 
-else()
-    set(INCLUDE_DIRS ${OpenCV_INCLUDE_DIRS} ${INCLUDE_DIR})
+if(BUILD_METAL)
+    set(LIBRARIES_TO_LINK ${LIBRARIES_TO_LINK} metal-cpp::metal-cpp)
 endif()
 
 target_include_directories(${MAIN_LIB_NAME} PUBLIC ${INCLUDE_DIRS})

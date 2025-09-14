@@ -8,3 +8,7 @@ add_subdirectory(${SOURCE_DIR}/ImageProcessing/CPU)
 if (BUILD_CUDA)
     add_subdirectory(${SOURCE_DIR}/ImageProcessing/GPU)
 endif()
+
+if (BUILD_METAL)
+    add_subdirectory(${SOURCE_DIR}/ImageProcessing/Metal)
+endif()

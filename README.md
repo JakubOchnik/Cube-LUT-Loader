@@ -44,7 +44,7 @@ See [performance tests](PERFORMANCE.md) for a performance comparison between the
                                     system.
   -p [processor],
   --processor=[processor]           Processing mode (allowed values: 'cpu',
-                                    'gpu')
+                                    'gpu', 'metal')
   --width=[width]                   Output image width
   --height=[height]                 Output image height
 ```
@@ -58,3 +58,4 @@ However, if you don't have one, you can still build and use the program in CPU m
 - Further performance optimizations
 - Support of color depths other than 8-bit
 - Batch processing
+- Metal acceleration (macOS)

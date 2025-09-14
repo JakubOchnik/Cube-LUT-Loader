@@ -2,12 +2,20 @@ cmake_minimum_required(VERSION 3.23)
 
 option(BUILD_TESTS "Build tests" OFF)
 option(BUILD_CUDA "Build project with CUDA libraries" OFF)
+option(BUILD_METAL "Build project with Metal libraries" OFF)
 
 if(BUILD_CUDA)
     project(lut_loader VERSION 0.1.0 LANGUAGES CUDA CXX)
-    add_compile_definitions(BUILD_CUDA)
 else()
     project(lut_loader VERSION 0.1.0 LANGUAGES CXX)
+endif()
+
+if(BUILD_CUDA)
+    add_compile_definitions(BUILD_CUDA)
+endif()
+
+if(BUILD_METAL)
+    add_compile_definitions(BUILD_METAL)
 endif()
 
 if(BUILD_TESTS)
