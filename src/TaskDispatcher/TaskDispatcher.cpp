@@ -2,20 +2,102 @@
 #include <ImageProcessing/GPU/GPUModeExecutor.hpp>
 #include <ImageProcessing/GPU/Utils/CudaUtils.hpp>
 #endif
+#ifdef BUILD_METAL
+#include <ImageProcessing/Metal/utils/MetalUtils.hpp>
+#endif
 #include <ImageProcessing/CPU/CPUModeExecutor.hpp>
 #include <TaskDispatcher/TaskDispatcher.hpp>
 #include <iostream>
 #include <thread>
 #include <args.hxx>
 
-enum {
-	FAIL_EXIT = -1,
-	SUCCESS_EXIT
-};
-
 TaskDispatcher::TaskDispatcher(const int aCnt, char *aVal[])
 	: argCount(aCnt), argv(aVal)
 {
+}
+
+namespace {
+ExitCode handleCUDA(const InputParams& parameters, FileIO& fileIO) {
+#ifdef BUILD_CUDA
+	if (!CudaUtils::isCudaAvailable()) {
+		return ExitCode::FAIL_EXIT;
+	}
+	std::cout << "[INFO] GPU acceleration enabled\n";
+	GPUModeExecutor processor(fileIO);
+	cv::Mat finalImage;
+	try
+	{
+		finalImage = processor.execute(parameters.getEffectIntensity(),
+										{parameters.getOutputImageWidth(), parameters.getOutputImageHeight()},
+										parameters.getInterpolationMethod());
+	} catch (const std::exception& e) {
+		std::cerr << "[ERROR] " << e.what() << '\n';
+		return ExitCode::FAIL_EXIT;
+	}
+
+	// Currently needs to be done here - unified memory is freed in the destructor of GPUModeExecutor
+	// TODO: Separate output mat lifetime from GPUModeExecutor and don't use the default cv::Mat deallocator (bug-prone and unsafe)
+	if (!fileIO.saveImg(finalImage)) {
+		return ExitCode::FAIL_EXIT;
+	}
+#else
+	std::cerr << "[ERROR] GPU acceleration is unsupported in this build\n";
+	return ExitCode::FAIL_EXIT;
+#endif
+	return ExitCode::SUCCESS_EXIT;
+}
+
+ExitCode handleCPU(const InputParams& parameters, FileIO& fileIO) {
+	std::cout << "[INFO] Using " << parameters.getThreads() << " CPU thread(s)\n";
+	CPUModeExecutor processor(fileIO, parameters.getThreads());
+	cv::Mat finalImage;
+	try
+	{
+		finalImage = processor.execute(parameters.getEffectIntensity(),
+										{parameters.getOutputImageWidth(), parameters.getOutputImageHeight()},
+										parameters.getInterpolationMethod());
+	} catch (const std::exception& e) {
+		std::cerr << e.what() << '\n';
+		return ExitCode::FAIL_EXIT;
+	}
+
+	if (!fileIO.saveImg(finalImage)) {
+		return ExitCode::FAIL_EXIT;
+	}
+	return ExitCode::SUCCESS_EXIT;
+}
+
+ExitCode handleMetal(const InputParams& parameters, FileIO& fileIO) {
+#ifdef BUILD_METAL
+	if (!util::metal::isMetalDeviceAvailable()) {
+		return ExitCode::FAIL_EXIT;
+	}
+	std::cerr << "[ERROR] Metal support is not implemented yet\n";
+#else
+	std::cerr << "[ERROR] Metal acceleration is unsupported in this build\n";
+#endif
+	return ExitCode::FAIL_EXIT;
+}
+} // namespace
+
+ExitCode TaskDispatcher::dispatchTask(const InputParams& parameters, FileIO& fileIO) {
+	cv::Mat finalImage;
+
+	switch(parameters.getProcessingMode()) {
+		case ProcessingMode::GPU:
+			return handleCUDA(parameters, fileIO);
+			break;
+		case ProcessingMode::CPU:
+			return handleCPU(parameters, fileIO);
+			break;
+		case ProcessingMode::METAL:
+			return handleMetal(parameters, fileIO);
+		default:
+		return ExitCode::FAIL_EXIT;
+		break;
+	}
+
+	return ExitCode::SUCCESS_EXIT;
 }
 
 int TaskDispatcher::start()
@@ -45,53 +127,7 @@ int TaskDispatcher::start()
 		return FAIL_EXIT;
 	}
 
-	cv::Mat finalImage;
-	if (parameters.getProcessingMode() == ProcessingMode::GPU) 
-	{
-#ifdef BUILD_CUDA
-		if (!CudaUtils::isCudaAvailable()) {
-			return FAIL_EXIT;
-		}
-		std::cout << "[INFO] GPU acceleration enabled\n";
-		GPUModeExecutor processor(fileIO);
-		try
-		{
-			finalImage = processor.execute(parameters.getEffectIntensity(),
-										   {parameters.getOutputImageWidth(), parameters.getOutputImageHeight()},
-										   parameters.getInterpolationMethod());
-		} catch (const std::exception& e) {
-			std::cerr << "[ERROR] " << e.what() << '\n';
-			return FAIL_EXIT;
-		}
-
-		// Currently needs to be done here - unified memory is freed in the destructor of GPUModeExecutor
-		// TODO: Separate output mat lifetime from GPUModeExecutor and don't use the default cv::Mat deallocator (bug-prone and unsafe)
-		if (!fileIO.saveImg(finalImage)) {
-			return FAIL_EXIT;
-		}
-#else
-		std::cerr << "[ERROR] GPU acceleration is unsupported in this build\n";
-		return FAIL_EXIT;
-#endif
-	} else {
-		std::cout << "[INFO] Using " << parameters.getThreads() << " CPU thread(s)\n";
-		CPUModeExecutor processor(fileIO, parameters.getThreads());
-		try
-		{
-			finalImage = processor.execute(parameters.getEffectIntensity(),
-										   {parameters.getOutputImageWidth(), parameters.getOutputImageHeight()},
-										   parameters.getInterpolationMethod());
-		} catch (const std::exception& e) {
-			std::cerr << e.what() << '\n';
-			return FAIL_EXIT;
-		}
-
-		if (!fileIO.saveImg(finalImage)) {
-			return FAIL_EXIT;
-		}
-	}
-
-	return SUCCESS_EXIT;
+	return dispatchTask(parameters, fileIO);
 }
 
 namespace {
@@ -125,7 +161,8 @@ namespace {
 
 	const std::unordered_map<std::string, ProcessingMode> processingModeMapping {
 		{"cpu", ProcessingMode::CPU},
-		{"gpu", ProcessingMode::GPU}
+		{"gpu", ProcessingMode::GPU},
+		{"metal", ProcessingMode::METAL}
 	};
 
 	struct ToLowerReader {
@@ -153,7 +190,7 @@ InputParams TaskDispatcher::parseInputArgs() const
 	args::Flag forceOverwrite(parser, "force", "Force overwrite the output file", {'f', "force"});
 	const unsigned int defaultNumberOfThreads = std::thread::hardware_concurrency();
 	args::ValueFlag<unsigned int> threads(parser, "threads", "Size of a thread pool used to process the image. Defaults to the number of logical CPU cores available on the system.", {'j', "threads"}, defaultNumberOfThreads);
-	args::MapFlag<std::string, ProcessingMode, ToLowerReader> processingMode(parser, "processor", "Processing mode (allowed values: 'cpu', 'gpu')", {'p', "processor"},
+	args::MapFlag<std::string, ProcessingMode, ToLowerReader> processingMode(parser, "processor", "Processing mode (allowed values: 'cpu', 'gpu', 'metal')", {'p', "processor"},
 														processingModeMapping, ProcessingMode::CPU, args::Options::Single);
 	args::ValueFlag<int> width(parser, "width", "Output image width", {"width"});
 	args::ValueFlag<int> height(parser, "height", "Output image height", {"height"});

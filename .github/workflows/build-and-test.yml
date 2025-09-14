@@ -11,6 +11,8 @@ env:
   CONAN_PRESET: conan-release
   INSTALL_CUDA_WIN: ON
   INSTALL_CUDA_LINUX: ON
+  INSTALL_METAL_MACOS: 'True'
+  CMAKE_WITH_METAL_MACOS: ON
 
 jobs:
   build_linux:
@@ -93,7 +95,7 @@ jobs:
       run: ${{github.workspace}}\\build\\src\\test\\${{env.BUILD_TYPE}}\\lut_loader_test
 
   build_macos:
-    runs-on: macos-14
+    runs-on: macos-15
 
     steps:
     - uses: actions/checkout@v4
@@ -114,10 +116,10 @@ jobs:
       run: conan profile detect
 
     - name: Install dependencies
-      run: conan install . -s build_type=${{env.BUILD_TYPE}} --build=missing
+      run: conan install . -s build_type=${{env.BUILD_TYPE}} -o with_metal=${{env.INSTALL_METAL_MACOS}} --build=missing
 
     - name: Configure
-      run: cmake --preset ${{env.CONAN_PRESET}} -DBUILD_TESTS=ON
+      run: cmake --preset ${{env.CONAN_PRESET}} -DBUILD_TESTS=ON -DBUILD_METAL=${{env.CMAKE_WITH_METAL_MACOS}}
 
     - name: Build
       run: cmake --build --preset ${{env.CONAN_PRESET}} --target lut_loader_test -j

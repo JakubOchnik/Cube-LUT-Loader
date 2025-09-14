@@ -10,7 +10,8 @@ enum class InterpolationMethod {
 
 enum class ProcessingMode {
 	CPU,
-	GPU
+	GPU,
+	METAL
 };
 
 class InputParams {
