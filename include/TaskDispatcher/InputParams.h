@@ -8,11 +8,7 @@ enum class InterpolationMethod {
 	NearestValue
 };
 
-enum class ProcessingMode {
-	CPU,
-	GPU,
-	METAL
-};
+enum class ProcessingMode { CPU, GPU, METAL, OPENCL };
 
 class InputParams {
 private:
