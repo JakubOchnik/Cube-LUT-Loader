@@ -7,6 +7,10 @@ if (BUILD_METAL)
     find_package(metal-cpp REQUIRED)
 endif()
 
+if(BUILD_OPENCL)
+  find_package(OpenCL REQUIRED)
+endif()
+
 find_package(OpenCV REQUIRED)
 message(STATUS "OpenCV include dir: ${OpenCV_INCLUDE_DIRS}")
 
@@ -39,6 +43,10 @@ endif()
 
 if(BUILD_METAL)
     set(LIBRARIES_TO_LINK ${LIBRARIES_TO_LINK} metal-cpp::metal-cpp)
+endif()
+
+if(BUILD_OPENCL)
+  set(LIBRARIES_TO_LINK ${LIBRARIES_TO_LINK} OpenCL::OpenCL)
 endif()
 
 target_include_directories(${MAIN_LIB_NAME} PUBLIC ${INCLUDE_DIRS})

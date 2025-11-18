@@ -1,3 +1,6 @@
+#include "ImageProcessing/OpenCL/OpenCLModeExecutor.hpp"
+#include "TaskDispatcher/InputParams.h"
+#include <exception>
 #ifdef BUILD_CUDA
 #include <ImageProcessing/GPU/GPUModeExecutor.hpp>
 #include <ImageProcessing/GPU/Utils/CudaUtils.hpp>
@@ -78,21 +81,55 @@ ExitCode handleMetal(const InputParams& parameters, FileIO& fileIO) {
 #endif
 	return ExitCode::FAIL_EXIT;
 }
+
+ExitCode handleOpenCL(const InputParams& parameters, FileIO& fileIO) {
+#ifdef BUILD_OPENCL
+	OpenCLModeExecutor processor(fileIO);
+	try {
+		processor.initialize();
+	} catch (const std::exception& e) {
+		return ExitCode::FAIL_EXIT;
+	}
+	std::cout << "[INFO] OpenCL GPU acceleration enabled\n";
+	cv::Mat finalImage;
+	try {
+		finalImage = processor.execute(parameters.getEffectIntensity(),
+									   {parameters.getOutputImageWidth(), parameters.getOutputImageHeight()},
+									   parameters.getInterpolationMethod());
+	} catch (const std::exception& e) {
+		std::cerr << "[ERROR] " << e.what() << '\n';
+		return ExitCode::FAIL_EXIT;
+	}
+
+	// Currently needs to be done here - unified memory is freed in the destructor of GPUModeExecutor
+	// TODO: Separate output mat lifetime from GPUModeExecutor and don't use the default cv::Mat deallocator (bug-prone
+	// and unsafe)
+	if (!fileIO.saveImg(finalImage)) {
+		return ExitCode::FAIL_EXIT;
+	}
+#else
+	std::cerr << "[ERROR] GPU acceleration is unsupported in this build\n";
+	return ExitCode::FAIL_EXIT;
+#endif
+	return ExitCode::SUCCESS_EXIT;
+}
 } // namespace
 
 ExitCode TaskDispatcher::dispatchTask(const InputParams& parameters, FileIO& fileIO) {
 	cv::Mat finalImage;
 
-	switch(parameters.getProcessingMode()) {
-		case ProcessingMode::GPU:
-			return handleCUDA(parameters, fileIO);
-			break;
-		case ProcessingMode::CPU:
-			return handleCPU(parameters, fileIO);
-			break;
-		case ProcessingMode::METAL:
-			return handleMetal(parameters, fileIO);
-		default:
+	switch (parameters.getProcessingMode()) {
+	case ProcessingMode::GPU:
+		return handleCUDA(parameters, fileIO);
+		break;
+	case ProcessingMode::CPU:
+		return handleCPU(parameters, fileIO);
+		break;
+	case ProcessingMode::METAL:
+		return handleMetal(parameters, fileIO);
+	case ProcessingMode::OPENCL:
+		return handleOpenCL(parameters, fileIO);
+	default:
 		return ExitCode::FAIL_EXIT;
 		break;
 	}
@@ -159,11 +196,10 @@ namespace {
 		{"nearest-value", InterpolationMethod::NearestValue}
 	};
 
-	const std::unordered_map<std::string, ProcessingMode> processingModeMapping {
-		{"cpu", ProcessingMode::CPU},
-		{"gpu", ProcessingMode::GPU},
-		{"metal", ProcessingMode::METAL}
-	};
+const std::unordered_map<std::string, ProcessingMode> processingModeMapping{{"cpu", ProcessingMode::CPU},
+																			{"gpu", ProcessingMode::GPU},
+																			{"metal", ProcessingMode::METAL},
+																			{"opencl", ProcessingMode::OPENCL}};
 
 	struct ToLowerReader {
 	bool operator()(const std::string &name, const std::string &value, std::string &destination)

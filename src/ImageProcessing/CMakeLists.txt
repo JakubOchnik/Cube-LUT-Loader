@@ -12,3 +12,7 @@ endif()
 if (BUILD_METAL)
     add_subdirectory(${SOURCE_DIR}/ImageProcessing/Metal)
 endif()
+
+if(BUILD_OPENCL)
+  add_subdirectory(${SOURCE_DIR}/ImageProcessing/OpenCL)
+endif()
